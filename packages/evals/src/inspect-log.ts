@@ -76,6 +76,7 @@ export function toInspectLog(input: InspectLogInput): Record<string, unknown> {
 				...(observation.domain ? { domain: observation.domain } : {}),
 				runNumber: finiteOrZero(observation.runNumber),
 				outcome: observation.outcome,
+				...(observation.outcome === "errored" && observation.error ? { error: observation.error } : {}),
 			},
 		};
 		const score = scoredValue(observation);

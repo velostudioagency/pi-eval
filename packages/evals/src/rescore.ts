@@ -7,6 +7,7 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { JudgeSpec } from "./config.ts";
+import { classifyError } from "./error-policy.ts";
 import { writeInspectLog } from "./inspect-log.ts";
 import { assessSpec } from "./judge-logic.ts";
 import type { EvalTask } from "./plan.ts";
@@ -104,7 +105,8 @@ export async function rescoreArtifacts(artifactDirectory: string): Promise<void>
 				if (process.env.PI_EVAL_RESCORE_DEBUG) {
 					console.error("missing previous/input", identityKey(task), Boolean(previous), Boolean(input));
 				}
-				return { ...task, outcome: "errored" };
+				const priorError = previous && "error" in previous ? previous.error : undefined;
+				return { ...task, outcome: "errored", ...(priorError ? { error: priorError } : {}) };
 			}
 			const trace = traces.find((candidate) => {
 				const metadata = candidate.metadata;
@@ -122,7 +124,7 @@ export async function rescoreArtifacts(artifactDirectory: string): Promise<void>
 				if (process.env.PI_EVAL_RESCORE_DEBUG) {
 					console.error("missing judges/trace", identityKey(task), specs.length, Boolean(trace));
 				}
-				return { ...task, outcome: "errored" };
+				return { ...task, outcome: "errored", error: classifyError("VerifierError") };
 			}
 			const context = { output: finalAnswer(trace.messages), artifacts: input.artifacts };
 			let scores: Array<{ score: number }>;
@@ -130,12 +132,13 @@ export async function rescoreArtifacts(artifactDirectory: string): Promise<void>
 				scores = specs.map((spec) => assessSpec(spec, context));
 			} catch (error) {
 				if (process.env.PI_EVAL_RESCORE_DEBUG) console.error("judge error", identityKey(task), error);
-				return { ...task, outcome: "errored" };
+				return { ...task, outcome: "errored", error: classifyError("VerifierError") };
 			}
 			const score = scores.reduce((sum, value) => sum + value.score, 0) / scores.length;
 			const metrics = { ...previous } as Record<string, unknown>;
 			delete metrics.outcome;
 			delete metrics.score;
+			delete metrics.error;
 			return { ...task, ...metrics, outcome: "scored", score } as EvalObservation;
 		}),
 	);

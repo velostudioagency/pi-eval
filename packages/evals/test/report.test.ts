@@ -131,6 +131,10 @@ describe("readTaskObservation", () => {
 			model: task.model,
 			runNumber: task.runNumber,
 			outcome: "errored",
+			error: {
+				kind: "AgentExitError",
+				policy: { shouldRetry: false, shouldGrade: true, hasValidReward: true },
+			},
 			inputTokens: 10,
 			outputTokens: 5,
 			cacheReadTokens: 2,

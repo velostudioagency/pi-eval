@@ -10,6 +10,7 @@ import { styleText } from "node:util";
 import type { ReportCase } from "@vitest-evals/core";
 import { readReportWorkspace, readVitestJsonReportFile } from "@vitest-evals/core/node";
 import type { SuiteComparison } from "./config.ts";
+import { classifyError, type TrialError } from "./error-policy.ts";
 import type { EvalTask } from "./plan.ts";
 import { PI_TRACE_ARTIFACT, parseTraceArtifact, type TraceRecord } from "./trace.ts";
 import { WORKSPACE_SNAPSHOT_ARTIFACT } from "./workspace.ts";
@@ -43,7 +44,11 @@ type EvalMetrics = {
 
 export type EvalObservation = EvalRunIdentity &
 	EvalMetrics &
-	({ outcome: "scored"; score: number } | { outcome: "unscored" | "skipped" | "pending" | "errored" });
+	(
+		| { outcome: "scored"; score: number }
+		| { outcome: "unscored" | "skipped" | "pending" }
+		| { outcome: "errored"; error?: TrialError }
+	);
 
 export type TaskResult = { observation: EvalObservation; trace?: TraceRecord };
 
@@ -162,8 +167,8 @@ function taskIdentity(task: EvalTask): EvalRunIdentity {
 	};
 }
 
-export function erroredObservation(task: EvalTask): EvalObservation {
-	return { ...taskIdentity(task), outcome: "errored" };
+export function erroredObservation(task: EvalTask, kind = "UnknownError"): EvalObservation {
+	return { ...taskIdentity(task), outcome: "errored", error: classifyError(kind) };
 }
 
 async function persistSession(caseResult: ReportCase, task: EvalTask, artifactDirectory: string): Promise<void> {
@@ -212,28 +217,29 @@ export async function readTaskResult(
 	const loaded = await Promise.all([readReportWorkspace([reportPath]), readVitestJsonReportFile(reportPath)]).catch(
 		() => undefined,
 	);
-	if (!loaded) return { observation: { ...identity, outcome: "errored" } };
+	if (!loaded) return { observation: erroredObservation(task, "ReportNotFoundError") };
 	const [{ workspace }, rawReport] = loaded;
 	const reportedFullName = `${task.evalSet} ${task.caseId}`;
 	const assertions = rawReport.testResults
 		.flatMap(({ assertionResults }) => assertionResults)
 		.filter(({ fullName }) => fullName === reportedFullName);
-	if (assertions.length !== 1) return { observation: { ...identity, outcome: "errored" } };
+	if (assertions.length !== 1) return { observation: erroredObservation(task, "AssertionMismatchError") };
 	const assertion = assertions[0];
 	const statusOutcome = classifyCaseStatus(assertion.status);
 	if (statusOutcome === "skipped" || statusOutcome === "pending") {
 		return { observation: { ...identity, outcome: statusOutcome } };
 	}
 	const caseResults = workspace.cases.filter(({ fullName }) => fullName === reportedFullName);
-	if (caseResults.length !== 1) return { observation: { ...identity, outcome: "errored" } };
+	if (caseResults.length !== 1) return { observation: erroredObservation(task, "WorkspaceReportError") };
 	const caseResult = caseResults[0];
-	if (caseResult.status !== assertion.status) return { observation: { ...identity, outcome: "errored" } };
+	if (caseResult.status !== assertion.status)
+		return { observation: erroredObservation(task, "AssertionMismatchError") };
 	const run = caseResult.harness?.run;
-	if (!run) return { observation: { ...identity, outcome: "errored" } };
+	if (!run) return { observation: erroredObservation(task, "WorkspaceReportError") };
 	await persistSession(caseResult, task, artifactDirectory);
 	await persistJudgeInputs(caseResult, task, artifactDirectory);
 	const actualModel = run.usage.provider && run.usage.model ? `${run.usage.provider}/${run.usage.model}` : undefined;
-	if (actualModel !== task.model) return { observation: { ...identity, outcome: "errored" } };
+	if (actualModel !== task.model) return { observation: erroredObservation(task, "ModelIdentityError") };
 	let metrics: EvalMetrics = {};
 	try {
 		metrics = {
@@ -247,16 +253,16 @@ export async function readTaskResult(
 			estimatedCostUsd: optionalMetric(run.usage.metadata?.estimatedCostUsd, "estimatedCostUsd"),
 		};
 	} catch {
-		return { observation: { ...identity, outcome: "errored" } };
+		return { observation: erroredObservation(task, "AgentExitError") };
 	}
 	if (statusOutcome === "errored" || run.errors.length > 0) {
-		return { observation: { ...identity, ...metrics, outcome: "errored" } };
+		return { observation: { ...erroredObservation(task, "AgentExitError"), ...metrics } };
 	}
 	let score: number | undefined;
 	try {
 		score = validateScore(caseResult.eval?.avgScore);
 	} catch {
-		return { observation: { ...identity, ...metrics, outcome: "errored" } };
+		return { observation: { ...erroredObservation(task, "AgentExitError"), ...metrics } };
 	}
 	const trace = parseTraceArtifact(run.artifacts?.[PI_TRACE_ARTIFACT]);
 	if (score === undefined) {
