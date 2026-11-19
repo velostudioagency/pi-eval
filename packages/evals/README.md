@@ -140,8 +140,10 @@ installs `zstd` and starts `ollama serve` manually (Kaggle has no systemd),
 pulls the real `qwen3:4b` tag, creates a `qwen3:4b-max` variant with `num_ctx`
 262,144, and serves it on `localhost:11434`. It writes the `pi_eval.py` client
 into the clone (the file is untracked in the repo), runs a one-task smoke test
-and then the extraction suite with `--runs 5`, and displays the report and
-traces. Set Kaggle's accelerator to **GPU T4 x2**, enable Internet, and set the
+and then the extraction suite with `--runs 5`. The full run starts the CLI in
+the background and polls `traces.jsonl`, so assistant text, reasoning, tool
+calls, and tool results from each completed run appear live in the notebook.
+Set Kaggle's accelerator to **GPU T4 x2**, enable Internet, and set the
 `PI_EVAL_REPO_URL` secret to your fork (or add the repo as a Kaggle Dataset
 named `pi-eval`) before running it.
 
