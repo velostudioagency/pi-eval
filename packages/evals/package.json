@@ -12,6 +12,7 @@
 		"eval:suite": "node --experimental-strip-types src/cli.ts",
 		"eval:serve": "node --experimental-strip-types src/server.ts",
 		"eval:rescore": "node --experimental-strip-types src/rescore-cli.ts",
+		"eval:agent": "node --experimental-strip-types src/agent-cli.ts",
 		"fixtures:generate": "python scripts/generate_extraction_fixtures.py",
 		"test": "vitest run --config vitest.test.config.ts"
 	},

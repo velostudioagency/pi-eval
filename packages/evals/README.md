@@ -52,6 +52,32 @@ and the report rolls results up at both levels.
 Judges are declarative: `exact`, `contains`, `regex`, `structured`, `toolCalls`,
 and `factuality` (needs an LLM judge harness wired into the suite runner).
 
+## Agent-style profiles and tasks
+
+`packages/evals/src/agent/` ports the agent-eval toolchain into pi-eval:
+
+- `profile.ts` / `profile-loader.ts`: JSON profiles with prompts, tool skins,
+  nine wire protocols, reminders, permissions, faults, skills, loop limits, and
+  cross-field validation. Load with `loadAgentProfile` / `loadAgentProfiles`.
+- `task.ts` / `verify.ts`: task folders (`task.json`, `repo/`, optional
+  `hidden/`, `verify.json`, `solution/gold.json`) and 12 declarative checks
+  with path-escape protection and host-value scrubbing.
+- `gold.ts`: the gold/Null gate. `validateTask(task)` proves the canonical
+  solution passes and a do-nothing model fails before spending model calls.
+- `metrics.ts` / `recorder.ts` / `fidelity.ts`: exclusive failure buckets with
+  Wilson intervals, deterministic host-scrubbed JSONL recording, and
+  request-fidelity diffs against a captured real request.
+
+CLI:
+
+```bash
+npm run eval:agent -w packages/evals -- validate-task <task-dir>
+npm run eval:agent -w packages/evals -- show-profile <profile.json>
+npm run eval:agent -w packages/evals -- fidelity <profile.json> <real-request.json>
+```
+
+Config files are JSON (not YAML) to avoid a runtime dependency.
+
 ## Run a suite
 
 ```bash
