@@ -134,12 +134,16 @@ result.traces_frame().head()
 result.save("./run")
 ```
 
-`packages/evals/notebooks/kaggle-qwen3-4b-thinking-2507.ipynb` is a ready-to-copy
+`packages/evals/notebooks/kaggle-qwen3-4b-ollama.ipynb` is a ready-to-copy
 Kaggle notebook: it checks 2x T4 hardware, installs Node 22, clones the repo,
-pulls `qwen3:4b-thinking-2507` in Ollama, creates the maximum-context variant,
-serves it on `localhost:11434`, runs the extraction suite with `--runs 5`, and
-displays the report and traces. Set Kaggle's accelerator to **GPU T4 x2** and
-enable Internet before running it.
+installs `zstd` and starts `ollama serve` manually (Kaggle has no systemd),
+pulls the real `qwen3:4b` tag, creates a `qwen3:4b-max` variant with `num_ctx`
+262,144, and serves it on `localhost:11434`. It writes the `pi_eval.py` client
+into the clone (the file is untracked in the repo), runs a one-task smoke test
+and then the extraction suite with `--runs 5`, and displays the report and
+traces. Set Kaggle's accelerator to **GPU T4 x2**, enable Internet, and set the
+`PI_EVAL_REPO_URL` secret to your fork (or add the repo as a Kaggle Dataset
+named `pi-eval`) before running it.
 
 ## Create a suite
 
