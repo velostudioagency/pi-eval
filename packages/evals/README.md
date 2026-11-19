@@ -136,13 +136,17 @@ result.save("./run")
 
 `packages/evals/notebooks/kaggle-qwen3-4b-ollama.ipynb` is a ready-to-copy
 Kaggle notebook: it checks 2x T4 hardware, installs Node 22, clones the repo,
-installs `zstd` and starts `ollama serve` manually (Kaggle has no systemd),
+installs `zstd` and starts `ollama serve` manually (Kaggle has no systemd) with
+flash attention and q8_0 KV cache so the model loads 100% on the two T4s,
 pulls the real `qwen3:4b` tag, creates a `qwen3:4b-max` variant with `num_ctx`
-262,144, and serves it on `localhost:11434`. It writes the `pi_eval.py` client
-into the clone (the file is untracked in the repo), runs a one-task smoke test
-and then the extraction suite with `--runs 5`. The full run starts the CLI in
-the background and polls `traces.jsonl`, so assistant text, reasoning, tool
-calls, and tool results from each completed run appear live in the notebook.
+262,144, warms it, and serves it on `localhost:11434`. It writes the
+`pi_eval.py` client into the clone, runs a one-task smoke test and then the
+extraction suite with `--runs 5`. The full run starts the CLI in the background
+and polls `traces.jsonl`, so assistant text, reasoning, tool calls, and tool
+results from each completed run appear live in the notebook. At 262,144 context
+the f16 KV cache is ~36 GiB and spills ~34% of the model to CPU; q8_0 KV (~19
+GiB) avoids that. If `ollama ps` still shows a CPU share, drop to `num_ctx`
+131072 on one GPU. The eval config uses a 30-minute per-test timeout.
 Set Kaggle's accelerator to **GPU T4 x2** and enable Internet. The default
 `REPO_URL` is the public `https://github.com/velostudioagency/pi-eval.git`; set
 the `PI_EVAL_REPO_URL` secret to use a fork, or add the repo as a Kaggle Dataset
