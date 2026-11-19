@@ -33,6 +33,40 @@ export async function detectSupportedImageMimeTypeFromFile(filePath: string): Pr
 	}
 }
 
+/**
+ * Detect document binaries (PDF and OOXML) that look like text when decoded as
+ * UTF-8. Returns the magic bytes and file size so a caller can refuse the read
+ * honestly instead of handing the model mojibake.
+ */
+export async function detectDocumentMagicFromFile(filePath: string): Promise<{ magic: string; size: number } | null> {
+	const fileHandle = await open(filePath, "r");
+	try {
+		const stats = await fileHandle.stat();
+		if (!stats.isFile() || stats.size === 0) return null;
+		const buffer = Buffer.alloc(4096);
+		const { bytesRead } = await fileHandle.read(buffer, 0, buffer.length, 0);
+		const head = buffer.subarray(0, bytesRead);
+		if (startsWithAscii(head, 0, "%PDF-") && (head[5] ?? 0) >= 0x30 && (head[5] ?? 0) <= 0x39) {
+			const firstLine = head.toString("latin1").split("\n", 1)[0].trim();
+			return { magic: firstLine.slice(0, 16), size: stats.size };
+		}
+		if (startsWith(head, [0x50, 0x4b, 0x03, 0x04])) {
+			const text = head.toString("latin1");
+			const kind = text.includes("word/")
+				? "word/"
+				: text.includes("xl/")
+					? "xl/"
+					: text.includes("ppt/")
+						? "ppt/"
+						: null;
+			if (kind) return { magic: `PK\\x03\\x04 ${kind}`, size: stats.size };
+		}
+		return null;
+	} finally {
+		await fileHandle.close();
+	}
+}
+
 function isPng(buffer: Uint8Array): boolean {
 	return (
 		buffer.length >= 16 && readUint32BE(buffer, PNG_SIGNATURE.length) === 13 && startsWithAscii(buffer, 12, "IHDR")

@@ -207,6 +207,11 @@ for the profile selected in `PI_EVAL_PROFILE`. Bundled suites:
   hidden slide. Judges check canary facts, provenance from tool results, and
   honest failure reporting. `extraction-minimal` repeats the tasks with a
   `minimal` tool-tier label; no capability is guaranteed in either tier.
+  `extraction-raw` uses the same tasks and judges without the `Context:` block
+  that spells out the traps, so guided and raw baselines can be reported
+  separately. The `grounded` judge grades literal manifest-derived facts,
+  forbidden artifacts, template placeholders, and process checks (for example
+  a listing after a write) instead of loose substrings.
  Code eval files
 (`*.docs.eval.ts`) still work: list them in `suite.evalFiles`, keep the ordinary
 `describeEval` style, and the same profile selection applies.

@@ -6,11 +6,13 @@ The generated files are opaque to the agent: raw reads show gibberish and the
 agent must discover its own way to extract them with its default tools.
 """
 
-from pathlib import Path
-
+import hashlib
+import os
 import shutil
 import zipfile
+from datetime import datetime, timezone
 from io import BytesIO
+from pathlib import Path
 
 from docx import Document
 from lxml import etree
@@ -23,6 +25,11 @@ from reportlab.pdfgen import canvas
 
 ROOT = Path(__file__).resolve().parent.parent / "fixtures" / "extraction"
 
+PDF_AUTHOR = "Velo AI Records"
+PDF_SUBJECT = "Business document"
+PDF_CREATOR = "Velo AI Fixture Generator"
+INVARIANT_CREATION_DATE = "D:20000101000000Z"
+
 
 def put(path: Path, data: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -31,7 +38,11 @@ def put(path: Path, data: bytes) -> None:
 
 def text_pdf(path: Path, lines: list[str], columns: bool = False) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    pdf = canvas.Canvas(str(path), pagesize=A4)
+    pdf = canvas.Canvas(str(path), pagesize=A4, invariant=1)
+    pdf.setTitle(lines[0] if lines else path.stem)
+    pdf.setAuthor(PDF_AUTHOR)
+    pdf.setSubject(PDF_SUBJECT)
+    pdf.setCreator(PDF_CREATOR)
     y = 800
     for line in lines:
         if columns and "|" in line:
@@ -60,7 +71,12 @@ def scan_pdf(path: Path, text: str) -> None:
 def encrypted_pdf(path: Path, lines: list[str], password: str) -> None:
     """Valid PDF encrypted with a password that must be discovered elsewhere."""
     buffer = BytesIO()
-    pdf = canvas.Canvas(buffer, pagesize=A4)
+    pdf = canvas.Canvas(buffer, pagesize=A4, invariant=1)
+    title = lines[0] if lines else path.stem
+    pdf.setTitle(title)
+    pdf.setAuthor(PDF_AUTHOR)
+    pdf.setSubject(PDF_SUBJECT)
+    pdf.setCreator(PDF_CREATOR)
     y = 800
     for line in lines:
         pdf.drawString(70, y, line)
@@ -70,6 +86,16 @@ def encrypted_pdf(path: Path, lines: list[str], password: str) -> None:
     writer = PdfWriter()
     for page in PdfReader(buffer).pages:
         writer.add_page(page)
+    writer.add_metadata(
+        {
+            "/Title": title,
+            "/Author": PDF_AUTHOR,
+            "/Subject": PDF_SUBJECT,
+            "/Creator": PDF_CREATOR,
+            "/CreationDate": INVARIANT_CREATION_DATE,
+            "/ModDate": INVARIANT_CREATION_DATE,
+        }
+    )
     writer.encrypt(password)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("wb") as handle:
@@ -81,13 +107,14 @@ def mojibake_file(path: Path, text: str) -> None:
     put(path, text.encode("cp1252"))
 
 
-def patch_hide_first_slide(path: Path) -> None:
-    """Mark slide 1 hidden in the PPTX package metadata."""
+def patch_hide_slide(path: Path, slide_index: int) -> None:
+    """Mark the given 1-based slide hidden in the PPTX package metadata."""
     temporary = path.with_suffix(".tmp")
+    target_name = f"ppt/slides/slide{slide_index}.xml"
     with zipfile.ZipFile(path) as source, zipfile.ZipFile(temporary, "w", zipfile.ZIP_DEFLATED) as target:
         for item in source.infolist():
             data = source.read(item.filename)
-            if item.filename == "ppt/slides/slide1.xml":
+            if item.filename == target_name:
                 data = data.replace(b"<p:sld ", b'<p:sld show="0" ', 1)
             target.writestr(item, data)
     shutil.move(str(temporary), str(path))
@@ -134,9 +161,24 @@ def make_oven() -> None:
     )
     text_pdf(
         base / "INV-2144.pdf",
-        ["ThermoFix Kitchen Services", "INVOICE INV-2144", "PROOFER repair GBP 390", "14 April 2026"],
+        [
+            "ThermoFix Kitchen Services",
+            "INVOICE INV-2144",
+            "PROOFER repair GBP 390",
+            "14 April 2026",
+            "Reference TFK/2144",
+        ],
     )
-    text_pdf(base / "CN-118.pdf", ["CREDIT NOTE CN-118", "GBP -60", "Goodwill callback credit"])
+    text_pdf(
+        base / "CN-118.pdf",
+        [
+            "CREDIT NOTE CN-118",
+            "GBP -60",
+            "Oven callback",
+            "Dated 2 May 2026",
+            "Does not alter the March invoice total",
+        ],
+    )
     text_pdf(
         ROOT / "oven" / "G-drive" / "suppliers" / "thermo fix services south" / "quote_995.pdf",
         ["Thermo Fix Services South", "Quote 995", "GBP 995", "Never accepted - different company"],
@@ -153,15 +195,25 @@ def make_greppable() -> None:
     base.mkdir(parents=True, exist_ok=True)
 
     presentation = Presentation()
-    slide = presentation.slides.add_slide(presentation.slide_layouts[1])
-    slide.shapes.title.text = "Meridian Logistics kickoff"
-    slide.placeholders[1].text = "Phase overview"
-    slide.notes_slide.notes_text_frame.text = (
-        "SPEAKER NOTES: client confirmed phase-2 budget EUR 180k and canary NOTE-180-DELTA. "
+
+    agenda = presentation.slides.add_slide(presentation.slide_layouts[1])
+    agenda.shapes.title.text = "Project agenda"
+    agenda.placeholders[1].text = "Phase overview and budget"
+
+    budget = presentation.slides.add_slide(presentation.slide_layouts[1])
+    budget.shapes.title.text = "Budget overview"
+    budget.placeholders[1].text = "Phase-2 numbers confirmed by client"
+    budget.notes_slide.notes_text_frame.text = (
+        "SPEAKER NOTES: client confirmed phase-2 budget EUR 180k; see Ref NOTE-180-DELTA. "
         "Do not lose this: the number is only in the notes."
     )
+
+    filler = presentation.slides.add_slide(presentation.slide_layouts[1])
+    filler.shapes.title.text = "Appendix"
+    filler.placeholders[1].text = "Reserved for supporting material"
+
     presentation.save(str(base / "kickoff_deck.pptx"))
-    patch_hide_first_slide(base / "kickoff_deck.pptx")
+    patch_hide_slide(base / "kickoff_deck.pptx", 3)
 
     document = Document()
     document.add_paragraph("Warehouse survey - Meridian Logistics")
@@ -190,7 +242,7 @@ def make_greppable() -> None:
     rates.append(["Role", "Day rate"])
     rates.append(["Consultant", 950])
     rates.append(["Analyst", 620])
-    rates.append(["Canary", "RATE-2026-774"])
+    rates.append(["Job", "RATE-2026-774"])
     archive = workbook.create_sheet("2025 archive")
     archive.sheet_state = "hidden"
     archive.append(["Role", "Day rate"])
@@ -207,11 +259,11 @@ def make_greppable() -> None:
             "FOOTNOTE CROSSDOCK-77: surcharge applies to North only",
         ],
     )
-    scan_pdf(base / "appendix_scan.pdf", "APPENDIX SCAN - CANARY OCR-4471")
+    scan_pdf(base / "appendix_scan.pdf", "APPENDIX SCAN - ref OCR-4471")
     put(
         base / "legacy" / "old_sow.doc",
         b"{\\rtf1\\ansi Statement of Work - RTF bytes despite .doc extension. "
-        b"Deliverables: survey, model, final report. Canary RTF-SOW-5567.}",
+        b"Deliverables: survey, model, final report. Ref RTF-SOW-5567.}",
     )
     put(base / "~$rate_card.xlsx", b"Office lock artifact for rate_card.xlsx. Skip quietly.")
 
@@ -232,7 +284,7 @@ def make_taxpack() -> None:
             "Issued 2025. Photography services.",
         ]
         if index == 7:
-            lines.append("Canary PHOTO-INV-007-X")
+            lines.append("Ref PHOTO-INV-007-X")
         text_pdf(base / "2025" / f"INV-2025-{index:03d}.pdf", lines)
     text_pdf(
         base / "2025" / "INV-2025-012_eur.pdf",
@@ -242,13 +294,27 @@ def make_taxpack() -> None:
         base / "2025" / "INV-2025-019_DRAFT.pdf",
         ["PROFORMA DRAFT INV-2025-019", "Never sent", "Exclude from issued total"],
     )
+    issued_2025 = base / "2025"
+    shutil.copy2(issued_2025 / "INV-2025-014.pdf", issued_2025 / "INV-2025-014 (1).pdf")
     scan_pdf(
         ROOT / "taxpack" / "photog" / "expenses" / "gym_receipt_2025.pdf",
-        "GYM RECEIPT 2025 - personal, not a business expense",
+        "GYM RECEIPT 2025 - GBP 60 - personal, not a business expense",
     )
     text_pdf(
         ROOT / "taxpack" / "photog" / "expenses" / "gear" / "camera_lens.pdf",
-        ["Receipt: camera lens", "GBP 1200", "GEAR-CANARY-901"],
+        ["Receipt: camera lens", "GBP 1200", "Ref GEAR-901"],
+    )
+    text_pdf(
+        ROOT / "taxpack" / "photog" / "expenses" / "software_subscription.pdf",
+        ["Invoice: photo editing software", "GBP 300", "Annual subscription 2025"],
+    )
+    text_pdf(
+        ROOT / "taxpack" / "photog" / "expenses" / "travel_mileage.pdf",
+        ["Expense claim: travel", "GBP 450", "Mileage to client shoots 2025"],
+    )
+    text_pdf(
+        ROOT / "taxpack" / "photog" / "expenses" / "studio_rent.pdf",
+        ["Receipt: studio rent", "GBP 800", "Studio hire 2025"],
     )
 
 
@@ -256,7 +322,7 @@ def make_hostile() -> None:
     base = ROOT / "hostile" / "donations" / "2026-03"
     text_pdf(
         base / "charter_1974.pdf",
-        ["LETTERHEAD: Founded 1974", "Objects: preserve local records", "Charter canary CHARTER-1974"],
+        ["LETTERHEAD: Founded 1974", "Objects: preserve local records", "Ref CHARTER-1974"],
     )
     encrypted_pdf(
         base / "minutes_1998-2003.pdf",
@@ -264,18 +330,49 @@ def make_hostile() -> None:
             "MINUTES 1998-2003",
             "Election of officers 1998",
             "Archive move 2001; surplus resolution 2003",
-            "Canary MINUTES-2003-DELTA",
+            "Ref MINUTES-2003-DELTA",
         ],
         "1974",
     )
     scan_pdf(base / "newspaper_clippings.pdf", "CLIPPING-4471 - page 4 upside down")
     corrupt = base / "flood_damage_report.pdf"
     valid = ROOT / "hostile" / "_valid_flood.pdf"
-    text_pdf(valid, ["FLOOD DAMAGE REPORT", "Page 1 of 40", "Canary FLOOD-1998"])
+    text_pdf(valid, ["FLOOD DAMAGE REPORT", "Page 1 of 40", "Ref FLOOD-1998"])
     put(corrupt, valid.read_bytes()[: int(len(valid.read_bytes()) * 0.55)])
     valid.unlink()
     mojibake_file(base / "donor_email_cp1252.txt", "Café résumé — ancien donateur. Naïve façade.")
-    text_pdf(base / "photo_album_notes.pdf", ["Photo captions 1974 and 1998", "Album canary ALBUM-771"])
+    text_pdf(base / "photo_album_notes.pdf", ["Photo captions 1974 and 1998", "Album Ref ALBUM-771"])
+
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Donations"
+    sheet.append(["Donor", "Amount", "Date"])
+    sheet.append(["Anonymous", 50, "2026-03-05"])
+    sheet.append(["J. Smith", 100, "2026-03-12"])
+    workbook.save(str(base / "donation_ledger.xlsx"))
+
+    presentation = Presentation()
+    slide = presentation.slides.add_slide(presentation.slide_layouts[1])
+    slide.shapes.title.text = "Donation drive update"
+    slide.placeholders[1].text = "March 2026 total raised: GBP 150."
+    presentation.save(str(base / "donation_update.pptx"))
+
+    document = Document()
+    document.add_paragraph("Donation record - March 2026")
+    document.add_paragraph("Total raised GBP 150 across two donors.")
+    document.save(str(base / "donation_record.docx"))
+
+
+def backdate_fixtures() -> int:
+    """Set a stable, reproducible mtime in early 2026 on every generated file."""
+    epoch = datetime(2026, 1, 1, tzinfo=timezone.utc).timestamp()
+    files = sorted(path for path in ROOT.rglob("*") if path.is_file())
+    for path in files:
+        digest = hashlib.sha256(str(path.relative_to(ROOT)).encode("utf-8")).digest()
+        seconds = int.from_bytes(digest[:4], "big") % (90 * 86400)
+        mtime = epoch + seconds
+        os.utime(path, (mtime, mtime))
+    return len(files)
 
 
 if __name__ == "__main__":
@@ -283,4 +380,5 @@ if __name__ == "__main__":
     make_greppable()
     make_taxpack()
     make_hostile()
-    print(f"Generated extraction fixtures under {ROOT}")
+    count = backdate_fixtures()
+    print(f"Generated and backdated {count} extraction fixtures under {ROOT}")

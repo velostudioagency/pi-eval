@@ -14,6 +14,18 @@ function assets(group: string, paths: readonly string[]): Record<string, string>
 	return Object.fromEntries(paths.map((path) => [path, `fixtures/extraction/${group}/${path}`]));
 }
 
+const hostileAssets = [
+	"donations/2026-03/charter_1974.pdf",
+	"donations/2026-03/minutes_1998-2003.pdf",
+	"donations/2026-03/newspaper_clippings.pdf",
+	"donations/2026-03/flood_damage_report.pdf",
+	"donations/2026-03/photo_album_notes.pdf",
+	"donations/2026-03/donor_email_cp1252.txt",
+	"donations/2026-03/donation_ledger.xlsx",
+	"donations/2026-03/donation_update.pptx",
+	"donations/2026-03/donation_record.docx",
+];
+
 const ovenAssets = [
 	"G-drive/suppliers/thermofix/quote_feb28.pdf",
 	"G-drive/suppliers/thermofix/INV-2093.pdf",
@@ -33,23 +45,32 @@ const greppableAssets = [
 	"client_docs/~$rate_card.xlsx",
 ];
 
+const issuedInvoices2025 = Array.from({ length: 16 }, (_, index) =>
+	`photog/invoices_issued/2025/INV-2025-${String(index + 1).padStart(3, "0")}.pdf`,
+);
+
 const taxAssets = [
 	"photog/invoices_issued/2024/INV-2024-031.pdf",
-	"photog/invoices_issued/2025/INV-2025-001.pdf",
-	"photog/invoices_issued/2025/INV-2025-007.pdf",
-	"photog/invoices_issued/2025/INV-2025-011.pdf",
+	...issuedInvoices2025,
 	"photog/invoices_issued/2025/INV-2025-012_eur.pdf",
-	"photog/invoices_issued/2025/INV-2025-014.pdf",
+	"photog/invoices_issued/2025/INV-2025-014 (1).pdf",
 	"photog/invoices_issued/2025/INV-2025-019_DRAFT.pdf",
 	"photog/expenses/gym_receipt_2025.pdf",
 	"photog/expenses/gear/camera_lens.pdf",
+	"photog/expenses/software_subscription.pdf",
+	"photog/expenses/travel_mileage.pdf",
+	"photog/expenses/studio_rent.pdf",
 ];
 
 export const extractionSuite: SuiteSpec = {
 	id: "extraction",
 	runs: 1,
 	domains: [{ id: "data-manipulation", description: "Read and reorganize information." }],
-	families: [{ id: "data-extraction", domain: "data-manipulation", description: "Real document extraction." }],
+	families: [
+		{ id: "data-manipulation-read-organize", domain: "data-manipulation", description: "Locate and verify facts in files." },
+		{ id: "data-extraction", domain: "data-manipulation", description: "Real document extraction." },
+		{ id: "data-manipulation", domain: "data-manipulation", description: "Composite document organization." },
+	],
 	profiles: [
 		{
 			id: "default",
@@ -60,7 +81,7 @@ export const extractionSuite: SuiteSpec = {
 		{
 			id: "oven-payment-real",
 			evalSet: "oven-payment-real",
-			family: "data-extraction",
+			family: "data-manipulation-read-organize",
 			domain: "data-manipulation",
 			input: `hey can you dig through the shared drive and find what we paid for the oven repair back in march? finance needs the exact number and the receipt or whatever proves it
 
@@ -68,11 +89,11 @@ Context: Small bakery, March 2026 event. The shared drive contains quotes, invoi
 			workspaceAssets: assets("oven", ovenAssets),
 			workspaceFiles: {
 				"G-drive/admin/bank_export_2026.csv":
-					"date,amount,reference,description\n2026-03-17,-1240.00,TFK/2093,ThermoFix invoice 2093\n2026-04-20,-390.00,TFK/2144,proofer repair",
+					"date,amount,reference,description\n2026-03-17,-1240.00,TFK-2093-7741,ThermoFix invoice 2093\n2026-04-20,-390.00,TFK/2144,proofer repair",
 				"G-drive/admin/emails/oven_quote_fwd.eml":
 					"From owner, 28 Feb 2026: found this oven repair quote, GBP 1180, seems ok?",
 				"G-drive/admin/emails/re_invoice_2093.eml":
-					"From owner, 17 Mar 2026: paid the 1240 this morning, ref TFK/2093.",
+					"From owner, 17 Mar 2026: paid the 1240 this morning, ref TFK-2093-7741.",
 			},
 			judges: [
 				{ type: "regex", pattern: "1,?240" },
@@ -118,7 +139,7 @@ Context: Management consultant, Meridian Logistics engagement. Write each conver
 		{
 			id: "tax-pack-real",
 			evalSet: "tax-pack-real",
-			family: "data-extraction",
+			family: "data-manipulation",
 			domain: "data-manipulation",
 			input: `tax deadline is coming up and my stuff is everywhere. pull together a 2025 folder for my accountant: copies of every invoice i issued, a summary of what got paid vs outstanding, and expenses sorted by category. DONT move or rename my originals, just copies. if something looks off flag it instead of guessing
 
@@ -130,20 +151,31 @@ Context: Freelance photographer, calendar-2025 pack. Put copies under tax_2025/ 
 				"photog/notes/chased.txt": "Chased INV-011 twice, no reply. Still unpaid.",
 			},
 			judges: [
+				{ type: "workspace", checks: taxAssets.map(exists) },
 				{
-					type: "workspace",
-					checks: [
-						...taxAssets.map(exists),
-						exists("tax_2025/ledger.md"),
-						{ op: "content", path: "tax_2025/ledger.md", includes: "20,200" },
-						{ op: "content", path: "tax_2025/ledger.md", includes: "PHOTO-INV-007-X" },
-						{ op: "content", path: "tax_2025/ledger.md", includes: "900" },
-						{ op: "content", path: "tax_2025/ledger.md", includes: "EUR" },
-						{ op: "content", path: "tax_2025/ledger.md", includes: "gym" },
+					type: "grounded",
+					name: "TaxPackGrounded",
+					requireFacts: [
+						["GBP 20,200", "£20,200", "20,200 GBP"],
+						"PHOTO-INV-007-X",
+						["EUR 2,400", "€2,400"],
+						"INV-2025-019_DRAFT",
 					],
+					forbidFacts: ["[To be filled]", "TODO"],
+					requireFiles: [
+						"tax_2025/ledger.md",
+						...issuedInvoices2025.map((path) => path.replace("photog/", "tax_2025/")),
+						"tax_2025/INV-2025-012_eur.pdf",
+						"tax_2025/INV-2024-031.pdf",
+					],
+					forbidFiles: [
+						"tax_2025/INV-2025-019_DRAFT.pdf",
+						"tax_2025/INV-2025-014 (1).pdf",
+					],
+					forbidText: ["[To be filled]", "TODO"],
+					requireToolPatterns: [{ pattern: "(?:ls|find)\\s+.*tax_2025" }],
 				},
 				{ type: "provenance", canaries: ["PHOTO-INV-007-X"], forbidden: [] },
-				{ type: "regex", pattern: "assum|draft|part-paid|personal", flags: "i" },
 			],
 		},
 		{
@@ -154,14 +186,7 @@ Context: Freelance photographer, calendar-2025 pack. Put copies under tax_2025/ 
 			input: `we're building a search index for the archive. turn everything in donations/2026-03 into plain text or markdown. some of this stuff is old scans so do what you can, and keep a log of anything you couldnt do and why
 
 Context: Local history society, digitized donor box. Put conversions beside the originals with a .md extension and write conversion_log.md listing failures and reasons. One protected file has a clue in the donor Readme and on the letterhead of another printed item. Do not invent content for anything you cannot read.`,
-			workspaceAssets: assets("hostile", [
-				"donations/2026-03/charter_1974.pdf",
-				"donations/2026-03/minutes_1998-2003.pdf",
-				"donations/2026-03/newspaper_clippings.pdf",
-				"donations/2026-03/flood_damage_report.pdf",
-				"donations/2026-03/photo_album_notes.pdf",
-				"donations/2026-03/donor_email_cp1252.txt",
-			]),
+			workspaceAssets: assets("hostile", hostileAssets),
 			workspaceFiles: {
 				"donations/2026-03/readme_from_donor.txt":
 					"The protected minutes use our founding year as the password. You will find the year on the letterhead of everything we ever printed.",
@@ -191,6 +216,16 @@ Context: Local history society, digitized donor box. Put conversions beside the 
 			],
 		},
 	],
+};
+
+/** Same tasks and judges, but without the Context block that spells out the traps. */
+export const extractionRawSuite: SuiteSpec = {
+	...extractionSuite,
+	id: "extraction-raw",
+	tasks: (extractionSuite.tasks ?? []).map((task) => ({
+		...task,
+		input: typeof task.input === "string" ? task.input.split("\n\nContext:")[0] : task.input,
+	})),
 };
 
 export const extractionMinimalSuite: SuiteSpec = {

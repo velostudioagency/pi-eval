@@ -13,11 +13,13 @@ import {
 	type CreateAgentSessionOptions,
 	createAgentSessionFromServices,
 	createAgentSessionServices,
+	createReadToolDefinition,
 	getAgentDir,
 	type InlineExtension,
 	ModelRuntime,
 	readStoredCredential,
 	SessionManager,
+	type ToolDefinition,
 } from "@earendil-works/pi-coding-agent";
 import {
 	attachHarnessRunToError,
@@ -409,7 +411,12 @@ async function runPiCodingAgent<TOutput extends JsonValue>(
 				tools: options.tools,
 				noTools: options.noTools,
 				excludeTools: options.excludeTools,
-				customTools: options.customTools,
+				customTools: [
+					...(options.customTools ?? []),
+					// ToolDefinition is invariant in its render callback; the concrete read
+					// definition is safe here but cannot be expressed in the public type.
+					createReadToolDefinition(workspace, { refuseBinaryFiles: true }) as unknown as ToolDefinition,
+				],
 			})
 		).session;
 

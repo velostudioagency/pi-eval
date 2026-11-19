@@ -69,7 +69,31 @@ export type Profile = {
 /** Documentation evals intentionally exclude shell and unrestricted network tools. */
 export const DOCUMENTATION_EVAL_TOOLS = ["read", "write", "edit", "grep", "find", "ls"] as const;
 
+/**
+ * Deterministic checks against facts derived from the task's fixtures. Unlike
+ * substring judges, fact strings are matched literally (whitespace folded but
+ * currency, separators and case preserved), so a byte count cannot pass as an
+ * invoice amount.
+ */
+export type GroundedJudgeSpec = {
+	type: "grounded";
+	name?: string;
+	/** Literal strings that must appear in the final answer. An inner array means any one of them. */
+	requireFacts?: Array<string | string[]>;
+	/** Literal strings that must not appear in the final answer. */
+	forbidFacts?: string[];
+	/** Workspace files that must exist after the run. */
+	requireFiles?: string[];
+	/** Workspace files that must not exist after the run, for example a copied draft. */
+	forbidFiles?: string[];
+	/** Literal strings that must not appear in any generated workspace text file. */
+	forbidText?: string[];
+	/** Patterns that must match a serialized tool call, for example an after-write listing. */
+	requireToolPatterns?: Array<{ pattern: string; flags?: string }>;
+};
+
 export type JudgeSpec =
+	| GroundedJudgeSpec
 	| { type: "exact"; expected: string }
 	| { type: "contains"; expected: string }
 	| { type: "regex"; pattern: string; flags?: string }

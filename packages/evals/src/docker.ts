@@ -158,7 +158,9 @@ function dockerArgs(
 			...environment("PI_EVAL_ARTIFACT_GID", String(process.getgid())),
 		);
 	}
-	args.push("--mount", `type=bind,source=${context.authPath},target=/run/pi-eval-secrets/auth.json,readonly`);
+	if (context.authPath) {
+		args.push("--mount", `type=bind,source=${context.authPath},target=/run/pi-eval-secrets/auth.json,readonly`);
+	}
 	args.push(image.name, ...entrypointArgs);
 	return args;
 }

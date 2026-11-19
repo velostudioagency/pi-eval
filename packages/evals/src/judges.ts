@@ -14,7 +14,7 @@ import {
 	StructuredOutputJudge,
 	ToolCallJudge,
 } from "vitest-evals";
-import type { JudgeSpec, TaskInput, WorkspaceCheck } from "./config.ts";
+import type { GroundedJudgeSpec, JudgeSpec, TaskInput, WorkspaceCheck } from "./config.ts";
 import { PI_TRACE_ARTIFACT, parseTraceArtifact } from "./trace.ts";
 import { parseWorkspaceSnapshot, textHash, WORKSPACE_SNAPSHOT_ARTIFACT, type WorkspaceSnapshot } from "./workspace.ts";
 
@@ -86,6 +86,62 @@ function normalizeFact(text: string): string {
 		.replace(/[‐-―]/g, "-");
 }
 
+/** Folds only whitespace and case. Currency, separators and digits stay significant. */
+function normalizeGrounded(text: string): string {
+	return text.normalize("NFKC").toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function groundedJudge(spec: GroundedJudgeSpec): TaskJudge {
+	return createJudge<TaskInput, string>(spec.name ?? "Grounded", ({ run, output }) => {
+		const snapshot = parseWorkspaceSnapshot(run.artifacts?.[WORKSPACE_SNAPSHOT_ARTIFACT]);
+		const trace = parseTraceArtifact(run.artifacts?.[PI_TRACE_ARTIFACT]);
+		const answer = normalizeGrounded(output);
+		const files = snapshot?.files ?? {};
+		const checks: Array<{ ok: boolean; label: string }> = [];
+
+		for (const fact of spec.requireFacts ?? []) {
+			const alternatives = Array.isArray(fact) ? fact : [fact];
+			const ok = alternatives.some((value) => answer.includes(normalizeGrounded(value)));
+			checks.push({ ok, label: `fact ${JSON.stringify(fact)}` });
+		}
+		for (const fact of spec.forbidFacts ?? []) {
+			checks.push({ ok: !answer.includes(normalizeGrounded(fact)), label: `no fact ${JSON.stringify(fact)}` });
+		}
+		for (const path of spec.requireFiles ?? []) {
+			checks.push({ ok: Object.hasOwn(files, path), label: `file ${path}` });
+		}
+		for (const path of spec.forbidFiles ?? []) {
+			checks.push({ ok: !Object.hasOwn(files, path), label: `no file ${path}` });
+		}
+		for (const text of spec.forbidText ?? []) {
+			const needle = normalizeGrounded(text);
+			const leaked = Object.entries(files).some(
+				([, file]) => file.text !== undefined && normalizeGrounded(file.text).includes(needle),
+			);
+			checks.push({ ok: !leaked, label: `no text ${JSON.stringify(text)}` });
+		}
+
+		const toolText = (trace?.messages ?? [])
+			.flatMap((message) => (message.role === "assistant" ? (message.toolCalls ?? []) : []))
+			.map((call) => `${call.name} ${JSON.stringify(call.arguments)}`)
+			.join("\n");
+		for (const { pattern, flags } of spec.requireToolPatterns ?? []) {
+			checks.push({ ok: new RegExp(pattern, flags).test(toolText), label: `tool /${pattern}/` });
+		}
+
+		const failed = checks.filter((check) => !check.ok).map((check) => check.label);
+		return {
+			score: checks.length === 0 ? 0 : Number(((checks.length - failed.length) / checks.length).toFixed(4)),
+			metadata: {
+				rationale:
+					failed.length === 0
+						? `All ${checks.length} grounded checks passed.`
+						: `${failed.length}/${checks.length} grounded checks failed: ${failed.join("; ")}`,
+			},
+		};
+	});
+}
+
 function provenanceJudge(spec: { canaries: string[]; forbidden: string[] }): TaskJudge {
 	return createJudge<TaskInput, string>("Provenance", ({ run, output }) => {
 		const trace = parseTraceArtifact(run.artifacts?.[PI_TRACE_ARTIFACT]);
@@ -143,6 +199,8 @@ function adapt(name: string, judge: Judge): TaskJudge {
 
 export function createJudgeFromSpec(spec: JudgeSpec): TaskJudge {
 	switch (spec.type) {
+		case "grounded":
+			return groundedJudge(spec);
 		case "exact":
 			return textJudge(
 				"ExactMatch",

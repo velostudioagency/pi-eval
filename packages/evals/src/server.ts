@@ -16,7 +16,7 @@ import { fileURLToPath } from "node:url";
 import { SUITE_REGISTRY } from "../evals/suites/index.ts";
 import type { HostOs, RuntimeBackend } from "./config.ts";
 import { resolveEnvironment, resolveProfile } from "./config.ts";
-import { createDockerContext, requireEvalAuthFile } from "./docker.ts";
+import { buildImages, createDockerContext, requireEvalAuthFile } from "./docker.ts";
 import type { EvalTask } from "./plan.ts";
 import { suiteById } from "./profile-env.ts";
 import { assertRuntime, hostOs, type RuntimeTarget, runTaskOnRuntime, selectRuntime } from "./runtime.ts";
@@ -92,7 +92,10 @@ function runSuite(body: RunRequest, artifactDirectory: string) {
 	if (body.families?.length) args.push("--family", body.families.join(","));
 	if (body.domains?.length) args.push("--domain", body.domains.join(","));
 	if (body.runs !== undefined) args.push("--runs", String(body.runs));
-	args.push("--backend", body.backend === "remote" ? "host" : (body.backend ?? "host"));
+	if (body.backend === "remote") {
+		throw new Error("POST /runs cannot run backend=remote: this server has no runner URL.");
+	}
+	args.push("--backend", body.backend ?? "host");
 	if (body.os) args.push("--os", body.os);
 	if (body.exports?.length) {
 		for (const spec of body.exports) {
@@ -116,7 +119,7 @@ function runSuite(body: RunRequest, artifactDirectory: string) {
 		: null;
 	const datasets: Record<string, unknown[]> = {};
 	for (const name of readdirSync(artifactDirectory)) {
-		if (name.startsWith("dataset.") && name.endsWith(".jsonl")) {
+		if (name.endsWith(".jsonl") && name !== "traces.jsonl" && name !== "observations.jsonl") {
 			datasets[name] = jsonLines(join(artifactDirectory, name));
 		}
 	}
@@ -163,8 +166,9 @@ async function runOneTask(body: Record<string, unknown>, artifactDirectory: stri
 	const apiBase = typeof body.apiBase === "string" ? body.apiBase : undefined;
 	const apiKey = typeof body.apiKey === "string" ? body.apiKey : undefined;
 	const api = typeof body.api === "string" ? body.api : undefined;
+	const images = target.backend === "docker" ? buildImages([environment]) : {};
 	const docker = createDockerContext(
-		{},
+		images,
 		artifactDirectory,
 		target.backend === "docker" && !apiBase ? requireEvalAuthFile(provider) : "",
 		provider,

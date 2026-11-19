@@ -4,7 +4,7 @@ import { access as fsAccess, open as fsOpen, readFile as fsReadFile } from "fs/p
 import { type Static, Type } from "typebox";
 import { TextDecoder } from "util";
 import { processImage } from "../../utils/image-process.ts";
-import { detectSupportedImageMimeTypeFromFile } from "../../utils/mime.ts";
+import { detectDocumentMagicFromFile, detectSupportedImageMimeTypeFromFile } from "../../utils/mime.ts";
 import type { ExtensionContext, ToolDefinition } from "../extensions/types.ts";
 import { resolveReadPathAsync } from "./path-utils.ts";
 import { readRenderers } from "./renderers/read.ts";
@@ -57,6 +57,8 @@ export interface ReadOperations {
 	access: (absolutePath: string) => Promise<void>;
 	/** Detect image MIME type, return null or undefined for non-images */
 	detectImageMimeType?: (absolutePath: string) => Promise<string | null | undefined>;
+	/** Detect document binaries that should be refused rather than decoded as text. */
+	detectBinaryMagic?: (absolutePath: string) => Promise<{ magic: string; size: number } | null | undefined>;
 	/**
 	 * Stream file contents in chunks. When present, text files are read through it and only the lines
 	 * that will be shown are kept in memory; otherwise readFile loads the whole file. Stop reading when
@@ -70,6 +72,7 @@ const defaultReadOperations: ReadOperations = {
 	createReadStream: readLocalFileChunks,
 	access: (path) => fsAccess(path, constants.R_OK),
 	detectImageMimeType: detectSupportedImageMimeTypeFromFile,
+	detectBinaryMagic: detectDocumentMagicFromFile,
 };
 
 /**
@@ -98,6 +101,8 @@ export interface ReadToolOptions {
 	resizeOptions?: ModelImageResizeOptions;
 	/** Custom operations for file reading. Default: local filesystem */
 	operations?: ReadOperations;
+	/** Refuse PDF and OOXML binaries with a structured notice instead of decoding them as text. Default: false */
+	refuseBinaryFiles?: boolean;
 }
 
 /** The image block and its note, or the text for text files and images that could not be processed. */
@@ -232,6 +237,7 @@ export function createReadToolDefinition(
 ): ToolDefinition<typeof readSchema, ReadToolDetails | undefined> {
 	const autoResizeImages = options?.autoResizeImages ?? true;
 	const fallbackResizeOptions = options?.resizeOptions;
+	const refuseBinaryFiles = options?.refuseBinaryFiles ?? false;
 	const ops = options?.operations ?? defaultReadOperations;
 	return {
 		name: "read",
@@ -294,6 +300,22 @@ export function createReadToolDefinition(
 									}
 								}
 							} else {
+								const binary = refuseBinaryFiles ? await ops.detectBinaryMagic?.(absolutePath) : undefined;
+								if (binary) {
+									content = [
+										{
+											type: "text",
+											text: JSON.stringify({
+												error: "binary_file",
+												magic: binary.magic,
+												size: binary.size,
+											}),
+										},
+									];
+									details = undefined;
+									resolve({ content, details });
+									return;
+								}
 								// Read text content. Convert offset from 1-indexed input to 0-indexed line access.
 								const startLine = offset ? Math.max(0, offset - 1) : 0;
 								const startLineDisplay = startLine + 1;

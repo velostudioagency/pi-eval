@@ -95,6 +95,47 @@ describe("declarative judges", () => {
 		expect((await grade("broken.pdf is corrupt; scan.pdf is a scan. Value SECRET-CANARY.")).score).toBeCloseTo(2 / 3);
 	});
 
+	it("grades grounded facts, artifacts and process checks literally", async () => {
+		const snapshot = {
+			files: { "tax_2025/ledger.md": { sha256: "abc", size: 40, text: "Total GBP 20,200" } },
+			directories: ["tax_2025"],
+		};
+		const trace = {
+			schemaVersion: 1,
+			messages: [
+				{
+					role: "assistant",
+					content: "",
+					toolCalls: [{ id: "c1", name: "bash", arguments: { command: "ls tax_2025" } }],
+				},
+			],
+			metadata: { profile: "default", model: "fixture/model" },
+		};
+		const judge = createJudgeFromSpec({
+			type: "grounded",
+			requireFacts: ["GBP 20,200"],
+			forbidFacts: ["20200 bytes"],
+			requireFiles: ["tax_2025/ledger.md"],
+			forbidFiles: ["tax_2025/INV-2025-019_DRAFT.pdf"],
+			forbidText: ["[To be filled]"],
+			requireToolPatterns: [{ pattern: "ls tax_2025" }],
+		});
+		const grade = async (output: string) =>
+			(
+				await judge.assess({
+					output,
+					run: {
+						artifacts: {
+							[WORKSPACE_SNAPSHOT_ARTIFACT]: JSON.stringify(snapshot),
+							[PI_TRACE_ARTIFACT]: JSON.stringify(trace),
+						},
+					},
+				} as unknown as JudgeContext<TaskInput, string>)
+			).score;
+		expect(await grade("Total GBP 20,200")).toBe(1);
+		expect(await grade("Total 20200")).toBeCloseTo(5 / 6);
+	});
+
 	it("maps spec lists to named judges", () => {
 		const judges = createJudgesFromSpecs([
 			{ type: "structured", expected: { ok: true } },

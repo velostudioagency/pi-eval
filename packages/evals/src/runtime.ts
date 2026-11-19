@@ -126,6 +126,7 @@ function readRemoteResult(body: unknown, task: EvalTask): TaskResult {
 		identity.evalSet !== task.evalSet ||
 		identity.caseId !== task.caseId ||
 		identity.profile !== task.profile ||
+		identity.model !== task.model ||
 		identity.runNumber !== task.runNumber
 	) {
 		throw new Error(`Remote runner returned a result for the wrong task: ${task.evalSet} > ${task.caseId}.`);

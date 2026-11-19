@@ -456,7 +456,14 @@ function comparisonFlags(
 	const outcomes = new Map<string, Set<string>>();
 	for (const group of groups) {
 		for (const [profile, score] of group.scores) {
-			const key = JSON.stringify([group.caseId, profile]);
+			const key = JSON.stringify([
+				group.evalSet,
+				group.caseId,
+				group.model,
+				group.family ?? null,
+				group.domain ?? null,
+				profile,
+			]);
 			const seen = outcomes.get(key) ?? new Set<string>();
 			seen.add(String(score >= 1));
 			outcomes.set(key, seen);
