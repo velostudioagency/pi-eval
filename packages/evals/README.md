@@ -143,9 +143,10 @@ into the clone (the file is untracked in the repo), runs a one-task smoke test
 and then the extraction suite with `--runs 5`. The full run starts the CLI in
 the background and polls `traces.jsonl`, so assistant text, reasoning, tool
 calls, and tool results from each completed run appear live in the notebook.
-Set Kaggle's accelerator to **GPU T4 x2**, enable Internet, and set the
-`PI_EVAL_REPO_URL` secret to your fork (or add the repo as a Kaggle Dataset
-named `pi-eval`) before running it.
+Set Kaggle's accelerator to **GPU T4 x2** and enable Internet. The default
+`REPO_URL` is the public `https://github.com/velostudioagency/pi-eval.git`; set
+the `PI_EVAL_REPO_URL` secret to use a fork, or add the repo as a Kaggle Dataset
+named `pi-eval`.
 
 ## Create a suite
 

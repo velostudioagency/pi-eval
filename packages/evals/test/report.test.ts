@@ -3,7 +3,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import type { EvalTask } from "../src/plan.ts";
-import { PI_SESSION_SNAPSHOT_ARTIFACT, readTaskObservation } from "../src/report.ts";
+import { PI_SESSION_SNAPSHOT_ARTIFACT, readTaskResult } from "../src/report.ts";
+import { PI_TRACE_ARTIFACT } from "../src/trace.ts";
 
 const temporaryDirectories: string[] = [];
 afterEach(async () => {
@@ -15,7 +16,7 @@ const task: EvalTask = {
 	fullName: "Example workflow > handles the case",
 	evalSet: "Example workflow",
 	caseId: "handles the case",
-	variant: "without_docs",
+	profile: "without_docs",
 	model: "fixture/model",
 	runNumber: 1,
 };
@@ -100,7 +101,8 @@ function scoredMeta(overrides?: {
 
 async function readObservation(assertion: ReportAssertion = {}) {
 	const { directory, reportPath } = await writeTaskReport([assertion]);
-	return { directory, observation: await readTaskObservation(task, reportPath, directory) };
+	const { observation } = await readTaskResult(task, reportPath, directory);
+	return { directory, observation };
 }
 
 describe("readTaskObservation", () => {
@@ -125,7 +127,7 @@ describe("readTaskObservation", () => {
 		expect(observation).toEqual({
 			evalSet: task.evalSet,
 			caseId: task.caseId,
-			variant: task.variant,
+			profile: task.profile,
 			model: task.model,
 			runNumber: task.runNumber,
 			outcome: "errored",
@@ -138,9 +140,9 @@ describe("readTaskObservation", () => {
 			totalMs: 1234,
 			estimatedCostUsd: 0.01,
 		});
-		const hashes = await readdir(join(directory, task.variant, "sessions"));
+		const hashes = await readdir(join(directory, task.profile, "sessions"));
 		await expect(
-			readFile(join(directory, task.variant, "sessions", hashes[0], "session.jsonl"), "utf8"),
+			readFile(join(directory, task.profile, "sessions", hashes[0], "session.jsonl"), "utf8"),
 		).resolves.toBe(SESSION);
 	});
 
@@ -154,7 +156,7 @@ describe("readTaskObservation", () => {
 		expect(observation).toEqual({
 			evalSet: task.evalSet,
 			caseId: task.caseId,
-			variant: task.variant,
+			profile: task.profile,
 			model: task.model,
 			runNumber: task.runNumber,
 			outcome: "scored",
@@ -168,10 +170,10 @@ describe("readTaskObservation", () => {
 			totalMs: 1234,
 			estimatedCostUsd: 0.01,
 		});
-		const hashes = await readdir(join(directory, task.variant, "sessions"));
+		const hashes = await readdir(join(directory, task.profile, "sessions"));
 		expect(hashes).toHaveLength(1);
 		await expect(
-			readFile(join(directory, task.variant, "sessions", hashes[0], "session.jsonl"), "utf8"),
+			readFile(join(directory, task.profile, "sessions", hashes[0], "session.jsonl"), "utf8"),
 		).resolves.toBe(SESSION);
 	});
 
@@ -180,7 +182,7 @@ describe("readTaskObservation", () => {
 			{ caseId: "sibling case", status: "skipped" },
 			{ caseId: task.caseId, meta: scoredMeta() },
 		]);
-		const observation = await readTaskObservation(task, reportPath, directory);
+		const { observation } = await readTaskResult(task, reportPath, directory);
 		expect(observation).toMatchObject({ outcome: "scored", score: 0.5, totalTokens: 15 });
 	});
 
@@ -202,6 +204,41 @@ describe("readTaskObservation", () => {
 	it("records an errored outcome when a completed harness run contains errors", async () => {
 		const { observation } = await readObservation({ meta: scoredMeta({ errors: [{ message: "boom" }] }) });
 		expect(observation).toMatchObject({ outcome: "errored" });
+	});
+
+	it("returns and enriches the canonical trace artifact", async () => {
+		const trace = {
+			schemaVersion: 1 as const,
+			messages: [{ role: "user" as const, content: "prompt" }],
+			metadata: {
+				profile: "without_docs",
+				model: "fixture/model",
+				systemPromptSha256: "hash",
+				inputTokens: 10,
+				outputTokens: 5,
+				totalTokens: 15,
+				toolCalls: 1,
+			},
+		};
+		const { directory, reportPath } = await writeTaskReport([
+			{
+				meta: scoredMeta({
+					artifacts: {
+						[PI_SESSION_SNAPSHOT_ARTIFACT]: SESSION,
+						[PI_TRACE_ARTIFACT]: JSON.stringify(trace),
+					},
+				}),
+			},
+		]);
+		const result = await readTaskResult(task, reportPath, directory);
+		expect(result.trace?.metadata).toMatchObject({
+			evalSet: task.evalSet,
+			caseId: task.caseId,
+			runNumber: 1,
+			score: 0.5,
+			outcome: "scored",
+		});
+		expect(result.trace?.messages).toEqual(trace.messages);
 	});
 
 	it("still scores a completed eval when the session artifact is missing", async () => {

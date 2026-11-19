@@ -1,10 +1,11 @@
 import { createHash } from "node:crypto";
 import type { Dirent } from "node:fs";
 import { existsSync } from "node:fs";
-import { chmod, chown, lstat, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { chmod, chown, copyFile, lstat, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { performance } from "node:perf_hooks";
+import { fileURLToPath } from "node:url";
 import { contentText, InMemoryCredentialStore } from "@earendil-works/pi-ai";
 import { getCurrentSystemPrompt } from "@earendil-works/pi-ai/utils/transcript";
 import {
@@ -31,8 +32,13 @@ import {
 	toJsonValue,
 	type UsageSummary,
 } from "vitest-evals/harness";
-import type { DocumentationVariant } from "./plan.ts";
+import type { SystemPromptSpec, TaskInput } from "./config.ts";
+import { activeProfile, activeSuite, harnessOptionsForProfile } from "./profile-env.ts";
 import { PI_SESSION_SNAPSHOT_ARTIFACT } from "./report.ts";
+import { PI_TRACE_ARTIFACT, toTraceRecord } from "./trace.ts";
+import { captureWorkspace, WORKSPACE_SNAPSHOT_ARTIFACT } from "./workspace.ts";
+
+const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 type PiRunDiagnostics = {
 	events: TranscriptEvent[];
@@ -40,7 +46,7 @@ type PiRunDiagnostics = {
 	usage: UsageSummary;
 };
 
-export type PiCodingAgentInput = string | Array<{ type: "prompt"; content: string } | { type: "reload" }>;
+export type PiCodingAgentInput = TaskInput;
 
 export type PiCodingAgentModelSelection = {
 	provider: string;
@@ -49,13 +55,27 @@ export type PiCodingAgentModelSelection = {
 
 export type PiCodingAgentHarnessOptions = {
 	name?: string;
+	/** Profile id recorded in traces and reports. */
+	profile?: string;
 	model?: PiCodingAgentModelSelection;
 	noTools?: CreateAgentSessionOptions["noTools"];
 	tools?: CreateAgentSessionOptions["tools"];
+	excludeTools?: CreateAgentSessionOptions["excludeTools"];
 	customTools?: CreateAgentSessionOptions["customTools"];
+	thinkingLevel?: CreateAgentSessionOptions["thinkingLevel"];
 	workspaceFiles?: Readonly<Record<string, string>>;
-	transformSystemPrompt?: (defaultPrompt: string) => string;
-	expectedPiDocumentation?: boolean;
+	/** Binary files copied from disk: destination path -> source path relative to the package. */
+	workspaceAssets?: Readonly<Record<string, string>>;
+	/** Tool-tier label recorded in traces; no capability is guaranteed by it. */
+	toolTier?: "standard" | "minimal";
+	/** Override the model endpoint, e.g. a locally served model in a notebook. */
+	apiBase?: string;
+	apiKey?: string;
+	api?: string;
+	providerId?: string;
+	/** Capture the final workspace tree so graders can verify filesystem outcomes. */
+	captureWorkspace?: boolean;
+	systemPrompt?: SystemPromptSpec;
 };
 
 export type PiCodingAgentHarnessWithOutput<TOutput extends JsonValue> = PiCodingAgentHarnessOptions & {
@@ -235,6 +255,24 @@ async function seedWorkspace(workspace: string, files: Readonly<Record<string, s
 	}
 }
 
+async function seedAssets(workspace: string, assets: Readonly<Record<string, string>> | undefined): Promise<void> {
+	for (const [name, source] of Object.entries(assets ?? {})) {
+		if (!name || isAbsolute(name)) throw new TypeError(`Invalid workspace asset path: ${name}`);
+		const destination = resolve(workspace, name);
+		const fromWorkspace = relative(workspace, destination);
+		if (fromWorkspace === ".." || fromWorkspace.startsWith(`..${sep}`) || isAbsolute(fromWorkspace)) {
+			throw new TypeError(`Workspace asset escapes the workspace: ${name}`);
+		}
+		const sourcePath = resolve(packageRoot, source);
+		const fromPackage = relative(packageRoot, sourcePath);
+		if (fromPackage === ".." || fromPackage.startsWith(`..${sep}`) || isAbsolute(fromPackage)) {
+			throw new TypeError(`Fixture asset escapes the package: ${source}`);
+		}
+		await mkdir(dirname(destination), { recursive: true });
+		await copyFile(sourcePath, destination);
+	}
+}
+
 async function promptAgent(session: AgentSession, input: string, signal: AbortSignal | undefined): Promise<string> {
 	signal?.throwIfAborted();
 	const previousMessageCount = session.messages.length;
@@ -254,17 +292,14 @@ async function promptAgent(session: AgentSession, input: string, signal: AbortSi
 	return output ?? "";
 }
 
-export function verifySystemPrompt(
-	systemPrompt: string,
-	options: Pick<PiCodingAgentHarnessOptions, "name" | "expectedPiDocumentation">,
-): string {
-	if (options.expectedPiDocumentation === undefined) return systemPrompt;
+export function verifySystemPrompt(systemPrompt: string, spec: SystemPromptSpec | undefined): string {
+	if (!spec || spec.kind === "literal" || spec.kind === "transform") return systemPrompt;
 	if (!systemPrompt.includes("\n<rules>\n")) {
-		throw new Error(`Pi system prompt lost its rules in the ${options.name} eval variant.`);
+		throw new Error("Pi system prompt lost its rules.");
 	}
 	const hasDocumentation = systemPrompt.includes("\n<docs>\nPi documentation (read only");
-	if (hasDocumentation !== options.expectedPiDocumentation) {
-		throw new Error(`Pi system prompt does not match the ${options.name} eval variant.`);
+	if (hasDocumentation !== (spec.kind === "pi-default")) {
+		throw new Error(`Pi system prompt does not match ${spec.kind}.`);
 	}
 	return systemPrompt;
 }
@@ -279,6 +314,10 @@ async function runPiCodingAgent<TOutput extends JsonValue>(
 	signal?.throwIfAborted();
 	const selection = resolveModelSelection(options.model);
 	const hostAgentDir = getAgentDir();
+	const apiBase = options.apiBase ?? process.env.PI_EVAL_API_BASE?.trim();
+	const apiKey = options.apiKey ?? process.env.PI_EVAL_API_KEY?.trim() ?? "pi-eval";
+	const api = options.api ?? process.env.PI_EVAL_API ?? "openai-completions";
+	const providerId = selection.provider;
 	const sandboxIdentity = resolveSandboxIdentity();
 	const root = await mkdtemp(join(tmpdir(), "pi-eval-"));
 	const workspace = join(root, "workspace");
@@ -286,8 +325,9 @@ async function runPiCodingAgent<TOutput extends JsonValue>(
 	const agentDir = join(isolatedHome, ".pi", "agent");
 	const extensionFactories: InlineExtension[] = [];
 	let forcedSystemPrompt: string | undefined;
-	if (options.transformSystemPrompt) {
-		const transform = options.transformSystemPrompt;
+	const transformSystemPrompt = resolveSystemPromptTransform(options.systemPrompt);
+	if (transformSystemPrompt) {
+		const transform = transformSystemPrompt;
 		extensionFactories.push({
 			name: "eval-system-prompt-transform",
 			hidden: true,
@@ -313,9 +353,26 @@ async function runPiCodingAgent<TOutput extends JsonValue>(
 		const credentials = new InMemoryCredentialStore();
 		const storedCredential = readStoredCredential(selection.provider, authPath);
 		if (storedCredential) await credentials.modify(selection.provider, async () => storedCredential);
-		const modelRuntime = await ModelRuntime.create({ credentials });
 		await Promise.all([mkdir(workspace), mkdir(agentDir, { recursive: true })]);
+		if (apiBase) {
+			const modelsConfig = {
+				providers: {
+					[providerId]: {
+						baseUrl: apiBase,
+						api,
+						apiKey,
+						models: [{ id: selection.id }],
+					},
+				},
+			};
+			await writeFile(join(agentDir, "models.json"), JSON.stringify(modelsConfig, null, 2), { mode: 0o600 });
+		}
+		const modelRuntime = await ModelRuntime.create({
+			credentials,
+			...(apiBase ? { modelsPath: join(agentDir, "models.json") } : {}),
+		});
 		await seedWorkspace(workspace, options.workspaceFiles);
+		await seedAssets(workspace, options.workspaceAssets);
 		const model = modelRuntime.getModel(selection.provider, selection.id);
 		if (!model) throw new Error(`Eval model not found: ${selection.provider}/${selection.id}`);
 		const auth = await modelRuntime.getAuth(model);
@@ -336,6 +393,7 @@ async function runPiCodingAgent<TOutput extends JsonValue>(
 
 		const services = await createAgentSessionServices({
 			cwd: workspace,
+			agentDir,
 			modelRuntime,
 			resourceLoaderOptions: { extensionFactories },
 		});
@@ -347,9 +405,10 @@ async function runPiCodingAgent<TOutput extends JsonValue>(
 				services,
 				sessionManager,
 				model,
-				thinkingLevel: "off",
+				thinkingLevel: options.thinkingLevel ?? "off",
 				tools: options.tools,
 				noTools: options.noTools,
+				excludeTools: options.excludeTools,
 				customTools: options.customTools,
 			})
 		).session;
@@ -393,9 +452,10 @@ async function runPiCodingAgent<TOutput extends JsonValue>(
 			({ input: inputCost, output: outputCost, cacheRead, cacheWrite }) =>
 				inputCost > 0 || outputCost > 0 || cacheRead > 0 || cacheWrite > 0,
 		);
+		const systemPromptSha256 = createHash("sha256").update(systemPrompt).digest("hex");
 		runDiagnostics = {
 			events: toTranscriptEvents(session.messages),
-			metadata: { systemPromptSha256: createHash("sha256").update(systemPrompt).digest("hex") },
+			metadata: { systemPromptSha256 },
 			usage: {
 				provider: model.provider,
 				model: model.id,
@@ -410,7 +470,29 @@ async function runPiCodingAgent<TOutput extends JsonValue>(
 				},
 			},
 		};
-		verifySystemPrompt(systemPrompt, options);
+		setArtifact(
+			PI_TRACE_ARTIFACT,
+			JSON.stringify(
+				toTraceRecord(session.messages, {
+					systemPrompt,
+					metadata: {
+						profile: options.profile ?? options.name ?? "pi-coding-agent",
+						model: `${model.provider}/${model.id}`,
+						systemPromptSha256,
+						inputTokens: stats.tokens.input,
+						outputTokens: stats.tokens.output,
+						totalTokens: stats.tokens.total,
+						toolCalls: stats.toolCalls,
+						...(options.toolTier ? { toolTier: options.toolTier } : {}),
+						...(hasPricing ? { estimatedCostUsd: stats.cost } : {}),
+					},
+				}),
+			),
+		);
+		if (options.captureWorkspace) {
+			setArtifact(WORKSPACE_SNAPSHOT_ARTIFACT, JSON.stringify(await captureWorkspace(workspace)));
+		}
+		verifySystemPrompt(systemPrompt, options.systemPrompt);
 		const output =
 			"output" in options ? await options.output({ response, session, systemPrompt, agentDir }) : response;
 		result = { output, ...runDiagnostics };
@@ -481,14 +563,16 @@ export function createPiCodingAgentHarness<TOutput extends JsonValue>(
 	});
 }
 
-/** Documentation evals intentionally exclude shell and unrestricted network tools. */
-export const DOCUMENTATION_EVAL_TOOLS = ["read", "write", "edit", "grep", "find", "ls"] as const;
+export { DOCUMENTATION_EVAL_TOOLS } from "./config.ts";
 
-export function resolveDocumentationVariant(
-	value: string | undefined = process.env.PI_EVAL_VARIANT,
-): DocumentationVariant {
-	if (value === "without_docs" || value === "with_docs") return value;
-	throw new TypeError('PI_EVAL_VARIANT must be "without_docs" or "with_docs".');
+/** Maps a declarative prompt spec to the transform the harness applies, if any. */
+export function resolveSystemPromptTransform(
+	spec: SystemPromptSpec | undefined,
+): ((defaultPrompt: string) => string) | undefined {
+	if (!spec || spec.kind === "pi-default") return undefined;
+	if (spec.kind === "pi-default-minus-docs") return excludePiDocumentation;
+	if (spec.kind === "literal") return () => spec.text;
+	return spec.transform;
 }
 
 export function excludePiDocumentation(defaultPrompt: string): string {
@@ -505,13 +589,10 @@ export function excludePiDocumentation(defaultPrompt: string): string {
 	);
 }
 
-type DocumentationHarnessOptions = Omit<
-	PiCodingAgentHarnessOptions,
-	"name" | "transformSystemPrompt" | "expectedPiDocumentation"
->;
+type DocumentationHarnessOptions = Omit<PiCodingAgentHarnessOptions, "name" | "systemPrompt">;
 type DocumentationHarnessWithOutput<TOutput extends JsonValue> = Omit<
 	PiCodingAgentHarnessWithOutput<TOutput>,
-	"name" | "transformSystemPrompt" | "expectedPiDocumentation"
+	"name" | "systemPrompt"
 >;
 
 export function createPiDocumentationEvalHarness<TOutput extends JsonValue>(
@@ -526,12 +607,9 @@ export function createPiDocumentationEvalHarness<TOutput extends JsonValue>(
 	if (process.env.PI_EVAL_CONTAINER !== "1" || !resolveSandboxIdentity()) {
 		throw new Error("Documentation evals must run in the isolated container sandbox.");
 	}
-	const variant = resolveDocumentationVariant();
+	const { profile, environment } = activeProfile(activeSuite());
 	return createPiCodingAgentHarness({
+		...harnessOptionsForProfile(profile, environment),
 		...options,
-		name: variant,
-		tools: options.tools ?? [...DOCUMENTATION_EVAL_TOOLS],
-		...(variant === "without_docs" ? { transformSystemPrompt: excludePiDocumentation } : {}),
-		expectedPiDocumentation: variant === "with_docs",
 	});
 }

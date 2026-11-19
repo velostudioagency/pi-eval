@@ -1,23 +1,45 @@
+/**
+ * Docker runner: builds one image per environment, discovers eval cases, and
+ * runs one isolated container per planned task.
+ */
+
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { DocumentationVariant, EvalTask } from "./plan.ts";
+import type { EnvironmentSpec } from "./config.ts";
+import type { EvalTask } from "./plan.ts";
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = resolve(packageRoot, "../..");
 
-export type BuiltImages = Record<DocumentationVariant, { name: string; id: string }>;
+/** Base image of the Pi repository runtime when an environment does not override it. */
+export const DEFAULT_BASE_IMAGE = "node:24-slim";
 
-type DockerContext = {
+export type BuiltImage = {
+	environment: string;
+	name: string;
+	id: string;
+	includeDocs: boolean;
+	baseImage: string;
+};
+
+/** Images keyed by environment id, with "default" for profiles without an environment. */
+export type BuiltImages = Record<string, BuiltImage>;
+
+export type DockerContext = {
 	images: BuiltImages;
 	artifactDirectory: string;
 	authPath: string;
 	provider: string;
 	model: string;
-	runsPerVariant: number;
+	runsPerProfile: number;
+	suiteId: string;
+	apiBase?: string;
+	apiKey?: string;
+	api?: string;
 };
 
 function execute(command: string, args: readonly string[], capture = false): { status: number; stdout: string } {
@@ -35,27 +57,38 @@ function requireSuccess(command: string, args: readonly string[]): void {
 	if (status !== 0) throw new Error(`${command} exited with status ${status}.`);
 }
 
-export function buildImages(): BuiltImages {
+export function environmentKey(environment: EnvironmentSpec | undefined): string {
+	return environment?.id ?? "default";
+}
+
+function imageSlug(key: string): string {
+	return key.replaceAll(/[^a-z0-9_.-]+/gi, "-").toLowerCase();
+}
+
+export function buildImages(environments: readonly (EnvironmentSpec | undefined)[]): BuiltImages {
 	const prefix = `pi-evals-${createHash("sha256").update(repositoryRoot).digest("hex").slice(0, 12)}`;
-	const images = {
-		without_docs: { name: `${prefix}-without-docs:local`, id: "" },
-		with_docs: { name: `${prefix}-with-docs:local`, id: "" },
-	} satisfies BuiltImages;
-	for (const variant of ["without_docs", "with_docs"] as const) {
+	const images: BuiltImages = {};
+	for (const environment of environments) {
+		const key = environmentKey(environment);
+		if (images[key]) continue;
+		const includeDocs = environment?.includeDocs ?? true;
+		const baseImage = environment?.baseImage ?? DEFAULT_BASE_IMAGE;
+		const name = `${prefix}-${imageSlug(key)}:local`;
 		requireSuccess("docker", [
 			"build",
 			"--target",
-			variant,
+			includeDocs ? "docs" : "no-docs",
 			"--tag",
-			images[variant].name,
+			name,
+			"--build-arg",
+			`BASE_IMAGE=${baseImage}`,
 			"--file",
 			join(packageRoot, "docker", "Dockerfile"),
 			repositoryRoot,
 		]);
-		const inspected = execute("docker", ["image", "inspect", "--format", "{{.Id}}", images[variant].name], true);
-		if (inspected.status !== 0 || !inspected.stdout.trim())
-			throw new Error(`Cannot inspect ${images[variant].name}.`);
-		images[variant].id = inspected.stdout.trim();
+		const inspected = execute("docker", ["image", "inspect", "--format", "{{.Id}}", name], true);
+		if (inspected.status !== 0 || !inspected.stdout.trim()) throw new Error(`Cannot inspect ${name}.`);
+		images[key] = { environment: key, name, id: inspected.stdout.trim(), includeDocs, baseImage };
 	}
 	return images;
 }
@@ -90,7 +123,8 @@ export function requireEvalAuthFile(provider: string): string {
 
 function dockerArgs(
 	context: DockerContext,
-	variant: DocumentationVariant,
+	image: BuiltImage,
+	profile: string,
 	outputDirectory: string,
 	entrypointArgs: readonly string[],
 ): string[] {
@@ -106,9 +140,15 @@ function dockerArgs(
 		"--mount",
 		`type=bind,source=${outputDirectory},target=/artifacts`,
 		...environment("PI_EVAL_ARTIFACT_DIR", "/artifacts"),
-		...environment("PI_EVAL_RUNS_PER_VARIANT", String(context.runsPerVariant)),
+		...environment("PI_EVAL_RUNS_PER_VARIANT", String(context.runsPerProfile)),
 		...environment("PI_EVAL_SANDBOX_UID", "65532"),
 		...environment("PI_EVAL_SANDBOX_GID", "65532"),
+		...environment("PI_EVAL_SUITE", context.suiteId),
+		...environment("PI_EVAL_PROFILE", profile),
+		...environment("PI_EVAL_DOCS", image.includeDocs ? "1" : "0"),
+		...(context.apiBase ? environment("PI_EVAL_API_BASE", context.apiBase) : []),
+		...(context.apiKey ? environment("PI_EVAL_API_KEY", context.apiKey) : []),
+		...(context.api ? environment("PI_EVAL_API", context.api) : []),
 		...environment("PI_PROVIDER", context.provider),
 		...environment("PI_MODEL", context.model),
 	];
@@ -119,7 +159,7 @@ function dockerArgs(
 		);
 	}
 	args.push("--mount", `type=bind,source=${context.authPath},target=/run/pi-eval-secrets/auth.json,readonly`);
-	args.push(context.images[variant].name, ...entrypointArgs);
+	args.push(image.name, ...entrypointArgs);
 	return args;
 }
 
@@ -129,42 +169,57 @@ export function createDockerContext(
 	authPath: string,
 	provider: string,
 	model: string,
-	runsPerVariant: number,
+	runsPerProfile: number,
+	suiteId: string,
+	endpoint: { apiBase?: string; apiKey?: string; api?: string } = {},
 ): DockerContext {
-	return { images, artifactDirectory, authPath, provider, model, runsPerVariant };
+	return { images, artifactDirectory, authPath, provider, model, runsPerProfile, suiteId, ...endpoint };
 }
 
 export function discoverCases(
 	context: DockerContext,
-	variant: DocumentationVariant,
+	environment: EnvironmentSpec | undefined,
+	profile: string,
+	project: string,
 	files: readonly string[],
 	vitestArgs: readonly string[],
 ): string {
-	const outputDirectory = join(context.artifactDirectory, "discovery", variant);
-	const args = dockerArgs(context, variant, outputDirectory, [
+	const key = environmentKey(environment);
+	const image = context.images[key];
+	if (!image) throw new Error(`No image was built for environment "${key}".`);
+	const outputDirectory = join(context.artifactDirectory, "discovery", key);
+	const args = dockerArgs(context, image, profile, outputDirectory, [
 		"--discover",
 		"--project",
-		"docs",
+		project,
 		...files,
 		...vitestArgs,
 	]);
 	const { status } = execute("docker", args);
-	if (status !== 0) throw new Error(`${variant} eval discovery failed.`);
+	if (status !== 0) throw new Error(`${key} eval discovery failed.`);
 	return join(outputDirectory, "discovered-tests.json");
 }
 
-function taskDirectoryName(task: EvalTask): string {
-	const identity = JSON.stringify([task.evalSet, task.caseId, task.variant, task.model, task.runNumber]);
+export function taskDirectoryName(task: EvalTask): string {
+	const identity = JSON.stringify([task.evalSet, task.caseId, task.profile, task.model, task.runNumber]);
 	return createHash("sha256").update(identity).digest("hex");
 }
 
-export function runTask(context: DockerContext, task: EvalTask): string | undefined {
+export function runTask(
+	context: DockerContext,
+	task: EvalTask,
+	environment: EnvironmentSpec | undefined,
+	project: string,
+): string | undefined {
+	const key = environmentKey(environment);
+	const image = context.images[key];
+	if (!image) throw new Error(`No image was built for environment "${key}".`);
 	const outputDirectory = join(context.artifactDirectory, "tasks", taskDirectoryName(task));
 	const testName = `${task.evalSet} ${task.caseId}`;
 	const exactName = `^${testName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`;
-	const args = dockerArgs(context, task.variant, outputDirectory, [
+	const args = dockerArgs(context, image, task.profile, outputDirectory, [
 		"--project",
-		"docs",
+		project,
 		task.file,
 		"--testNamePattern",
 		exactName,

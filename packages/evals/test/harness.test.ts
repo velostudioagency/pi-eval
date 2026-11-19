@@ -7,8 +7,8 @@ import {
 	createPiDocumentationEvalHarness,
 	DOCUMENTATION_EVAL_TOOLS,
 	excludePiDocumentation,
-	resolveDocumentationVariant,
 	resolveModelSelection,
+	resolveSystemPromptTransform,
 	verifySystemPrompt,
 } from "../src/harness.ts";
 
@@ -39,7 +39,7 @@ describe("resolveModelSelection", () => {
 
 describe("isolateProcessEnvironment", () => {
 	it("removes runner metadata and restores the process environment", () => {
-		vi.stubEnv("PI_EVAL_VARIANT", "with_docs");
+		vi.stubEnv("PI_EVAL_PROFILE", "with_docs");
 		vi.stubEnv("PI_EVAL_ARTIFACT_DIR", "/tmp/artifacts");
 		const oldHome = process.env.HOME;
 		try {
@@ -47,26 +47,27 @@ describe("isolateProcessEnvironment", () => {
 			try {
 				expect(homedir()).toBe("/tmp/eval-home");
 				expect(process.env.PI_CODING_AGENT_DIR).toBe("/tmp/eval-agent");
-				expect(process.env.PI_EVAL_VARIANT).toBeUndefined();
+				expect(process.env.PI_EVAL_PROFILE).toBeUndefined();
 				expect(process.env.PI_EVAL_ARTIFACT_DIR).toBeUndefined();
 			} finally {
 				restore();
 			}
 			expect(process.env.HOME).toBe(oldHome);
-			expect(process.env.PI_EVAL_VARIANT).toBe("with_docs");
+			expect(process.env.PI_EVAL_PROFILE).toBe("with_docs");
 		} finally {
 			vi.unstubAllEnvs();
 		}
 	});
 });
 
-describe("documentation variant", () => {
-	it.each(["without_docs", "with_docs"] as const)("accepts %s", (variant) => {
-		expect(resolveDocumentationVariant(variant)).toBe(variant);
-	});
-
-	it.each([undefined, "", "other"])("rejects invalid variant %s", (variant) => {
-		expect(() => resolveDocumentationVariant(variant)).toThrow("PI_EVAL_VARIANT");
+describe("system prompt profile", () => {
+	it("maps prompt specs to the transform the harness applies", () => {
+		expect(resolveSystemPromptTransform({ kind: "pi-default" })).toBeUndefined();
+		expect(resolveSystemPromptTransform(undefined)).toBeUndefined();
+		expect(resolveSystemPromptTransform({ kind: "pi-default-minus-docs" })).toBe(excludePiDocumentation);
+		expect(resolveSystemPromptTransform({ kind: "literal", text: "directions" })?.("default")).toBe("directions");
+		const custom = (prompt: string) => `custom:${prompt}`;
+		expect(resolveSystemPromptTransform({ kind: "transform", id: "c", transform: custom })).toBe(custom);
 	});
 
 	it("strips only the documentation routing section from the default Pi prompt", () => {
@@ -97,10 +98,10 @@ describe("documentation variant", () => {
 		});
 		const stripped = excludePiDocumentation(prompt);
 
-		expect(verifySystemPrompt(stripped, { name: "without_docs", expectedPiDocumentation: false })).toBe(stripped);
-		expect(() => verifySystemPrompt(prompt, { name: "without_docs", expectedPiDocumentation: false })).toThrow(
-			"does not match",
-		);
+		expect(verifySystemPrompt(stripped, { kind: "pi-default-minus-docs" })).toBe(stripped);
+		expect(() => verifySystemPrompt(prompt, { kind: "pi-default-minus-docs" })).toThrow("does not match");
+		expect(verifySystemPrompt(prompt, { kind: "pi-default" })).toBe(prompt);
+		expect(verifySystemPrompt(prompt, { kind: "literal", text: "custom" })).toBe(prompt);
 	});
 
 	it("fails closed when prompt markers are missing", () => {

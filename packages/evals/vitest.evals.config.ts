@@ -22,9 +22,19 @@ const evalConfig = defineConfig({
 				{
 					extends: true,
 					test: {
+						name: "suite",
+						include: ["evals/suite.eval.ts"],
+						sequence: { concurrent: false },
+						testTimeout: 300_000,
+						hookTimeout: 300_000,
+					},
+				},
+				{
+					extends: true,
+					test: {
 						name: "host",
 						include: ["evals/**/*.eval.ts"],
-						exclude: ["evals/**/*.docs.eval.ts", "evals/documentation-audit.eval.ts"],
+						exclude: ["evals/**/*.docs.eval.ts", "evals/suite.eval.ts", "evals/documentation-audit.eval.ts"],
 						sequence: { concurrent: false },
 						testTimeout: 300_000,
 						hookTimeout: 300_000,

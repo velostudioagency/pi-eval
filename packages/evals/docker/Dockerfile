@@ -1,4 +1,5 @@
-FROM node:24-slim AS builder
+ARG BASE_IMAGE=node:24-slim
+FROM ${BASE_IMAGE} AS builder
 WORKDIR /work
 # Build against an ephemeral repository mount. Only outputs staged under
 # /opt/evaluator persist; node_modules and dist created in /repo are discarded.
@@ -9,16 +10,16 @@ RUN --mount=type=bind,source=.,target=/repo,rw \
     && npm run build:offline \
     && node packages/evals/docker/install-runtime.mjs /opt/evaluator
 
-# Both variants use the same installed runtime. The control removes only the
-# coding-agent documentation whose effect the experiment measures.
-FROM builder AS without-docs-install
+# The no-docs environment removes only the coding-agent documentation whose
+# effect the experiment measures.
+FROM builder AS no-docs-install
 RUN rm -rf \
     /opt/evaluator/install/node_modules/@earendil-works/pi-coding-agent/README.md \
     /opt/evaluator/install/node_modules/@earendil-works/pi-coding-agent/CHANGELOG.md \
     /opt/evaluator/install/node_modules/@earendil-works/pi-coding-agent/docs \
     /opt/evaluator/install/node_modules/@earendil-works/pi-coding-agent/examples
 
-FROM node:24-slim AS evaluator
+FROM ${BASE_IMAGE} AS evaluator
 COPY --from=builder /opt/evaluator/root /repo
 WORKDIR /repo/packages/evals
 # Vitest starts as root so it can load evaluator code. Before prompting the
@@ -35,10 +36,10 @@ RUN chmod -R go-rwx \
     && chmod 0700 /run/pi-eval-secrets
 ENTRYPOINT ["node", "--experimental-strip-types", "docker/entrypoint.ts"]
 
-FROM evaluator AS without_docs
-COPY --from=without-docs-install /opt/evaluator/install/node_modules /repo/node_modules
-ENV PI_EVAL_VARIANT=without_docs
+FROM evaluator AS no-docs
+COPY --from=no-docs-install /opt/evaluator/install/node_modules /repo/node_modules
+ENV PI_EVAL_DOCS=0
 
-FROM evaluator AS with_docs
+FROM evaluator AS docs
 COPY --from=builder /opt/evaluator/install/node_modules /repo/node_modules
-ENV PI_EVAL_VARIANT=with_docs
+ENV PI_EVAL_DOCS=1

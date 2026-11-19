@@ -5,7 +5,8 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const variant = process.env.PI_EVAL_VARIANT;
+const profile = process.env.PI_EVAL_PROFILE;
+const includeDocs = process.env.PI_EVAL_DOCS !== "0";
 
 function parseId(name: string): number {
 	const value = Number(process.env[name]);
@@ -45,13 +46,13 @@ function assertWorkspace(): void {
 			}
 		}
 	}
-	if (variant === "without_docs") {
+	if (!profile) throw new Error("Eval image has no PI_EVAL_PROFILE.");
+	if (!includeDocs) {
 		for (const name of ["README.md", "CHANGELOG.md", "docs", "examples"]) {
-			if (existsSync(join(codingAgentDir, name))) throw new Error(`without_docs contains coding-agent ${name}.`);
+			if (existsSync(join(codingAgentDir, name))) throw new Error(`no-docs contains coding-agent ${name}.`);
 		}
 		return;
 	}
-	if (variant !== "with_docs") throw new Error("Eval image has no valid PI_EVAL_VARIANT.");
 	for (const path of [
 		join(codingAgentDir, "README.md"),
 		join(codingAgentDir, "CHANGELOG.md"),
