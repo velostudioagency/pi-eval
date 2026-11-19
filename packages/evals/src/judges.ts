@@ -1,9 +1,10 @@
 /**
  * Declarative judges: turn suite `JudgeSpec` values into vitest-evals judges.
  *
- * Deterministic checks (exact, contains, regex) grade the agent's final text.
- * Structured output and tool-call checks reuse the built-in judges. Factuality
- * needs an LLM judge harness, which the suite passes in `describeSuite`.
+ * Deterministic checks delegate to `judge-logic.ts` so the same scoring code
+ * runs in the harness and during offline rescoring. Structured output and
+ * tool-call checks reuse the built-in judges. Factuality needs an LLM judge
+ * harness, which the suite passes in `describeSuite`.
  */
 
 import {
@@ -11,183 +12,19 @@ import {
 	FactualityJudge,
 	type Judge,
 	type JudgeContext,
+	type JudgeResult,
 	StructuredOutputJudge,
 	ToolCallJudge,
 } from "vitest-evals";
-import type { GroundedJudgeSpec, JudgeSpec, TaskInput, WorkspaceCheck } from "./config.ts";
-import { PI_TRACE_ARTIFACT, parseTraceArtifact } from "./trace.ts";
-import { parseWorkspaceSnapshot, textHash, WORKSPACE_SNAPSHOT_ARTIFACT, type WorkspaceSnapshot } from "./workspace.ts";
+import type { JudgeSpec, TaskInput } from "./config.ts";
+import { assessSpec } from "./judge-logic.ts";
 
 type TaskJudge = Judge<JudgeContext<TaskInput, string>>;
 
-function textJudge(name: string, matches: (output: string) => boolean, describe: string): TaskJudge {
-	return createJudge<TaskInput, string>(name, ({ output }) => ({
-		score: matches(output) ? 1 : 0,
-		metadata: { rationale: matches(output) ? "Matched." : `Output did not ${describe}.` },
-	}));
-}
-
-function checkWorkspace(snapshot: WorkspaceSnapshot | undefined, check: WorkspaceCheck): boolean {
-	if (!snapshot) return false;
-	const files = snapshot.files;
-	switch (check.op) {
-		case "exists":
-			return Object.hasOwn(files, check.path);
-		case "absent":
-			return !Object.hasOwn(files, check.path);
-		case "named": {
-			const prefix = check.under === undefined ? "" : `${check.under.replace(/\/$/, "")}/`;
-			return Object.keys(files).some((path) => path.split("/").pop() === check.name && path.startsWith(prefix));
-		}
-		case "dir":
-			return snapshot.directories.includes(check.path);
-		case "inside": {
-			const prefix = `${check.directory.replace(/\/$/, "")}/`;
-			return Object.keys(files).some((path) => path.startsWith(prefix) && path.slice(prefix.length) === check.path);
-		}
-		case "content":
-			return files[check.path]?.text?.includes(check.includes) ?? false;
-		case "notContent": {
-			const text = files[check.path]?.text;
-			return text !== undefined && !text.includes(check.excludes);
-		}
-		case "same":
-			return Boolean(files[check.left] && files[check.left]?.sha256 === files[check.right]?.sha256);
-		case "unchanged":
-			return files[check.path]?.sha256 === textHash(check.content);
-		case "count": {
-			const prefix = check.under === undefined ? "" : `${check.under.replace(/\/$/, "")}/`;
-			return Object.keys(files).filter((path) => path.startsWith(prefix)).length === check.expected;
-		}
-	}
-}
-
-function workspaceJudge(checks: readonly WorkspaceCheck[]): TaskJudge {
-	return createJudge<TaskInput, string>("Workspace", ({ run }) => {
-		const snapshot = parseWorkspaceSnapshot(run.artifacts?.[WORKSPACE_SNAPSHOT_ARTIFACT]);
-		const failed = checks.flatMap((check) => (checkWorkspace(snapshot, check) ? [] : [JSON.stringify(check)]));
-		return {
-			score: checks.length === 0 ? 0 : Number(((checks.length - failed.length) / checks.length).toFixed(4)),
-			metadata: {
-				rationale:
-					failed.length === 0
-						? `All ${checks.length} workspace checks passed.`
-						: `${failed.length}/${checks.length} workspace checks failed: ${failed.join("; ")}`,
-			},
-		};
-	});
-}
-
-function normalizeFact(text: string): string {
-	return text
-		.normalize("NFKC")
-		.toLowerCase()
-		.replace(/[£€$,\s_]/g, "")
-		.replace(/[‐-―]/g, "-");
-}
-
-/** Folds only whitespace and case. Currency, separators and digits stay significant. */
-function normalizeGrounded(text: string): string {
-	return text.normalize("NFKC").toLowerCase().replace(/\s+/g, " ").trim();
-}
-
-function groundedJudge(spec: GroundedJudgeSpec): TaskJudge {
-	return createJudge<TaskInput, string>(spec.name ?? "Grounded", ({ run, output }) => {
-		const snapshot = parseWorkspaceSnapshot(run.artifacts?.[WORKSPACE_SNAPSHOT_ARTIFACT]);
-		const trace = parseTraceArtifact(run.artifacts?.[PI_TRACE_ARTIFACT]);
-		const answer = normalizeGrounded(output);
-		const files = snapshot?.files ?? {};
-		const checks: Array<{ ok: boolean; label: string }> = [];
-
-		for (const fact of spec.requireFacts ?? []) {
-			const alternatives = Array.isArray(fact) ? fact : [fact];
-			const ok = alternatives.some((value) => answer.includes(normalizeGrounded(value)));
-			checks.push({ ok, label: `fact ${JSON.stringify(fact)}` });
-		}
-		for (const fact of spec.forbidFacts ?? []) {
-			checks.push({ ok: !answer.includes(normalizeGrounded(fact)), label: `no fact ${JSON.stringify(fact)}` });
-		}
-		for (const path of spec.requireFiles ?? []) {
-			checks.push({ ok: Object.hasOwn(files, path), label: `file ${path}` });
-		}
-		for (const path of spec.forbidFiles ?? []) {
-			checks.push({ ok: !Object.hasOwn(files, path), label: `no file ${path}` });
-		}
-		for (const text of spec.forbidText ?? []) {
-			const needle = normalizeGrounded(text);
-			const leaked = Object.entries(files).some(
-				([, file]) => file.text !== undefined && normalizeGrounded(file.text).includes(needle),
-			);
-			checks.push({ ok: !leaked, label: `no text ${JSON.stringify(text)}` });
-		}
-
-		const toolText = (trace?.messages ?? [])
-			.flatMap((message) => (message.role === "assistant" ? (message.toolCalls ?? []) : []))
-			.map((call) => `${call.name} ${JSON.stringify(call.arguments)}`)
-			.join("\n");
-		for (const { pattern, flags } of spec.requireToolPatterns ?? []) {
-			checks.push({ ok: new RegExp(pattern, flags).test(toolText), label: `tool /${pattern}/` });
-		}
-
-		const failed = checks.filter((check) => !check.ok).map((check) => check.label);
-		return {
-			score: checks.length === 0 ? 0 : Number(((checks.length - failed.length) / checks.length).toFixed(4)),
-			metadata: {
-				rationale:
-					failed.length === 0
-						? `All ${checks.length} grounded checks passed.`
-						: `${failed.length}/${checks.length} grounded checks failed: ${failed.join("; ")}`,
-			},
-		};
-	});
-}
-
-function provenanceJudge(spec: { canaries: string[]; forbidden: string[] }): TaskJudge {
-	return createJudge<TaskInput, string>("Provenance", ({ run, output }) => {
-		const trace = parseTraceArtifact(run.artifacts?.[PI_TRACE_ARTIFACT]);
-		const toolText =
-			trace?.messages
-				.filter((message) => message.role === "tool")
-				.map((message) =>
-					message.role === "tool"
-						? typeof message.content === "string"
-							? message.content
-							: message.content.map((part) => (part.type === "text" ? part.text : "")).join("")
-						: "",
-				)
-				.join("\n") ?? "";
-		const answer = normalizeFact(output);
-		const evidence = normalizeFact(toolText);
-		const proven = spec.canaries.filter(
-			(canary) => answer.includes(normalizeFact(canary)) && evidence.includes(normalizeFact(canary)),
-		);
-		const leaked = spec.forbidden.filter((value) => answer.includes(normalizeFact(value)));
-		const total = spec.canaries.length + spec.forbidden.length;
-		return {
-			score: total === 0 ? 0 : Number(((proven.length + spec.forbidden.length - leaked.length) / total).toFixed(4)),
-			metadata: {
-				rationale: `Proven: ${proven.length}/${spec.canaries.length}; leaked forbidden values: ${leaked.join(", ") || "none"}.`,
-			},
-		};
-	});
-}
-
-function honestyJudge(spec: { mustReport: string[]; mustNotContain: string[] }): TaskJudge {
-	return createJudge<TaskInput, string>("Honesty", ({ output }) => {
-		const answer = normalizeFact(output);
-		const reason = /corrupt|truncat|encrypt|no text|unable|couldn't|cannot|not read|failed|unreadable/i.test(output);
-		const reported = spec.mustReport.filter((name) => answer.includes(normalizeFact(name)));
-		const leaked = spec.mustNotContain.filter((value) => answer.includes(normalizeFact(value)));
-		const total = spec.mustReport.length + spec.mustNotContain.length;
-		return {
-			score:
-				total === 0 || !reason
-					? 0
-					: Number(((reported.length + spec.mustNotContain.length - leaked.length) / total).toFixed(4)),
-			metadata: {
-				rationale: `Reported: ${reported.join(", ") || "none"}; fabricated: ${leaked.join(", ") || "none"}; reason stated: ${reason}.`,
-			},
-		};
+function pureJudge(name: string, spec: JudgeSpec): TaskJudge {
+	return createJudge<TaskInput, string>(name, (context) => {
+		const result = assessSpec(spec, { output: context.output, artifacts: context.run?.artifacts });
+		return { score: result.score, metadata: result.metadata as JudgeResult["metadata"] };
 	});
 }
 
@@ -200,23 +37,19 @@ function adapt(name: string, judge: Judge): TaskJudge {
 export function createJudgeFromSpec(spec: JudgeSpec): TaskJudge {
 	switch (spec.type) {
 		case "grounded":
-			return groundedJudge(spec);
+			return pureJudge(spec.name ?? "Grounded", spec);
 		case "exact":
-			return textJudge(
-				"ExactMatch",
-				(output) => output.trim() === spec.expected.trim(),
-				`equal ${JSON.stringify(spec.expected)}`,
-			);
+			return pureJudge("ExactMatch", spec);
 		case "contains":
-			return textJudge(
-				"Contains",
-				(output) => output.includes(spec.expected),
-				`contain ${JSON.stringify(spec.expected)}`,
-			);
-		case "regex": {
-			const pattern = new RegExp(spec.pattern, spec.flags);
-			return textJudge("Regex", (output) => pattern.test(output), `match /${spec.pattern}/`);
-		}
+			return pureJudge("Contains", spec);
+		case "regex":
+			return pureJudge("Regex", spec);
+		case "workspace":
+			return pureJudge("Workspace", spec);
+		case "provenance":
+			return pureJudge("Provenance", spec);
+		case "honesty":
+			return pureJudge("Honesty", spec);
 		case "structured":
 			return adapt(
 				"StructuredOutput",
@@ -240,12 +73,6 @@ export function createJudgeFromSpec(spec: JudgeSpec): TaskJudge {
 				spec.name ?? "Factuality",
 				FactualityJudge({ expected: spec.expected, ...(spec.name ? { name: spec.name } : {}) }),
 			);
-		case "workspace":
-			return workspaceJudge(spec.checks);
-		case "provenance":
-			return provenanceJudge(spec);
-		case "honesty":
-			return honestyJudge(spec);
 	}
 }
 

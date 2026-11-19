@@ -18,6 +18,7 @@ import {
 } from "./config.ts";
 import { exportTraceRecords } from "./dataset.ts";
 import { buildImages, createDockerContext, discoverCases, environmentKey, requireEvalAuthFile } from "./docker.ts";
+import { writeInspectLog } from "./inspect-log.ts";
 import { createTaskPlan, type DiscoveredEvalCase, parseDiscoveredCases } from "./plan.ts";
 import { suiteById } from "./profile-env.ts";
 import { type EvalObservation, formatEvalComparisonReport, summarizeEvalObservations } from "./report.ts";
@@ -422,6 +423,12 @@ const report = summarizeEvalObservations(
 const reportText = formatEvalComparisonReport(report);
 await writeFile(resolve(artifactDirectory, "report.json"), `${JSON.stringify(report, null, 2)}\n`);
 await writeFile(resolve(artifactDirectory, "report.txt"), `${reportText}\n`);
+await writeInspectLog(resolve(artifactDirectory, "inspect-log.json"), {
+	protocol: { ...protocol, protocolDigest },
+	observations,
+	traces,
+	report,
+});
 
 const exportSpecs: ExportSpec[] = [...(suite.exports ?? []), ...cli.exports];
 for (const spec of exportSpecs) {

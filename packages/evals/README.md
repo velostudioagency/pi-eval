@@ -249,11 +249,25 @@ Each invocation creates an ignored `.eval/<timestamp>_<id>/` directory:
 - `expected-runs.json`: the complete planned cohort
 - `observations.jsonl`: normalized outcomes and telemetry
 - `traces.jsonl`: canonical traces
+- `judge-inputs/*.json`: exact judge artifacts for each run, saved for offline
+  rescoring
+- `inspect-log.json`: Inspect-AI-compatible JSON evaluation log, readable by
+  `inspect view` and `inspect log dump`
 - `dataset.*.jsonl`: exported training files
 - `tasks/*/vitest.json`: native JSON for each isolated arm
 - `<profile>/sessions/*/session.jsonl`: native Pi sessions
 - `report.json` / `report.txt`: pass rates per profile, lift when a
   control/treatment pair is declared, operational totals, blocked pairs
+
+To change scorers without re-running the model or agent:
+
+```bash
+npm run eval:rescore -w packages/evals -- .eval/<timestamp>_<id>
+```
+
+Rescoring reads `judge-inputs/`, re-applies the suite's judges to the saved
+transcripts and workspaces, and rewrites `observations.jsonl`, `report.json`,
+`report.txt`, and `inspect-log.json`. No provider calls are made.
 
 A pair contributes to pass-rate lift only when both profiles produce exactly
 one score. Blocked pairs withhold headline rates and make the process exit

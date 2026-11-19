@@ -12,6 +12,7 @@ import { readReportWorkspace, readVitestJsonReportFile } from "@vitest-evals/cor
 import type { SuiteComparison } from "./config.ts";
 import type { EvalTask } from "./plan.ts";
 import { PI_TRACE_ARTIFACT, parseTraceArtifact, type TraceRecord } from "./trace.ts";
+import { WORKSPACE_SNAPSHOT_ARTIFACT } from "./workspace.ts";
 
 export const PI_SESSION_SNAPSHOT_ARTIFACT = "piSessionJsonl";
 
@@ -179,6 +180,29 @@ async function persistSession(caseResult: ReportCase, task: EvalTask, artifactDi
 	await writeFile(join(directory, "session.jsonl"), session, { mode: 0o600 });
 }
 
+/**
+ * Persist the exact artifacts the judges saw. Keeping these with the run makes
+ * offline rescoring possible without replaying the agent or the model.
+ */
+export async function persistJudgeInputs(
+	caseResult: ReportCase,
+	task: EvalTask,
+	artifactDirectory: string,
+): Promise<void> {
+	const artifacts = caseResult.harness?.run?.artifacts ?? {};
+	const saved: Record<string, string> = {};
+	for (const name of [PI_TRACE_ARTIFACT, WORKSPACE_SNAPSHOT_ARTIFACT]) {
+		const value = artifacts[name];
+		if (typeof value === "string") saved[name] = value;
+	}
+	if (Object.keys(saved).length === 0) return;
+	const identity = JSON.stringify([task.evalSet, task.caseId, task.profile, task.model, task.runNumber]);
+	const directory = join(artifactDirectory, "judge-inputs");
+	await mkdir(directory, { recursive: true, mode: 0o700 });
+	const file = join(directory, `${createHash("sha256").update(identity).digest("hex")}.json`);
+	await writeFile(file, `${JSON.stringify({ ...taskIdentity(task), artifacts: saved }, null, 2)}\n`, { mode: 0o600 });
+}
+
 export async function readTaskResult(
 	task: EvalTask,
 	reportPath: string,
@@ -207,6 +231,7 @@ export async function readTaskResult(
 	const run = caseResult.harness?.run;
 	if (!run) return { observation: { ...identity, outcome: "errored" } };
 	await persistSession(caseResult, task, artifactDirectory);
+	await persistJudgeInputs(caseResult, task, artifactDirectory);
 	const actualModel = run.usage.provider && run.usage.model ? `${run.usage.provider}/${run.usage.model}` : undefined;
 	if (actualModel !== task.model) return { observation: { ...identity, outcome: "errored" } };
 	let metrics: EvalMetrics = {};
