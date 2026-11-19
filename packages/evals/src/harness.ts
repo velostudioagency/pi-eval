@@ -34,9 +34,10 @@ import {
 	toJsonValue,
 	type UsageSummary,
 } from "vitest-evals/harness";
-import type { SystemPromptSpec, TaskInput } from "./config.ts";
+import type { SystemPromptSpec, TaskInput, ToolSpec } from "./config.ts";
 import { activeProfile, activeSuite, harnessOptionsForProfile } from "./profile-env.ts";
 import { PI_SESSION_SNAPSHOT_ARTIFACT } from "./report.ts";
+import { inspectToolDefinitions } from "./tools/inspect-tools.ts";
 import { PI_TRACE_ARTIFACT, toTraceRecord } from "./trace.ts";
 import { captureWorkspace, WORKSPACE_SNAPSHOT_ARTIFACT } from "./workspace.ts";
 
@@ -61,7 +62,8 @@ export type PiCodingAgentHarnessOptions = {
 	profile?: string;
 	model?: PiCodingAgentModelSelection;
 	noTools?: CreateAgentSessionOptions["noTools"];
-	tools?: CreateAgentSessionOptions["tools"];
+	/** Tool selection and custom tool definitions passed through to the agent session. */
+	tools?: CreateAgentSessionOptions["tools"] | ToolSpec;
 	excludeTools?: CreateAgentSessionOptions["excludeTools"];
 	customTools?: CreateAgentSessionOptions["customTools"];
 	thinkingLevel?: CreateAgentSessionOptions["thinkingLevel"];
@@ -402,17 +404,23 @@ async function runPiCodingAgent<TOutput extends JsonValue>(
 		signal?.throwIfAborted();
 		sessionManager = SessionManager.create(workspace, join(root, "sessions"));
 		setArtifact("runId", sessionManager.getSessionId());
+		const requestedTools = options.tools;
+		const inspectTools =
+			requestedTools !== undefined && !Array.isArray(requestedTools) && requestedTools.style === "inspect"
+				? inspectToolDefinitions(workspace)
+				: [];
 		session = (
 			await createAgentSessionFromServices({
 				services,
 				sessionManager,
 				model,
 				thinkingLevel: options.thinkingLevel ?? "off",
-				tools: options.tools,
+				tools: Array.isArray(requestedTools) ? requestedTools : requestedTools?.tools,
 				noTools: options.noTools,
 				excludeTools: options.excludeTools,
 				customTools: [
 					...(options.customTools ?? []),
+					...inspectTools,
 					// ToolDefinition is invariant in its render callback; the concrete read
 					// definition is safe here but cannot be expressed in the public type.
 					createReadToolDefinition(workspace, { refuseBinaryFiles: true }) as unknown as ToolDefinition,

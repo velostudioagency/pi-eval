@@ -9,6 +9,7 @@
 
 import { type ChatTemplateSpec, type ExportSpec, resolveChatTemplate } from "./config.ts";
 import type { TraceContentPart, TraceRecord, TraceToolCall } from "./trace.ts";
+import { toAtifRecord } from "./trace-formats/atif.ts";
 
 export type DatasetExport = { format: ExportSpec["format"]; file: string; lines: string[]; skipped: number };
 
@@ -146,6 +147,7 @@ export function exportTraceRecord(trace: TraceRecord, spec: ExportSpec): JsonRec
 	if (spec.format === "messages") return toMessagesRecord(trace, spec);
 	if (spec.format === "sharegpt") return toShareGptRecord(trace, spec);
 	if (spec.format === "rendered") return toRenderedRecord(trace, spec);
+	if (spec.format === "atif") return toAtifRecord(trace, spec);
 	return toAlpacaRecord(trace);
 }
 

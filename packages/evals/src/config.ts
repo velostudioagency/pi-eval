@@ -23,13 +23,15 @@ export type SystemPromptSpec =
 /** Tool selection and custom tool definitions passed through to the agent session. */
 export type ToolSpec = Pick<CreateAgentSessionOptions, "tools" | "noTools" | "excludeTools"> & {
 	customTools?: ToolDefinition[];
+	/** "inspect" appends Inspect-compatible `python`/`text_editor` tools to the session. */
+	style?: "pi" | "inspect";
 };
 
 /** OS an environment claims. Docker backends only support "linux". */
 export type HostOs = "linux" | "windows" | "macos";
 
 /** Where the agent process runs. */
-export type RuntimeBackend = "docker" | "host" | "remote";
+export type RuntimeBackend = "docker" | "host" | "remote" | "local";
 
 /**
  * Where the agent runs. The Docker runner turns each distinct environment into
@@ -145,7 +147,7 @@ export type WorkspaceCheck =
 	| { op: "unchanged"; path: string; content: string }
 	| { op: "count"; expected: number; under?: string };
 
-export type DatasetFormat = "messages" | "sharegpt" | "alpaca" | "rendered";
+export type DatasetFormat = "messages" | "sharegpt" | "alpaca" | "rendered" | "atif";
 
 /**
  * Model-family chat template used by the "rendered" dataset format.

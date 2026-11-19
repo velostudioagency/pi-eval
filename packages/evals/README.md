@@ -18,7 +18,7 @@ A **profile** is one configuration arm:
 | Field | Meaning |
 |-------|---------|
 | `systemPrompt` | `pi-default`, `pi-default-minus-docs`, `literal` text, or a named `transform` |
-| `tools` | allowlist (`tools`), suppression (`noTools`), denylist (`excludeTools`), and custom tool definitions (`customTools`) |
+| `tools` | allowlist (`tools`), suppression (`noTools`), denylist (`excludeTools`), custom tool definitions (`customTools`), and style (`"pi"` default or `"inspect"` for Inspect-compatible `python`/`text_editor` tools) |
 | `environment` | environment id from the suite, or an inline environment |
 | `thinkingLevel` | model thinking level; defaults to `"off"` for reproducible runs |
 
@@ -29,7 +29,7 @@ An **environment** is where the agent runs:
 | `baseImage` | container base image, used by the docker backend |
 | `includeDocs` | ship Pi documentation in the image |
 | `os` | `linux`, `windows`, or `macos` (default `linux`) |
-| `backend` | `docker`, `host`, or `remote` (default `docker`) |
+| `backend` | `docker`, `host`, `local`, or `remote` (default `docker`) |
 | `runner` | runner base URL, required for the `remote` backend |
 | `workspaceFiles` | files seeded into an empty workspace |
 
@@ -230,6 +230,7 @@ Dataset exporters are configurable per suite (or via `--export`):
 | `sharegpt` | `{conversations: [{from, value}]}` |
 | `alpaca` | `{instruction, input, output}`, single-turn only; other traces are skipped |
 | `rendered` | `{text}` with a model-family chat template applied |
+| `atif` | Harbor ATIF: one `{steps: [...]}` step object per message, with `action` and `observation` — usable by pi-eval-inspect-style tooling and other ATIF readers |
 
 Built-in templates: `chatml` (Qwen, Yi), `hermes`, `deepseek`, `llama3`.
 Define a custom `ChatTemplateSpec` for other models: it declares `bos`, `eos`,

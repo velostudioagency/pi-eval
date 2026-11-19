@@ -15,6 +15,7 @@ import {
 	resolveProfile,
 	type SuiteSpec,
 	type SystemPromptSpec,
+	type ToolSpec,
 } from "./config.ts";
 
 export function suiteById(id: string): SuiteSpec {
@@ -43,7 +44,7 @@ export function activeProfile(
 export type ProfileHarnessOptions = {
 	profile: string;
 	systemPrompt?: SystemPromptSpec;
-	tools?: CreateAgentSessionOptions["tools"];
+	tools?: CreateAgentSessionOptions["tools"] | ToolSpec;
 	noTools?: CreateAgentSessionOptions["noTools"];
 	excludeTools?: CreateAgentSessionOptions["excludeTools"];
 	customTools?: ToolDefinition[];
@@ -59,7 +60,7 @@ export function harnessOptionsForProfile(
 	return {
 		profile: profile.id,
 		...(profile.systemPrompt ? { systemPrompt: profile.systemPrompt } : {}),
-		...(profile.tools?.tools ? { tools: profile.tools.tools } : {}),
+		...(profile.tools ? { tools: profile.tools } : {}),
 		...(profile.tools?.noTools ? { noTools: profile.tools.noTools } : {}),
 		...(profile.tools?.excludeTools ? { excludeTools: profile.tools.excludeTools } : {}),
 		...(profile.tools?.customTools ? { customTools: profile.tools.customTools } : {}),

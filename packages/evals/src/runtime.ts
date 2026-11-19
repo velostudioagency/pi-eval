@@ -45,13 +45,14 @@ export function hostOs(platform: NodeJS.Platform = process.platform): HostOs {
 	return "linux";
 }
 
-/** Resolves an environment's backend, with optional CLI overrides. */
+/** Resolves an environment's backend, with optional CLI overrides. "local" maps to the host path and behaves as "host". */
 export function selectRuntime(
 	environment: EnvironmentSpec | undefined,
 	overrides: { backend?: RuntimeBackend; os?: HostOs; runner?: string } = {},
 ): RuntimeTarget {
-	const backend = overrides.backend ?? environment?.backend ?? "docker";
-	const os = overrides.os ?? environment?.os ?? "linux";
+	const requested = overrides.backend ?? environment?.backend ?? "docker";
+	const backend = requested === "local" ? "host" : requested;
+	const os = overrides.os ?? environment?.os ?? (requested === "local" ? hostOs() : "linux");
 	const runnerUrl = overrides.runner ?? environment?.runner;
 	if (backend === "remote" && !runnerUrl) {
 		throw new Error(`Remote backend needs a runner URL (environment "${environment?.id ?? "default"}").`);
@@ -59,12 +60,13 @@ export function selectRuntime(
 	return { backend, environment, os, ...(runnerUrl ? { runnerUrl } : {}) };
 }
 
-/** Fails before any run when a backend cannot execute the requested OS. */
+/** Fails before any run when a backend cannot execute the requested OS. "local" behaves as "host". */
 export function assertRuntime(target: RuntimeTarget, currentOs: HostOs = hostOs()): void {
-	if (target.backend === "docker" && target.os !== "linux") {
+	const backend = target.backend === "local" ? "host" : target.backend;
+	if (backend === "docker" && target.os !== "linux") {
 		throw new Error(`Docker backend supports linux only; use "host" or "remote" for ${target.os}.`);
 	}
-	if (target.backend === "host" && target.os !== currentOs) {
+	if (backend === "host" && target.os !== currentOs) {
 		throw new Error(`Host backend runs ${currentOs}, not ${target.os}. Use "remote" with a ${target.os} runner.`);
 	}
 }
