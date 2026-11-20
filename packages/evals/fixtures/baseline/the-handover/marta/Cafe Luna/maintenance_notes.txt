@@ -1,0 +1,2 @@
+Maintenance notes: plugin updates monthly.
+WP login moved to the vault, same as everything else.

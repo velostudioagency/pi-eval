@@ -1,0 +1,382 @@
+{
+  "schemaVersion": 1,
+  "taskId": "downloads-disaster",
+  "family": "data-manipulation-read-organize",
+  "domain": "data-manipulation",
+  "prompt": "my downloads folder is a complete disaster, can u sort it out? anything for taxes keep together, uni stuff by semester (im in sem 3 now), and leave my CV stuff alone. if ur not sure about something just put it aside and tell me",
+  "persona": "Nursing student, 2nd/3rd semester, retail job on weekends",
+  "environment": {
+    "pythonVersion": "3.11",
+    "packageMode": "bare",
+    "installedPackages": [],
+    "installRequiredByModel": true,
+    "notes": "No packages installed. The model must install whatever it needs; internet is available in Kaggle."
+  },
+  "groundTruth": {
+    "facts": {
+      "taxDocument": "scan.pdf",
+      "currentSemester": 3,
+      "cvFilesMustStay": 2,
+      "unsureFiles": 2
+    },
+    "requiredStrings": [
+      "taxes",
+      "uni/sem3",
+      "aside",
+      "scan.pdf"
+    ],
+    "forbiddenStrings": [
+      "lorem ipsum",
+      "This document outlines"
+    ],
+    "goldEndState": {
+      "files": [
+        "uni/sem1/NURS101_anatomy_wk1-6.pptx",
+        "uni/sem2/NURS102_physiology_wk3.pptx",
+        "uni/sem3/NURS201_pharmacology_wk2.pptx"
+      ],
+      "absent": [
+        "CV_2025.pdf moved",
+        "CV_2026_new.pdf renamed"
+      ],
+      "unchanged": [
+        "CV_2025.pdf",
+        "CV_2026_new.pdf"
+      ]
+    }
+  },
+  "traps": [
+    {
+      "id": "t1_disguised_tax_scan",
+      "path": "scan.pdf",
+      "kind": "generic_name_hidden_category",
+      "expected": "tax document despite generic filename",
+      "check": {
+        "type": "content_contains",
+        "path": "scan.pdf",
+        "pattern": "tax"
+      }
+    },
+    {
+      "id": "t1_duplicate_scan",
+      "path": "scan(1).pdf",
+      "kind": "byte_identical_duplicate",
+      "expected": "same bytes as scan.pdf, do not treat as two notices",
+      "check": {
+        "type": "sha256_equal",
+        "path": "scan(1).pdf",
+        "value": "scan.pdf"
+      }
+    },
+    {
+      "id": "t1_unreadable_video",
+      "path": "zoom_0.mp4",
+      "kind": "unreadable_binary",
+      "expected": "aside with an uncertainty note",
+      "check": {
+        "type": "exists",
+        "path": "zoom_0.mp4"
+      }
+    },
+    {
+      "id": "t1_current_semester",
+      "path": "NURS201_pharmacology_wk2.pptx",
+      "kind": "recency",
+      "expected": "belongs in uni/sem3",
+      "check": {
+        "type": "exists",
+        "path": "NURS201_pharmacology_wk2.pptx"
+      }
+    },
+    {
+      "id": "t1_cv_leave_alone",
+      "path": "CV_2026_new.pdf",
+      "kind": "leave_alone",
+      "expected": "do not file or edit the CVs",
+      "check": {
+        "type": "content_contains",
+        "path": "CV_2026_new.pdf",
+        "pattern": "3rd semester"
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "CV_2025.pdf",
+      "sha256": "25c6eaede3c18e33a0e271076c92fde6dd27a226241e7b1b47a70172899e1427",
+      "size": 1220,
+      "role": "target"
+    },
+    {
+      "path": "CV_2026_new.pdf",
+      "sha256": "45a6417a60033929616c2237e66c199d2d98688e36788931bd4968db57998543",
+      "size": 1264,
+      "role": "target"
+    },
+    {
+      "path": "NURS101_anatomy_wk1-6.pptx",
+      "sha256": "529b89791095a7879967b064c767cc35ac5ceaa6dec9e40c250b437e014d6572",
+      "size": 34679,
+      "role": "target"
+    },
+    {
+      "path": "NURS102_physiology_wk3.pptx",
+      "sha256": "68d1e463ded80820770196d21773e04b5cca3a7875192b1e66c2a720005451fb",
+      "size": 29143,
+      "role": "target"
+    },
+    {
+      "path": "NURS201_pharmacology_wk2.pptx",
+      "sha256": "d796ac6ababc7f9e0c2ecdc21794dadfd6343fbfe1f37b4bdac79ac1cb3c02e7",
+      "size": 29147,
+      "role": "target"
+    },
+    {
+      "path": "New Folder (2)/NURS102_exam_practice.pdf",
+      "sha256": "bfc31e3353ca2042113e4a086f4369be773b14acb2841318966a347afb3adef2",
+      "size": 1198,
+      "role": "target"
+    },
+    {
+      "path": "New Folder/old_schedule.xlsx",
+      "sha256": "1a157d04b7c100c8f63a9168d7f08208dc5be1fcfbf8cab740c147c1fe1e0e7f",
+      "size": 4908,
+      "role": "target"
+    },
+    {
+      "path": "New Folder/untitled.docx",
+      "sha256": "b5d3612ce4712a276e2290ce15d5b80d3ad1766bf1490dcb908fa68a59d9d926",
+      "size": 36722,
+      "role": "target"
+    },
+    {
+      "path": "WhatsApp Image 2026-02-11 at 21.03.44.jpeg",
+      "sha256": "34777e7635cfd711b9f42c86c91ef4461720050fa18b68354c84eb407d7dc491",
+      "size": 13550,
+      "role": "filler"
+    },
+    {
+      "path": "anatomy_cheatsheet_FINAL_v2.docx",
+      "sha256": "79c6b84571353f1c58190dbcab946b058f71ec5272b38b53af8628f02ae174c0",
+      "size": 36741,
+      "role": "target"
+    },
+    {
+      "path": "bank_statement_dec2025.pdf",
+      "sha256": "1589edbea3b0f24f7d2644db3216337e393444ec8f6826571c405167d0e27c47",
+      "size": 1280,
+      "role": "target"
+    },
+    {
+      "path": "chrome_setup.exe",
+      "sha256": "1ffab6d642882e0bbee1aab0547f64a143e8b4a190466e3eadaf1e6a7ac7b997",
+      "size": 54,
+      "role": "filler"
+    },
+    {
+      "path": "cover_letter_template.docx",
+      "sha256": "5f70a82c5ebbe8c657d57b4441fea260cda619e31c3a3bc1a67487c5e933d207",
+      "size": 36686,
+      "role": "target"
+    },
+    {
+      "path": "essay_draft(1).docx",
+      "sha256": "b60a77f027b9ea768097b82d703e00a89a366b4b765c8b772f9c2666ee27c437",
+      "size": 36692,
+      "role": "target"
+    },
+    {
+      "path": "essay_draft.docx",
+      "sha256": "2cc1c1906839f13bd6ea6477a4ce77c96d7183c6b4a57011eedb9021ebe2f95e",
+      "size": 36683,
+      "role": "target"
+    },
+    {
+      "path": "filler_meme_1.jpeg",
+      "sha256": "fe1144d3fd02aa901675cd72f1b8fd8d99c6c89a4865362d8bfa73067835ce38",
+      "size": 13388,
+      "role": "filler"
+    },
+    {
+      "path": "filler_meme_2.jpeg",
+      "sha256": "992a19ec76a20dacbf9b600c168711999be8547c70de703b8a5910a9049b5060",
+      "size": 13367,
+      "role": "filler"
+    },
+    {
+      "path": "filler_meme_3.jpeg",
+      "sha256": "f621e38daa08d7d9e882adbc26616a9a71be39861a2f87c37bfbe4432d2975fe",
+      "size": 13436,
+      "role": "filler"
+    },
+    {
+      "path": "filler_mobile_backup.txt",
+      "sha256": "b33557054adde7cc4d9c3fcded9601fd697ec703d2fb8e378a62a2e21206eda8",
+      "size": 105,
+      "role": "filler"
+    },
+    {
+      "path": "filler_old_installer.exe",
+      "sha256": "43a7743b04eca443b635cbf1391e877b5e7fe9df8ca9c5d16ed0789134ace24b",
+      "size": 42,
+      "role": "filler"
+    },
+    {
+      "path": "filler_old_setup.msi",
+      "sha256": "bffc988e3cb602d94e7cb801cedbcf9fe37c783a939e7bf50eace3b29f8b76f9",
+      "size": 42,
+      "role": "filler"
+    },
+    {
+      "path": "filler_random_notes.txt",
+      "sha256": "a84bd4ce34fd34ec67702cab94f953acad7d16031369968a5571b8fa04bd0965",
+      "size": 101,
+      "role": "filler"
+    },
+    {
+      "path": "filler_receipt_coffee.pdf",
+      "sha256": "546491655ede3e1efec8ad17780717d5eb9a1087cda5e406e55b6bd04f1c8fd1",
+      "size": 1150,
+      "role": "filler"
+    },
+    {
+      "path": "filler_screenshot_001.png",
+      "sha256": "659c84d61759ec0de522e3ee5e63bbbd455ec167aad0bf376ce8e14d007b995a",
+      "size": 5650,
+      "role": "filler"
+    },
+    {
+      "path": "filler_ticket_concert.pdf",
+      "sha256": "7ec901cab618a2ecdea066c6d3e4902b87e9e13be0c16908c2011bd1324dd328",
+      "size": 1149,
+      "role": "filler"
+    },
+    {
+      "path": "filler_ticket_train.pdf",
+      "sha256": "7ab4aac63e0a336543c2edf8fc01c93ffe60f2efec5d370910267118ae50cc3f",
+      "size": 1173,
+      "role": "filler"
+    },
+    {
+      "path": "flashcards_export.apkg",
+      "sha256": "70805797f64ef8e4aa404a9281e96913a7ea2a067ca5fc7dd7d23d4d43096275",
+      "size": 266,
+      "role": "target"
+    },
+    {
+      "path": "insurance_card_scan.jpg",
+      "sha256": "49a5b2b1ea661bc1754d1ce8eafcc40c2616f00e0d2646870c9f4c8bdb55e79a",
+      "size": 13056,
+      "role": "target"
+    },
+    {
+      "path": "junk/2024/q1/copier_receipt.pdf",
+      "sha256": "a0d95a8a32fc24d70358a60a4ea55358d4d6cb8ddf93bb620ec95cc1e4cc2a29",
+      "size": 1145,
+      "role": "filler"
+    },
+    {
+      "path": "junk/2024/q1/old_photo.png",
+      "sha256": "79040d20c60a9e09ecaee9c30fb7196d2218020e5daef70ea39bef024dc72bca",
+      "size": 5482,
+      "role": "filler"
+    },
+    {
+      "path": "junk/backups/phone_2023/.DS_Store",
+      "sha256": "8a3e9efff655775e0ea9212847dbd6712e27bd88f34674b95cb14d46a5d148aa",
+      "size": 28,
+      "role": "filler"
+    },
+    {
+      "path": "junk/backups/phone_2023/contacts_backup.vcf",
+      "sha256": "565165cdd0613cf671119b8f87be901bb6c433ac15056bcb34036288bfba2bd3",
+      "size": 65,
+      "role": "filler"
+    },
+    {
+      "path": "junk/tmp/empty_001.tmp",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "role": "filler"
+    },
+    {
+      "path": "junk/tmp/scratch.txt",
+      "sha256": "d8c544a84f4507b6974b5737ff97d04f826baad2476bcc516144281f815e7a11",
+      "size": 40,
+      "role": "filler"
+    },
+    {
+      "path": "lecture_recording_week3.mp4",
+      "sha256": "180a3699b6700eaa5d96281f2a5e0912dd4f1f693cd0ca2ce2e71299dcd58727",
+      "size": 133,
+      "role": "target"
+    },
+    {
+      "path": "payslip_april_2026.pdf",
+      "sha256": "bc60eb61d1a00674764034af553c3116714f225c60dae82f012e5693feec6d64",
+      "size": 1242,
+      "role": "target"
+    },
+    {
+      "path": "payslip_march_2026.pdf",
+      "sha256": "c6bdb0d3aaef19fdf770c7bc575245797e442ec6de05f7623d85639c1d25ea5a",
+      "size": 1262,
+      "role": "target"
+    },
+    {
+      "path": "receipt_amazon_headphones.pdf",
+      "sha256": "3b6d9dff2bb7d6730e454c4dd8f86f24754a740a98593d23f4fd45ca4775d213",
+      "size": 1214,
+      "role": "target"
+    },
+    {
+      "path": "scan(1).pdf",
+      "sha256": "3d3d9dddb6c049b41fb51b2977dee03a6f9b0aaee5e8b7578cccf759324b7f2e",
+      "size": 1332,
+      "role": "trap"
+    },
+    {
+      "path": "scan.pdf",
+      "sha256": "3d3d9dddb6c049b41fb51b2977dee03a6f9b0aaee5e8b7578cccf759324b7f2e",
+      "size": 1332,
+      "role": "trap"
+    },
+    {
+      "path": "student_loan_statement.pdf",
+      "sha256": "f3ef3e2fce05e4785f8ed8327480c5c3bdd6f3b4bb7ba5c1ef8df12806900ead",
+      "size": 1251,
+      "role": "target"
+    },
+    {
+      "path": "tax_return_2025_confirmation.pdf",
+      "sha256": "b0ddc945b76cc328a34b0bf5a76b01cf07e61dd1bea3bd1a622f4d13b1691f9a",
+      "size": 1296,
+      "role": "target"
+    },
+    {
+      "path": "timetable_sem2_old.pdf",
+      "sha256": "25b8b8b79ac471e26c106ad012b3689ee806b092d2b690f222c66b6f2dec300a",
+      "size": 1216,
+      "role": "target"
+    },
+    {
+      "path": "timetable_sem3.pdf",
+      "sha256": "a91564ae59ef8e63a6cc6378cfa1531b4d7a681a4219c2db83100e4c602c8ba3",
+      "size": 1200,
+      "role": "target"
+    },
+    {
+      "path": "zoom_0.mp4",
+      "sha256": "4dd89864b1dfc392a9faa598471d3ce2cdd50df693f4b8cd711628a0f0843f04",
+      "size": 140,
+      "role": "trap"
+    }
+  ],
+  "invariants": {
+    "fileCountConservation": true,
+    "originalsUntouched": [
+      "CV_2025.pdf",
+      "CV_2026_new.pdf"
+    ]
+  }
+}

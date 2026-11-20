@@ -1,0 +1,199 @@
+{
+  "taskId": "stale-equipment-page",
+  "copiedFiles": 13,
+  "files": [
+    {
+      "path": "FoldStreet/admin/agm_minutes_2025-11-18.docx",
+      "before": {
+        "sha256": "474cb287e838d0679670cb061bb2422d58de9423ceef1810f52dc6952f17b9be",
+        "size": 37400,
+        "mtime": 1769090039.0
+      },
+      "after": {
+        "sha256": "474cb287e838d0679670cb061bb2422d58de9423ceef1810f52dc6952f17b9be",
+        "size": 37400,
+        "mtime": 1769090039.0
+      },
+      "ok": true
+    },
+    {
+      "path": "FoldStreet/admin/committee_minutes_2026-01-13.md",
+      "before": {
+        "sha256": "2263b1212aa89994d88e011268d8913e30543de9ba00ca94bca13343d4ebbd73",
+        "size": 246,
+        "mtime": 1769063455.0
+      },
+      "after": {
+        "sha256": "2263b1212aa89994d88e011268d8913e30543de9ba00ca94bca13343d4ebbd73",
+        "size": 246,
+        "mtime": 1769063455.0
+      },
+      "ok": true
+    },
+    {
+      "path": "FoldStreet/admin/emails/supplier_reply.eml",
+      "before": {
+        "sha256": "77a0b5d9ea33e194b901ae282724156074100cf0b28b01ea5b3f27eb2870eb96",
+        "size": 310,
+        "mtime": 1769065085.0
+      },
+      "after": {
+        "sha256": "77a0b5d9ea33e194b901ae282724156074100cf0b28b01ea5b3f27eb2870eb96",
+        "size": 310,
+        "mtime": 1769065085.0
+      },
+      "ok": true
+    },
+    {
+      "path": "FoldStreet/admin/invoices/epilog_service_2024.pdf",
+      "before": {
+        "sha256": "aca49887ededc83060ab9a6d17d03ac9d0cc574a83ed94ddbfd16d723b51cb64",
+        "size": 1208,
+        "mtime": 1769087756.0
+      },
+      "after": {
+        "sha256": "aca49887ededc83060ab9a6d17d03ac9d0cc574a83ed94ddbfd16d723b51cb64",
+        "size": 1208,
+        "mtime": 1769087756.0
+      },
+      "ok": true
+    },
+    {
+      "path": "FoldStreet/admin/invoices/thunder_invoice_2026-01.pdf",
+      "before": {
+        "sha256": "c18ce0a83cb3c9e0d64f259872ff3ace85a174a353151104eec3b01aef10ec6b",
+        "size": 1273,
+        "mtime": 1769081662.0
+      },
+      "after": {
+        "sha256": "c18ce0a83cb3c9e0d64f259872ff3ace85a174a353151104eec3b01aef10ec6b",
+        "size": 1273,
+        "mtime": 1769081662.0
+      },
+      "ok": true
+    },
+    {
+      "path": "FoldStreet/admin/slack_export_jan2026/general.txt",
+      "before": {
+        "sha256": "517f263ae215b9c3dc49ea0089502217e51a628c6da45d7a0b111bfd571c0fd7",
+        "size": 132,
+        "mtime": 1769076966.0
+      },
+      "after": {
+        "sha256": "517f263ae215b9c3dc49ea0089502217e51a628c6da45d7a0b111bfd571c0fd7",
+        "size": 132,
+        "mtime": 1769076966.0
+      },
+      "ok": true
+    },
+    {
+      "path": "FoldStreet/admin/slack_export_jan2026/maintenance.txt",
+      "before": {
+        "sha256": "fe6f5183f5c8ccf280a96e01b6b4dde522a13119a2bd6b94a24691cb59a82549",
+        "size": 94,
+        "mtime": 1769072517.0
+      },
+      "after": {
+        "sha256": "fe6f5183f5c8ccf280a96e01b6b4dde522a13119a2bd6b94a24691cb59a82549",
+        "size": 94,
+        "mtime": 1769072517.0
+      },
+      "ok": true
+    },
+    {
+      "path": "FoldStreet/archive/2024/notes/notice_board.txt",
+      "before": {
+        "sha256": "3d29d65a07d6404e9d15f529d7cb52a19eec6f8eadf8551d4773b0efd3c27346",
+        "size": 39,
+        "mtime": 1769084850.0
+      },
+      "after": {
+        "sha256": "3d29d65a07d6404e9d15f529d7cb52a19eec6f8eadf8551d4773b0efd3c27346",
+        "size": 39,
+        "mtime": 1769084850.0
+      },
+      "ok": true
+    },
+    {
+      "path": "FoldStreet/archive/2024/notes/old_wiki_dump.pdf",
+      "before": {
+        "sha256": "e210f41299ebd4acca77023d50e8e94a3f82557fedf7ca19d8833dbbf8609829",
+        "size": 1139,
+        "mtime": 1769071773.0
+      },
+      "after": {
+        "sha256": "e210f41299ebd4acca77023d50e8e94a3f82557fedf7ca19d8833dbbf8609829",
+        "size": 1139,
+        "mtime": 1769071773.0
+      },
+      "ok": true
+    },
+    {
+      "path": "FoldStreet/archive/2025/tool_register.xlsx",
+      "before": {
+        "sha256": "f05f70158c6bc61dc211f5eb23b7906e7d3b44e4b16ebf654245113055b1093f",
+        "size": 4878,
+        "mtime": 1769088798.0
+      },
+      "after": {
+        "sha256": "f05f70158c6bc61dc211f5eb23b7906e7d3b44e4b16ebf654245113055b1093f",
+        "size": 4878,
+        "mtime": 1769088798.0
+      },
+      "ok": true
+    },
+    {
+      "path": "FoldStreet/safety/laser_SOP_draft_v3.docx",
+      "before": {
+        "sha256": "3a51f9c5ed9fe66665a26832bbdf125348b2ad7a7df43f32469b40fae73da28c",
+        "size": 36732,
+        "mtime": 1769093687.0
+      },
+      "after": {
+        "sha256": "3a51f9c5ed9fe66665a26832bbdf125348b2ad7a7df43f32469b40fae73da28c",
+        "size": 36732,
+        "mtime": 1769093687.0
+      },
+      "ok": true
+    },
+    {
+      "path": "FoldStreet/tmp/empty.tmp",
+      "before": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mtime": 1769081422.0
+      },
+      "after": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mtime": 1769081422.0
+      },
+      "ok": true
+    },
+    {
+      "path": "FoldStreet/wiki/equipment.md",
+      "before": {
+        "sha256": "725bc216b8a022f329c095cf306defcbc010d1996dccaa8b1c53881064c8d450",
+        "size": 288,
+        "mtime": 1769082731.0
+      },
+      "after": {
+        "sha256": "725bc216b8a022f329c095cf306defcbc010d1996dccaa8b1c53881064c8d450",
+        "size": 288,
+        "mtime": 1769082731.0
+      },
+      "ok": true
+    }
+  ],
+  "special": {
+    "zeroByteFiles": [
+      "FoldStreet/tmp/empty.tmp"
+    ],
+    "lockFiles": [],
+    "dsStores": [],
+    "zeroBytesPreserved": true,
+    "locksPreserved": true,
+    "dsStoresPreserved": true
+  },
+  "allOk": true
+}

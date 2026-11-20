@@ -1,0 +1,34 @@
+{
+  "taskId": "downloads-disaster",
+  "facts": [
+    {
+      "key": "taxDocument",
+      "expected": "scan.pdf",
+      "recovered": "scan.pdf",
+      "method": "pypdf text scan for tax-document phrase",
+      "ok": true
+    },
+    {
+      "key": "currentSemester",
+      "expected": 3,
+      "recovered": 3,
+      "method": "python-pptx slide text regex Semester N",
+      "ok": true
+    },
+    {
+      "key": "cvFilesMustStay",
+      "expected": 2,
+      "recovered": 2,
+      "method": "filesystem check of the two CV filenames",
+      "ok": true
+    },
+    {
+      "key": "unsureFiles",
+      "expected": 2,
+      "recovered": 2,
+      "method": "filesystem check of ambiguous files to set aside",
+      "ok": true
+    }
+  ],
+  "allOk": true
+}

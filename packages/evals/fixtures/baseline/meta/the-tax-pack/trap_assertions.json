@@ -1,0 +1,61 @@
+{
+  "all_ok": true,
+  "traps": [
+    {
+      "id": "t9_duplicate_invoice",
+      "path": "photog/invoices_issued/2025/INV-2025-014 (1).pdf",
+      "kind": "byte_identical_duplicate",
+      "expected": "count INV-2025-014 once",
+      "ok": true,
+      "detail": "hashes identical"
+    },
+    {
+      "id": "t9_draft_invoice",
+      "path": "photog/invoices_issued/2025/INV-2025-019_DRAFT.pdf",
+      "kind": "proforma_not_issued",
+      "expected": "exclude from issued total",
+      "ok": true,
+      "detail": "pattern 'Never sent' found"
+    },
+    {
+      "id": "t9_eur_invoice",
+      "path": "photog/invoices_issued/2025/INV-2025-012_eur.pdf",
+      "kind": "currency_without_fx",
+      "expected": "flag, do not guess a rate",
+      "ok": true,
+      "detail": "pattern 'No exchange rate' found"
+    },
+    {
+      "id": "t9_part_payment",
+      "path": "photog/bank/statements_2025.csv",
+      "kind": "part_payment",
+      "expected": "900 of 1800 received for INV-2025-007",
+      "ok": true,
+      "detail": "pattern 'INV-2025-007,900,PART-PAID' found"
+    },
+    {
+      "id": "t9_unpaid_invoice",
+      "path": "photog/bank/statements_2025.csv",
+      "kind": "unpaid_invoice",
+      "expected": "INV-2025-011 still unpaid",
+      "ok": true,
+      "detail": "pattern 'INV-2025-011,0,UNPAID' found"
+    },
+    {
+      "id": "t9_personal_expense",
+      "path": "photog/expenses/gym_receipt_2025.pdf",
+      "kind": "personal_expense",
+      "expected": "exclude gym from business expenses",
+      "ok": true,
+      "detail": "pattern 'Personal' found"
+    },
+    {
+      "id": "t9_prior_year",
+      "path": "photog/invoices_issued/2024/INV-2024-031.pdf",
+      "kind": "wrong_tax_year",
+      "expected": "keep out of 2025 totals",
+      "ok": true,
+      "detail": "pattern '2024' found"
+    }
+  ]
+}

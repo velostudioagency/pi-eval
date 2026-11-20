@@ -1,0 +1,53 @@
+{
+  "all_ok": true,
+  "traps": [
+    {
+      "id": "t6_scan_no_text_layer",
+      "path": "client_docs/appendix_scan.pdf",
+      "kind": "image_only_pdf",
+      "expected": "report OCR failure or no text layer",
+      "ok": true,
+      "detail": "no text layer"
+    },
+    {
+      "id": "t6_notes_only_budget",
+      "path": "client_docs/kickoff_deck.pptx",
+      "kind": "value_only_in_speaker_notes",
+      "expected": "180k must survive conversion",
+      "ok": true,
+      "detail": "found in notes/slides"
+    },
+    {
+      "id": "t6_misleading_extension",
+      "path": "client_docs/legacy/old_sow.doc",
+      "kind": "rtf_bytes_with_doc_extension",
+      "expected": "convert as RTF",
+      "ok": true,
+      "detail": "RTF magic present"
+    },
+    {
+      "id": "t6_lock_artifact",
+      "path": "client_docs/~$rate_card.xlsx",
+      "kind": "office_lock_file",
+      "expected": "leave untouched",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "id": "t6_two_sheets",
+      "path": "client_docs/rate_card.xlsx",
+      "kind": "multiple_sheets",
+      "expected": "both 2026 rates and 2025 archive",
+      "ok": true,
+      "detail": "found"
+    },
+    {
+      "id": "t6_network_footnote",
+      "path": "client_docs/network_map.pdf",
+      "kind": "table_footnote",
+      "expected": "cross-dock surcharge on North route only",
+      "ok": true,
+      "detail": "pattern 'cross-dock surcharge' found"
+    }
+  ]
+}

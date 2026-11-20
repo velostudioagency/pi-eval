@@ -1,0 +1,231 @@
+{
+  "taskId": "make-it-greppable",
+  "copiedFiles": 15,
+  "files": [
+    {
+      "path": "client_docs/appendix_scan.pdf",
+      "before": {
+        "sha256": "1edaa6ebfc2a7323ce3f321608fb71c8b4676b0168e569b36aa7fd62d04a52c4",
+        "size": 38903,
+        "mtime": 1781000316.0
+      },
+      "after": {
+        "sha256": "1edaa6ebfc2a7323ce3f321608fb71c8b4676b0168e569b36aa7fd62d04a52c4",
+        "size": 38903,
+        "mtime": 1781000316.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/archive/2025/drafts/kickoff_v0_notes.txt",
+      "before": {
+        "sha256": "c7ae2e79b86ebbc5635b0055b9309a30f4e4d6022908c3cfffcacc4399198ac3",
+        "size": 27,
+        "mtime": 1781013326.0
+      },
+      "after": {
+        "sha256": "c7ae2e79b86ebbc5635b0055b9309a30f4e4d6022908c3cfffcacc4399198ac3",
+        "size": 27,
+        "mtime": 1781013326.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/archive/2025/drafts/old_network_map.pdf",
+      "before": {
+        "sha256": "f3abde7e7a9c674854be594bbeffe1f361b2a7f08e7a7a6248085b111e2ec71a",
+        "size": 1146,
+        "mtime": 1781012774.0
+      },
+      "after": {
+        "sha256": "f3abde7e7a9c674854be594bbeffe1f361b2a7f08e7a7a6248085b111e2ec71a",
+        "size": 1146,
+        "mtime": 1781012774.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/archive/2025/timesheets.xlsx",
+      "before": {
+        "sha256": "4069b5ed9b9ebc227f54b98c6fecf400844da3385d9ca24bc65c5f2e1bd78c81",
+        "size": 4855,
+        "mtime": 1781016222.0
+      },
+      "after": {
+        "sha256": "4069b5ed9b9ebc227f54b98c6fecf400844da3385d9ca24bc65c5f2e1bd78c81",
+        "size": 4855,
+        "mtime": 1781016222.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/interview_notes/driver_1.docx",
+      "before": {
+        "sha256": "eb19411e868bd1b254a004c05e5db25dfe2c85b880793d02cbabb280a5665340",
+        "size": 36668,
+        "mtime": 1781008128.0
+      },
+      "after": {
+        "sha256": "eb19411e868bd1b254a004c05e5db25dfe2c85b880793d02cbabb280a5665340",
+        "size": 36668,
+        "mtime": 1781008128.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/interview_notes/driver_2.docx",
+      "before": {
+        "sha256": "df33eefe48ff4a3bc82e2ad2ba80dfd8506fc5f135a35fcfda45789bac8436db",
+        "size": 36655,
+        "mtime": 1780989459.0
+      },
+      "after": {
+        "sha256": "df33eefe48ff4a3bc82e2ad2ba80dfd8506fc5f135a35fcfda45789bac8436db",
+        "size": 36655,
+        "mtime": 1780989459.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/interview_notes/ops_manager.docx",
+      "before": {
+        "sha256": "2c7a0658d77022af87948b7a6dd427e1ce86c843a95dac8e93f8ecf2cd98236b",
+        "size": 36722,
+        "mtime": 1781010310.0
+      },
+      "after": {
+        "sha256": "2c7a0658d77022af87948b7a6dd427e1ce86c843a95dac8e93f8ecf2cd98236b",
+        "size": 36722,
+        "mtime": 1781010310.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/kickoff_deck.pptx",
+      "before": {
+        "sha256": "51f10a8b17fbe46fc2a78c0d6991982e68831d94114874c2d22f5102ec41e928",
+        "size": 43584,
+        "mtime": 1781009822.0
+      },
+      "after": {
+        "sha256": "51f10a8b17fbe46fc2a78c0d6991982e68831d94114874c2d22f5102ec41e928",
+        "size": 43584,
+        "mtime": 1781009822.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/legacy/old_sow.doc",
+      "before": {
+        "sha256": "4b8f777f5a27570460100e43a1f569ec5d4f508c0919dc56488d6cf2be0c6eb3",
+        "size": 134,
+        "mtime": 1780990299.0
+      },
+      "after": {
+        "sha256": "4b8f777f5a27570460100e43a1f569ec5d4f508c0919dc56488d6cf2be0c6eb3",
+        "size": 134,
+        "mtime": 1780990299.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/network_map.pdf",
+      "before": {
+        "sha256": "01e2d157ef05756b1a31c4100619daaa581b7422aa36db3ab8745b0e511d9c94",
+        "size": 1276,
+        "mtime": 1781006660.0
+      },
+      "after": {
+        "sha256": "01e2d157ef05756b1a31c4100619daaa581b7422aa36db3ab8745b0e511d9c94",
+        "size": 1276,
+        "mtime": 1781006660.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/rate_card.xlsx",
+      "before": {
+        "sha256": "88b5a1e4f9f73bc60a9f18359be9522dc2c98c7d6b9336f7aada81cc31c8ef23",
+        "size": 5433,
+        "mtime": 1781009592.0
+      },
+      "after": {
+        "sha256": "88b5a1e4f9f73bc60a9f18359be9522dc2c98c7d6b9336f7aada81cc31c8ef23",
+        "size": 5433,
+        "mtime": 1781009592.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/tmp/.DS_Store",
+      "before": {
+        "sha256": "981eaadc0c7557e0e8994b8f36f2e4a07cddc43c48b889d920e5b9714cd84aa8",
+        "size": 15,
+        "mtime": 1781009818.0
+      },
+      "after": {
+        "sha256": "981eaadc0c7557e0e8994b8f36f2e4a07cddc43c48b889d920e5b9714cd84aa8",
+        "size": 15,
+        "mtime": 1781009818.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/tmp/empty.tmp",
+      "before": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mtime": 1780992207.0
+      },
+      "after": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mtime": 1780992207.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/warehouse_survey.docx",
+      "before": {
+        "sha256": "e9457e75858918f61f0b66b428b990f462a1b1a576a48017d77981e0f5683e86",
+        "size": 37570,
+        "mtime": 1781015959.0
+      },
+      "after": {
+        "sha256": "e9457e75858918f61f0b66b428b990f462a1b1a576a48017d77981e0f5683e86",
+        "size": 37570,
+        "mtime": 1781015959.0
+      },
+      "ok": true
+    },
+    {
+      "path": "client_docs/~$rate_card.xlsx",
+      "before": {
+        "sha256": "c3116fc1bac0aed802254cc22d88a454b298b5405a8298ec8c802372efe5fcc4",
+        "size": 58,
+        "mtime": 1780999783.0
+      },
+      "after": {
+        "sha256": "c3116fc1bac0aed802254cc22d88a454b298b5405a8298ec8c802372efe5fcc4",
+        "size": 58,
+        "mtime": 1780999783.0
+      },
+      "ok": true
+    }
+  ],
+  "special": {
+    "zeroByteFiles": [
+      "client_docs/tmp/empty.tmp"
+    ],
+    "lockFiles": [
+      "client_docs/~$rate_card.xlsx"
+    ],
+    "dsStores": [
+      "client_docs/tmp/.DS_Store"
+    ],
+    "zeroBytesPreserved": true,
+    "locksPreserved": true,
+    "dsStoresPreserved": true
+  },
+  "allOk": true
+}

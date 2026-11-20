@@ -1,0 +1,45 @@
+{
+  "all_ok": true,
+  "traps": [
+    {
+      "id": "t5_stale_rate_note",
+      "path": "clients/notes/rates_2025.md",
+      "kind": "outdated_self_authored_note",
+      "expected": "\u00a3300 is wrong, use invoices/emails",
+      "ok": true,
+      "detail": "pattern '\u00a3300' found"
+    },
+    {
+      "id": "t5_nickname",
+      "path": "clients/notes/sticky_export.txt",
+      "kind": "nickname_alias",
+      "expected": "BP means Brightpath",
+      "ok": true,
+      "detail": "pattern 'BP' found"
+    },
+    {
+      "id": "t5_lead_not_client",
+      "path": "clients/emails/pemberton_inquiry.eml",
+      "kind": "lead_not_client",
+      "expected": "exclude Pemberton from clients.md",
+      "ok": true,
+      "detail": "pattern 'quotes only' found"
+    },
+    {
+      "id": "t5_missing_email",
+      "path": "clients/notes/sticky_export.txt",
+      "kind": "unknown_contact_detail",
+      "expected": "Studio Anorak email is unknown",
+      "ok": true,
+      "detail": "pattern 'phone only' found"
+    },
+    {
+      "id": "t5_newest_rate",
+      "path": "clients/emails/brightpath_rate_aug2026.eml",
+      "kind": "recency_overrides_contract",
+      "expected": "320/day from September",
+      "ok": true,
+      "detail": "pattern '320' found"
+    }
+  ]
+}

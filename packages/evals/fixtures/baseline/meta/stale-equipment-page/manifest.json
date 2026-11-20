@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "taskId": "stale-equipment-page",
+  "family": "data-manipulation-read-editing-writing",
+  "domain": "data-manipulation",
+  "prompt": "the equipment page on our wiki is embarrassingly out of date. the laser got replaced and i think fees changed at the AGM. can you update equipment.md using the stuff in admin/? dont guess anything — if you cant find proof leave it and tell me",
+  "persona": "Member of the FoldStreet makerspace committee",
+  "environment": {
+    "pythonVersion": "3.11",
+    "packageMode": "bare",
+    "installedPackages": [],
+    "installRequiredByModel": true,
+    "notes": "No packages installed. The model must install whatever it needs; internet is available in Kaggle."
+  },
+  "groundTruth": {
+    "facts": {
+      "newLaser": "Thunder Nova 24",
+      "wattage": 60,
+      "inductionFee": 10,
+      "monthlyFee": 30,
+      "bookingDomain": "foldstreet.youcanbook.me"
+    },
+    "requiredStrings": [
+      "Thunder Nova 24",
+      "60W",
+      "£10",
+      "youcanbook.me",
+      "£30/month",
+      "17–22",
+      "10–14",
+      "Bambu P1S",
+      "£8/hr",
+      "bandsaw",
+      "induction free",
+      "£15/session"
+    ],
+    "forbiddenStrings": [
+      "40W",
+      "£25",
+      "18–21",
+      "email the committee",
+      "90W"
+    ],
+    "goldEndState": {
+      "files": [
+        "FoldStreet/wiki/equipment.md"
+      ],
+      "absent": [
+        "old laser listed as current"
+      ],
+      "unchanged": [
+        "FoldStreet/admin/agm_minutes_2025-11-18.docx",
+        "FoldStreet/admin/committee_minutes_2026-01-13.md",
+        "FoldStreet/safety/laser_SOP_draft_v3.docx"
+      ]
+    }
+  },
+  "traps": [
+    {
+      "id": "t4_draft_sop_conflict",
+      "path": "FoldStreet/safety/laser_SOP_draft_v3.docx",
+      "kind": "unsigned_conflicting_source",
+      "expected": "ignore and flag, do not copy into wiki",
+      "check": {
+        "type": "content_contains",
+        "path": "FoldStreet/safety/laser_SOP_draft_v3.docx",
+        "pattern": "UNSIGNED DRAFT"
+      }
+    },
+    {
+      "id": "t4_chat_rumour_90w",
+      "path": "FoldStreet/admin/slack_export_jan2026/general.txt",
+      "kind": "chat_rumour",
+      "expected": "60W is correct, 90W was rejected quote",
+      "check": {
+        "type": "content_contains",
+        "path": "FoldStreet/admin/slack_export_jan2026/general.txt",
+        "pattern": "90"
+      }
+    },
+    {
+      "id": "t4_old_invoice",
+      "path": "FoldStreet/admin/invoices/epilog_service_2024.pdf",
+      "kind": "superseded_equipment",
+      "expected": "do not restore Epilog",
+      "check": {
+        "type": "content_contains",
+        "path": "FoldStreet/admin/invoices/epilog_service_2024.pdf",
+        "pattern": "2024"
+      }
+    },
+    {
+      "id": "t4_signed_minutes",
+      "path": "FoldStreet/admin/committee_minutes_2026-01-13.md",
+      "kind": "authoritative_source",
+      "expected": "Thunder Nova 24, 60W, £10, online calendar",
+      "check": {
+        "type": "content_contains",
+        "path": "FoldStreet/admin/committee_minutes_2026-01-13.md",
+        "pattern": "Thunder Nova 24"
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "FoldStreet/admin/agm_minutes_2025-11-18.docx",
+      "sha256": "474cb287e838d0679670cb061bb2422d58de9423ceef1810f52dc6952f17b9be",
+      "size": 37400,
+      "role": "target"
+    },
+    {
+      "path": "FoldStreet/admin/committee_minutes_2026-01-13.md",
+      "sha256": "2263b1212aa89994d88e011268d8913e30543de9ba00ca94bca13343d4ebbd73",
+      "size": 246,
+      "role": "target"
+    },
+    {
+      "path": "FoldStreet/admin/emails/supplier_reply.eml",
+      "sha256": "77a0b5d9ea33e194b901ae282724156074100cf0b28b01ea5b3f27eb2870eb96",
+      "size": 310,
+      "role": "target"
+    },
+    {
+      "path": "FoldStreet/admin/invoices/epilog_service_2024.pdf",
+      "sha256": "aca49887ededc83060ab9a6d17d03ac9d0cc574a83ed94ddbfd16d723b51cb64",
+      "size": 1208,
+      "role": "filler"
+    },
+    {
+      "path": "FoldStreet/admin/invoices/thunder_invoice_2026-01.pdf",
+      "sha256": "c18ce0a83cb3c9e0d64f259872ff3ace85a174a353151104eec3b01aef10ec6b",
+      "size": 1273,
+      "role": "target"
+    },
+    {
+      "path": "FoldStreet/admin/slack_export_jan2026/general.txt",
+      "sha256": "517f263ae215b9c3dc49ea0089502217e51a628c6da45d7a0b111bfd571c0fd7",
+      "size": 132,
+      "role": "target"
+    },
+    {
+      "path": "FoldStreet/admin/slack_export_jan2026/maintenance.txt",
+      "sha256": "fe6f5183f5c8ccf280a96e01b6b4dde522a13119a2bd6b94a24691cb59a82549",
+      "size": 94,
+      "role": "target"
+    },
+    {
+      "path": "FoldStreet/archive/2024/notes/notice_board.txt",
+      "sha256": "3d29d65a07d6404e9d15f529d7cb52a19eec6f8eadf8551d4773b0efd3c27346",
+      "size": 39,
+      "role": "filler"
+    },
+    {
+      "path": "FoldStreet/archive/2024/notes/old_wiki_dump.pdf",
+      "sha256": "e210f41299ebd4acca77023d50e8e94a3f82557fedf7ca19d8833dbbf8609829",
+      "size": 1139,
+      "role": "filler"
+    },
+    {
+      "path": "FoldStreet/archive/2025/tool_register.xlsx",
+      "sha256": "f05f70158c6bc61dc211f5eb23b7906e7d3b44e4b16ebf654245113055b1093f",
+      "size": 4878,
+      "role": "filler"
+    },
+    {
+      "path": "FoldStreet/safety/laser_SOP_draft_v3.docx",
+      "sha256": "3a51f9c5ed9fe66665a26832bbdf125348b2ad7a7df43f32469b40fae73da28c",
+      "size": 36732,
+      "role": "trap"
+    },
+    {
+      "path": "FoldStreet/tmp/empty.tmp",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "role": "filler"
+    },
+    {
+      "path": "FoldStreet/wiki/equipment.md",
+      "sha256": "725bc216b8a022f329c095cf306defcbc010d1996dccaa8b1c53881064c8d450",
+      "size": 288,
+      "role": "target"
+    }
+  ],
+  "invariants": {
+    "fileCountConservation": true,
+    "originalsUntouched": [
+      "FoldStreet/admin/agm_minutes_2025-11-18.docx",
+      "FoldStreet/admin/committee_minutes_2026-01-13.md",
+      "FoldStreet/safety/laser_SOP_draft_v3.docx"
+    ]
+  }
+}

@@ -1,0 +1,328 @@
+{
+  "schemaVersion": 1,
+  "taskId": "one-clients-doc",
+  "family": "data-manipulation-read-editing-writing",
+  "domain": "data-manipulation",
+  "prompt": "i keep all my client stuff in one folder and its chaos. can you make me a single clients.md — for each client: company, contact name + email, what i charge them, last thing i did for them. some rates changed so watch out, use the newest",
+  "persona": "Freelance designer juggling five regular clients",
+  "environment": {
+    "pythonVersion": "3.11",
+    "packageMode": "bare",
+    "installedPackages": [],
+    "installRequiredByModel": true,
+    "notes": "No packages installed. The model must install whatever it needs; internet is available in Kaggle."
+  },
+  "groundTruth": {
+    "facts": {
+      "brightpathDayRate": 320,
+      "nettleDayRate": 270,
+      "nettleContact": "priya@nettleandco.uk",
+      "harborLightsOneOff": 260,
+      "clientCount": 5
+    },
+    "requiredStrings": [
+      "Brightpath",
+      "£320",
+      "Nettle",
+      "£270",
+      "Priya",
+      "priya@nettleandco.uk",
+      "unknown",
+      "Harbor Lights",
+      "one-off",
+      "Studio Anorak",
+      "Foxglove"
+    ],
+    "forbiddenStrings": [
+      "£300",
+      "BP",
+      "pemberton@",
+      "studioanorak@"
+    ],
+    "goldEndState": {
+      "files": [
+        "clients.md"
+      ],
+      "absent": [],
+      "unchanged": [
+        "clients/clients_old.xlsx"
+      ]
+    }
+  },
+  "traps": [
+    {
+      "id": "t5_stale_rate_note",
+      "path": "clients/notes/rates_2025.md",
+      "kind": "outdated_self_authored_note",
+      "expected": "£300 is wrong, use invoices/emails",
+      "check": {
+        "type": "content_contains",
+        "path": "clients/notes/rates_2025.md",
+        "pattern": "£300"
+      }
+    },
+    {
+      "id": "t5_nickname",
+      "path": "clients/notes/sticky_export.txt",
+      "kind": "nickname_alias",
+      "expected": "BP means Brightpath",
+      "check": {
+        "type": "content_contains",
+        "path": "clients/notes/sticky_export.txt",
+        "pattern": "BP"
+      }
+    },
+    {
+      "id": "t5_lead_not_client",
+      "path": "clients/emails/pemberton_inquiry.eml",
+      "kind": "lead_not_client",
+      "expected": "exclude Pemberton from clients.md",
+      "check": {
+        "type": "content_contains",
+        "path": "clients/emails/pemberton_inquiry.eml",
+        "pattern": "quotes only"
+      }
+    },
+    {
+      "id": "t5_missing_email",
+      "path": "clients/notes/sticky_export.txt",
+      "kind": "unknown_contact_detail",
+      "expected": "Studio Anorak email is unknown",
+      "check": {
+        "type": "content_contains",
+        "path": "clients/notes/sticky_export.txt",
+        "pattern": "phone only"
+      }
+    },
+    {
+      "id": "t5_newest_rate",
+      "path": "clients/emails/brightpath_rate_aug2026.eml",
+      "kind": "recency_overrides_contract",
+      "expected": "320/day from September",
+      "check": {
+        "type": "content_contains",
+        "path": "clients/emails/brightpath_rate_aug2026.eml",
+        "pattern": "320"
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "clients/archive/2023/tax/old_notes.txt",
+      "sha256": "a04359c66d3662002b6c588f961b293a83a046ab63364f926f2c33d245577e02",
+      "size": 24,
+      "role": "filler"
+    },
+    {
+      "path": "clients/clients_old.xlsx",
+      "sha256": "e9df2056b93111f5dc886b2248c0ce8c30e9967f712b1a2cb2456763c877144e",
+      "size": 5043,
+      "role": "target"
+    },
+    {
+      "path": "clients/contracts/brightpath_MSA_2024.pdf",
+      "sha256": "862833b4a0382d8e53388fe3b68e4818c5e630b596bbea877f3818cba1db694b",
+      "size": 1216,
+      "role": "target"
+    },
+    {
+      "path": "clients/contracts/foxglove_retainer_2025.pdf",
+      "sha256": "cf41f93b578cd9e1d1ffbb0cebf5a1dcaae13c737837a24fc90c9f32d411fca0",
+      "size": 1174,
+      "role": "target"
+    },
+    {
+      "path": "clients/emails/brightpath_rate_aug2026.eml",
+      "sha256": "129eebcb1108d92317e7817bdec43218d98b08094f75f7576271567e18d696b5",
+      "size": 316,
+      "role": "target"
+    },
+    {
+      "path": "clients/emails/filler_insurance.eml",
+      "sha256": "e9502a2fdce2c714e53ce446f83a1df7042c2ae9f6e04bdfc24fd75ff4073757",
+      "size": 229,
+      "role": "filler"
+    },
+    {
+      "path": "clients/emails/filler_landlord.eml",
+      "sha256": "5064b87e6caac187e6397e8c8782120803dd653012c0e0300ed477d62b857396",
+      "size": 220,
+      "role": "filler"
+    },
+    {
+      "path": "clients/emails/filler_staff.eml",
+      "sha256": "bae1636990942910521f4571d146a9ad02afbf8930a1ea9c4b904f0de7994544",
+      "size": 211,
+      "role": "filler"
+    },
+    {
+      "path": "clients/emails/filler_supplier.eml",
+      "sha256": "ef7b26b533b673fe2e8e834f3521414cf5f1d5175029fe6c03efd89968ac926a",
+      "size": 220,
+      "role": "filler"
+    },
+    {
+      "path": "clients/emails/nettle_bulk_june2026.eml",
+      "sha256": "b343c0c92600fd0fc1c80617e6b018c28e22388703a1eab803c4686e811b4dd0",
+      "size": 274,
+      "role": "target"
+    },
+    {
+      "path": "clients/emails/nettle_new_contact.eml",
+      "sha256": "762e2d6d1a546b761da390b9425bd2ebf6b779a502c06988ccf2405d4250f4b6",
+      "size": 311,
+      "role": "target"
+    },
+    {
+      "path": "clients/emails/pemberton_inquiry.eml",
+      "sha256": "a1cfc9dffcfb0e274c5839aa4cac8c44c4cf3224cd832a1ac12f938c0be950ff",
+      "size": 285,
+      "role": "target"
+    },
+    {
+      "path": "clients/invoices/2024/harbor_lights_oneoff.pdf",
+      "sha256": "2c6ccf79cd3a503f1f38df6d9c02a84feebe4176edc32afe4ac87f8c04df8910",
+      "size": 1182,
+      "role": "target"
+    },
+    {
+      "path": "clients/invoices/2024/old_1.pdf",
+      "sha256": "58f43c03381e99a3b2c882817586578bb5295a71e62834026587c8a08c3012eb",
+      "size": 1165,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2024/old_2.pdf",
+      "sha256": "02c42765c3c67de9c36e8a68ad82a8eaa7020f11b9673403cbb28e02d8a58859",
+      "size": 1165,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2024/old_3.pdf",
+      "sha256": "e383b9650cbd5b51f46fb3c3c3dd2b63f63793545b7546b5020d221559b0c0ae",
+      "size": 1165,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2024/old_4.pdf",
+      "sha256": "2237a28ad938219045ef1afadc89204ea2e840a574edc2678f2f00e6da5764d5",
+      "size": 1165,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2024/old_5.pdf",
+      "sha256": "4caed140ae90090e446c83072314a6952192892b84fd3ff440cf2d7d87ee95f6",
+      "size": 1165,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2024/old_6.pdf",
+      "sha256": "5193044a2ec04e500493a385ee0f5dd128de54b3bc353ea0a4dd2c05611d5c01",
+      "size": 1165,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2025/bp_short.pdf",
+      "sha256": "5aaef025bd0a25a8e6dbb2ee2375f6b9f4b560f6cd2b2d9a0090ec6e781ac8a0",
+      "size": 1162,
+      "role": "target"
+    },
+    {
+      "path": "clients/invoices/2025/brightpath_lower.pdf",
+      "sha256": "b47ddf86b703b31b20c5ab522051988172e91b4ea484cb752823ad22dba4ad74",
+      "size": 1154,
+      "role": "target"
+    },
+    {
+      "path": "clients/invoices/2025/brightpath_ltd.pdf",
+      "sha256": "9728e8752b47d77bb1f1e05f8008e58e8425f5921f9b50961642ee2c1d9af739",
+      "size": 1155,
+      "role": "target"
+    },
+    {
+      "path": "clients/invoices/2025/mid_1.pdf",
+      "sha256": "b24394de6ef2f6a8e2ec49ac88a41fefa7f43ab034436a90800c236bcf822a5f",
+      "size": 1140,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2025/mid_2.pdf",
+      "sha256": "9a0708845ab79f824c167f02e9be4a0f2ddeb427e4a57fa58b01e41eae224c33",
+      "size": 1139,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2025/mid_3.pdf",
+      "sha256": "22755abbdeab063a6c036927d931ce94a7af1623fbdf480d46beed7fbc970d78",
+      "size": 1140,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2025/mid_4.pdf",
+      "sha256": "3fa7447b2159c10be70e1047e63dc5e21f726d260897d25ae282b5c28fc4b48c",
+      "size": 1140,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2025/mid_5.pdf",
+      "sha256": "f7884ab1cef764edf82892161fe4512d04620e85dd3184faae84789e50803d4f",
+      "size": 1140,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2026/2026-09-brightpath.pdf",
+      "sha256": "8385927dbe7a080c21729c08214d8662692a974eda22fb09fd6f5d6111cc5c7f",
+      "size": 1240,
+      "role": "target"
+    },
+    {
+      "path": "clients/invoices/2026/2026-11-nettle.pdf",
+      "sha256": "c8ee1906d7b5744a78352dcb4ce4440d457e5865e6d33269436edfb3dedca35d",
+      "size": 1227,
+      "role": "target"
+    },
+    {
+      "path": "clients/invoices/2026/new_1.pdf",
+      "sha256": "d9ef2b0755db3f9cafd8868ed1e79b370a2d27d11ac5cd4c2704f6511cb8f6f4",
+      "size": 1140,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2026/new_2.pdf",
+      "sha256": "11102db4b7701dab15171413f69bd1a12750d25d6e4604ead178fe4a04c6e69d",
+      "size": 1139,
+      "role": "filler"
+    },
+    {
+      "path": "clients/invoices/2026/new_3.pdf",
+      "sha256": "8a3baa5f38ac808ab2c9ed85112bf00196e1ecbd64add32b28e9a9b34743d0ea",
+      "size": 1140,
+      "role": "filler"
+    },
+    {
+      "path": "clients/notes/rates_2025.md",
+      "sha256": "7c49eee25ad24a94d60465ad7c6b70fd4f96de8e3636e7078a88f199d30259e5",
+      "size": 131,
+      "role": "trap"
+    },
+    {
+      "path": "clients/notes/sticky_export.txt",
+      "sha256": "568d3325f27c072f6bafe863642c07747e3d05ae90a0681655e20232b5bd7cc4",
+      "size": 119,
+      "role": "target"
+    },
+    {
+      "path": "clients/tmp/empty.tmp",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "role": "filler"
+    }
+  ],
+  "invariants": {
+    "fileCountConservation": true,
+    "originalsUntouched": [
+      "clients/clients_old.xlsx",
+      "clients/contracts/brightpath_MSA_2024.pdf"
+    ]
+  }
+}

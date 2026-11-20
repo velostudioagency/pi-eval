@@ -104,6 +104,29 @@ Flags:
 -t, --testNamePattern <pattern>   filter code eval cases (docs suite)
 ```
 
+Sampling and runtime-freeze flags (all recorded in `protocol.json`):
+
+```
+--temperature <n>              sampling temperature
+--top-p <n>                    nucleus sampling p
+--presence-penalty <n>         presence penalty
+--max-tokens <n>               max output tokens (positive integer)
+--seed <n>                     optional integer seed; omit for fresh sampling
+--ocr-mode <vision|tesseract>  OCR backend assumed by the task prompts
+--pilot                        one task, presence_penalty forced to 0; defaults unchanged
+--package-map <json>           {"taskId": "full"|"bare"} -> per-task venv PATH pin
+--toolchain-file <json>        runtime freeze facts (see the Kaggle section)
+--model-digest <string>        served model digest; overrides toolchain.modelDigest
+```
+
+`--pilot` selects the first task and sets `presence_penalty` to 0 for a
+like-for-like comparison. It never changes the configured defaults.
+
+`--package-map` prepends `<venvRoot>/<mode>/bin` to `PATH` for that task's vitest
+arm. The default root is `/kaggle/working/venvs`; set `PI_EVAL_VENV_ROOT` to
+override it. This works on the `host` backend because the child process copies
+`process.env` at spawn time. Network access and Docker are not disabled.
+
 FLAGS
 ```
 --api-base <url>          local OpenAI-compatible endpoint (e.g. a model served in Kaggle)
@@ -161,22 +184,41 @@ result.save("./run")
 ```
 
 `packages/evals/notebooks/kaggle-qwen3-4b-ollama.ipynb` is a ready-to-copy
-Kaggle notebook: it checks 2x T4 hardware, installs Node 22, clones the repo,
-installs `zstd` and starts `ollama serve` manually (Kaggle has no systemd) with
-flash attention and q8_0 KV cache so the model loads 100% on the two T4s,
-pulls the real `qwen3:4b` tag, creates a `qwen3:4b-max` variant with `num_ctx`
-262,144, warms it, and serves it on `localhost:11434`. It writes the
-`pi_eval.py` client into the clone, runs a one-task smoke test and then the
-extraction suite with `--runs 5`. The full run starts the CLI in the background
-and polls `traces.jsonl`, so assistant text, reasoning, tool calls, and tool
-results from each completed run appear live in the notebook. At 262,144 context
-the f16 KV cache is ~36 GiB and spills ~34% of the model to CPU; q8_0 KV (~19
-GiB) avoids that. If `ollama ps` still shows a CPU share, drop to `num_ctx`
-131072 on one GPU. The eval config uses a 30-minute per-test timeout.
-Set Kaggle's accelerator to **GPU T4 x2** and enable Internet. The default
-`REPO_URL` is the public `https://github.com/velostudioagency/pi-eval.git`; set
-the `PI_EVAL_REPO_URL` secret to use a fork, or add the repo as a Kaggle Dataset
-named `pi-eval`.
+Kaggle notebook for the **9-task baseline suite** (`baseline-9`) with **N=3**
+and OCR mode `tesseract`. It checks 2x T4 hardware, installs Node 22, clones the
+repo, installs `zstd` and starts `ollama serve` manually (Kaggle has no
+systemd) with flash attention and q8_0 KV cache, pulls the real `qwen3:4b` tag,
+creates a `qwen3:4b-max` variant with `num_ctx` 262,144, warms it, and serves it
+on `localhost:11434`.
+
+The toolchain cell creates two venvs: `/kaggle/working/venvs/full` with
+`pypdf pdfplumber python-docx python-pptx openpyxl pandas msoffcrypto-tool
+pytesseract pdf2image Pillow`, and `/kaggle/working/venvs/bare` with no
+third-party packages. `tesseract-ocr` and `poppler-utils` are installed globally
+with `apt-get`, guarded so a failure warns instead of stopping the notebook.
+Three tasks run with the full venv and six with the bare venv; the map is read
+from `fixtures/baseline/meta/<task>/manifest.json`
+(`environment.packageMode`) and passed to the CLI as `--package-map`. The mandated sampling defaults are
+`--temperature 1.0 --top-p 0.95 --presence-penalty 1.5 --max-tokens 32768`;
+`--seed` is left unset so each run samples independently.
+
+Before scoring, the notebook writes `/kaggle/working/runtime.json` from
+`ollama show --json`, `ollama --version`, and `/api/ps`, and asserts that
+`freeze.json`, `package_contract.json`, and `solvability.json` exist under
+`fixtures/baseline`. It passes the file as `--toolchain-file` and the digest as
+`--model-digest`, so `protocol.json` records the model tag/digest, Ollama
+version, effective `numCtx`, KV cache type, flash-attention setting, GPU split,
+Python/Node versions, git commit, sampling, OCR mode, and per-task package modes.
+The full run starts the CLI in the background and polls `traces.jsonl`, so
+assistant text, reasoning, tool calls, and tool results appear live.
+
+At 262,144 context the f16 KV cache is ~36 GiB and spills ~34% of the model to
+CPU; q8_0 KV (~19 GiB) avoids that. If `ollama ps` still shows a CPU share, drop
+to `num_ctx` 131072 on one GPU. The eval config uses a 30-minute per-test
+timeout. Set Kaggle's accelerator to **GPU T4 x2** and enable Internet. The
+default `REPO_URL` is the public `https://github.com/velostudioagency/pi-eval.git`;
+set the `PI_EVAL_REPO_URL` secret to use a fork, or add the repo as a Kaggle
+Dataset named `pi-eval`.
 
 ## Create a suite
 
@@ -219,6 +261,8 @@ export const mySuite: SuiteSpec = {
 Declarative tasks run through `evals/suite.eval.ts`, which builds the harness
 for the profile selected in `PI_EVAL_PROFILE`. Bundled suites:
 
+- `baseline-9` — nine real-fixture tasks from `fixtures/baseline`; three with
+  the full Python toolchain and six with a bare venv, N=3, OCR mode `tesseract`
 - `docs` — the original documentation-lift comparison
 - `example` — small template suite with two capability families
 - `data-manipulation-read-organize` — root domain `data-manipulation` with four
@@ -272,8 +316,14 @@ true). Most trainers apply their own chat template to `messages` JSONL; use
 
 Each invocation creates an ignored `.eval/<timestamp>_<id>/` directory:
 
-- `protocol.json`: suite description, model, images, planned tasks, digest
+- `protocol.json`: suite description, model, images, planned tasks, digest,
+  plus `sampling`, `ocrMode`, `pilot`, `runtime` (model tag/digest, Ollama
+  version, num_ctx, KV cache, flash attention, GPU split, git commit),
+  `toolchain`, `packageModes`, and per-run `runOutcomes` (finish reason and
+  truncation when the upstream report exposes them)
 - `expected-runs.json`: the complete planned cohort
+- `per-run-scores.json`: every run's `caseId`, `runNumber`, `outcome`, `score`,
+  `errorClass`, `errorKind`, `finishReason`, and `truncated`
 - `observations.jsonl`: normalized outcomes and telemetry
 - `traces.jsonl`: canonical traces
 - `judge-inputs/*.json`: exact judge artifacts for each run, saved for offline
@@ -284,7 +334,15 @@ Each invocation creates an ignored `.eval/<timestamp>_<id>/` directory:
 - `tasks/*/vitest.json`: native JSON for each isolated arm
 - `<profile>/sessions/*/session.jsonl`: native Pi sessions
 - `report.json` / `report.txt`: pass rates per profile, lift when a
-  control/treatment pair is declared, operational totals, blocked pairs
+  control/treatment pair is declared, operational totals, blocked pairs, and
+  a per-run scores table (N=3 for `baseline-9`, not just the mean)
+
+Infrastructure errors stay distinct from model failures. `src/error-policy.ts`
+`classifyError` assigns each kind a policy; the per-run `errorClass` is `infra`
+when `policy.hasValidReward` is false (retry/no-grade, for example
+`ReportNotFoundError` or `TimeoutError`) and `model` when it is true (for
+example `AgentTimeoutError` or `ContextWindowExceededError`). Only errors with
+a valid reward contribute a measured zero; see `isMeasuredError`.
 
 To change scorers without re-running the model or agent:
 
@@ -310,5 +368,14 @@ directory, workspace, session directory, and container filesystem.
 Documentation profiles allow only `read`, `write`, `edit`, `grep`, `find`, and
 `ls`. Provider traffic still needs container network access, so containers do
 not prove generated code never used the network.
+
+### Host-backend threat model (`baseline-9`)
+
+The Kaggle run uses `--backend host`, which has no container isolation: the
+agent can see host paths, and the safety axis only covers the copied workspace.
+Task manifests, gold data, judges, and the frozen files live outside that
+workspace and are never sent to the model. Network access stays enabled and
+Docker remains available; neither is silently disabled to make a task easier.
+Use the `docker` backend when untrusted code needs a real sandbox.
 
 Artifacts may contain prompts, responses, generated code, and tool output.

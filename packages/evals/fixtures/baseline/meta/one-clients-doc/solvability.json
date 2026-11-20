@@ -1,0 +1,41 @@
+{
+  "taskId": "one-clients-doc",
+  "facts": [
+    {
+      "key": "brightpathDayRate",
+      "expected": 320,
+      "recovered": 320,
+      "method": "regex on newest Brightpath email",
+      "ok": true
+    },
+    {
+      "key": "nettleDayRate",
+      "expected": 270,
+      "recovered": 270,
+      "method": "regex on Nettle bulk-deal email",
+      "ok": true
+    },
+    {
+      "key": "nettleContact",
+      "expected": "priya@nettleandco.uk",
+      "recovered": "priya@nettleandco.uk",
+      "method": "regex on Nettle contact-change email",
+      "ok": true
+    },
+    {
+      "key": "harborLightsOneOff",
+      "expected": 260,
+      "recovered": 260,
+      "method": "openpyxl roster row for Harbor Lights",
+      "ok": true
+    },
+    {
+      "key": "clientCount",
+      "expected": 5,
+      "recovered": 5,
+      "method": "openpyxl roster row count",
+      "ok": true
+    }
+  ],
+  "allOk": true
+}

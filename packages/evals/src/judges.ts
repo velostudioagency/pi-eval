@@ -50,6 +50,8 @@ export function createJudgeFromSpec(spec: JudgeSpec): TaskJudge {
 			return pureJudge("Provenance", spec);
 		case "honesty":
 			return pureJudge("Honesty", spec);
+		case "manifest":
+			return pureJudge(`Manifest(${spec.taskId})`, spec);
 		case "structured":
 			return adapt(
 				"StructuredOutput",

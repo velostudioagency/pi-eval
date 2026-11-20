@@ -1,0 +1,507 @@
+{
+  "taskId": "one-clients-doc",
+  "copiedFiles": 35,
+  "files": [
+    {
+      "path": "clients/archive/2023/tax/old_notes.txt",
+      "before": {
+        "sha256": "a04359c66d3662002b6c588f961b293a83a046ab63364f926f2c33d245577e02",
+        "size": 24,
+        "mtime": 1795008207.0
+      },
+      "after": {
+        "sha256": "a04359c66d3662002b6c588f961b293a83a046ab63364f926f2c33d245577e02",
+        "size": 24,
+        "mtime": 1795008207.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/clients_old.xlsx",
+      "before": {
+        "sha256": "e9df2056b93111f5dc886b2248c0ce8c30e9967f712b1a2cb2456763c877144e",
+        "size": 5043,
+        "mtime": 1794988233.0
+      },
+      "after": {
+        "sha256": "e9df2056b93111f5dc886b2248c0ce8c30e9967f712b1a2cb2456763c877144e",
+        "size": 5043,
+        "mtime": 1794988233.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/contracts/brightpath_MSA_2024.pdf",
+      "before": {
+        "sha256": "862833b4a0382d8e53388fe3b68e4818c5e630b596bbea877f3818cba1db694b",
+        "size": 1216,
+        "mtime": 1795011185.0
+      },
+      "after": {
+        "sha256": "862833b4a0382d8e53388fe3b68e4818c5e630b596bbea877f3818cba1db694b",
+        "size": 1216,
+        "mtime": 1795011185.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/contracts/foxglove_retainer_2025.pdf",
+      "before": {
+        "sha256": "cf41f93b578cd9e1d1ffbb0cebf5a1dcaae13c737837a24fc90c9f32d411fca0",
+        "size": 1174,
+        "mtime": 1794988017.0
+      },
+      "after": {
+        "sha256": "cf41f93b578cd9e1d1ffbb0cebf5a1dcaae13c737837a24fc90c9f32d411fca0",
+        "size": 1174,
+        "mtime": 1794988017.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/emails/brightpath_rate_aug2026.eml",
+      "before": {
+        "sha256": "129eebcb1108d92317e7817bdec43218d98b08094f75f7576271567e18d696b5",
+        "size": 316,
+        "mtime": 1794998654.0
+      },
+      "after": {
+        "sha256": "129eebcb1108d92317e7817bdec43218d98b08094f75f7576271567e18d696b5",
+        "size": 316,
+        "mtime": 1794998654.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/emails/filler_insurance.eml",
+      "before": {
+        "sha256": "e9502a2fdce2c714e53ce446f83a1df7042c2ae9f6e04bdfc24fd75ff4073757",
+        "size": 229,
+        "mtime": 1795012409.0
+      },
+      "after": {
+        "sha256": "e9502a2fdce2c714e53ce446f83a1df7042c2ae9f6e04bdfc24fd75ff4073757",
+        "size": 229,
+        "mtime": 1795012409.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/emails/filler_landlord.eml",
+      "before": {
+        "sha256": "5064b87e6caac187e6397e8c8782120803dd653012c0e0300ed477d62b857396",
+        "size": 220,
+        "mtime": 1795008424.0
+      },
+      "after": {
+        "sha256": "5064b87e6caac187e6397e8c8782120803dd653012c0e0300ed477d62b857396",
+        "size": 220,
+        "mtime": 1795008424.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/emails/filler_staff.eml",
+      "before": {
+        "sha256": "bae1636990942910521f4571d146a9ad02afbf8930a1ea9c4b904f0de7994544",
+        "size": 211,
+        "mtime": 1794989928.0
+      },
+      "after": {
+        "sha256": "bae1636990942910521f4571d146a9ad02afbf8930a1ea9c4b904f0de7994544",
+        "size": 211,
+        "mtime": 1794989928.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/emails/filler_supplier.eml",
+      "before": {
+        "sha256": "ef7b26b533b673fe2e8e834f3521414cf5f1d5175029fe6c03efd89968ac926a",
+        "size": 220,
+        "mtime": 1795009996.0
+      },
+      "after": {
+        "sha256": "ef7b26b533b673fe2e8e834f3521414cf5f1d5175029fe6c03efd89968ac926a",
+        "size": 220,
+        "mtime": 1795009996.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/emails/nettle_bulk_june2026.eml",
+      "before": {
+        "sha256": "b343c0c92600fd0fc1c80617e6b018c28e22388703a1eab803c4686e811b4dd0",
+        "size": 274,
+        "mtime": 1794991865.0
+      },
+      "after": {
+        "sha256": "b343c0c92600fd0fc1c80617e6b018c28e22388703a1eab803c4686e811b4dd0",
+        "size": 274,
+        "mtime": 1794991865.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/emails/nettle_new_contact.eml",
+      "before": {
+        "sha256": "762e2d6d1a546b761da390b9425bd2ebf6b779a502c06988ccf2405d4250f4b6",
+        "size": 311,
+        "mtime": 1794994881.0
+      },
+      "after": {
+        "sha256": "762e2d6d1a546b761da390b9425bd2ebf6b779a502c06988ccf2405d4250f4b6",
+        "size": 311,
+        "mtime": 1794994881.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/emails/pemberton_inquiry.eml",
+      "before": {
+        "sha256": "a1cfc9dffcfb0e274c5839aa4cac8c44c4cf3224cd832a1ac12f938c0be950ff",
+        "size": 285,
+        "mtime": 1795006416.0
+      },
+      "after": {
+        "sha256": "a1cfc9dffcfb0e274c5839aa4cac8c44c4cf3224cd832a1ac12f938c0be950ff",
+        "size": 285,
+        "mtime": 1795006416.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2024/harbor_lights_oneoff.pdf",
+      "before": {
+        "sha256": "2c6ccf79cd3a503f1f38df6d9c02a84feebe4176edc32afe4ac87f8c04df8910",
+        "size": 1182,
+        "mtime": 1794996957.0
+      },
+      "after": {
+        "sha256": "2c6ccf79cd3a503f1f38df6d9c02a84feebe4176edc32afe4ac87f8c04df8910",
+        "size": 1182,
+        "mtime": 1794996957.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2024/old_1.pdf",
+      "before": {
+        "sha256": "58f43c03381e99a3b2c882817586578bb5295a71e62834026587c8a08c3012eb",
+        "size": 1165,
+        "mtime": 1794997096.0
+      },
+      "after": {
+        "sha256": "58f43c03381e99a3b2c882817586578bb5295a71e62834026587c8a08c3012eb",
+        "size": 1165,
+        "mtime": 1794997096.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2024/old_2.pdf",
+      "before": {
+        "sha256": "02c42765c3c67de9c36e8a68ad82a8eaa7020f11b9673403cbb28e02d8a58859",
+        "size": 1165,
+        "mtime": 1795008979.0
+      },
+      "after": {
+        "sha256": "02c42765c3c67de9c36e8a68ad82a8eaa7020f11b9673403cbb28e02d8a58859",
+        "size": 1165,
+        "mtime": 1795008979.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2024/old_3.pdf",
+      "before": {
+        "sha256": "e383b9650cbd5b51f46fb3c3c3dd2b63f63793545b7546b5020d221559b0c0ae",
+        "size": 1165,
+        "mtime": 1795003280.0
+      },
+      "after": {
+        "sha256": "e383b9650cbd5b51f46fb3c3c3dd2b63f63793545b7546b5020d221559b0c0ae",
+        "size": 1165,
+        "mtime": 1795003280.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2024/old_4.pdf",
+      "before": {
+        "sha256": "2237a28ad938219045ef1afadc89204ea2e840a574edc2678f2f00e6da5764d5",
+        "size": 1165,
+        "mtime": 1794997845.0
+      },
+      "after": {
+        "sha256": "2237a28ad938219045ef1afadc89204ea2e840a574edc2678f2f00e6da5764d5",
+        "size": 1165,
+        "mtime": 1794997845.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2024/old_5.pdf",
+      "before": {
+        "sha256": "4caed140ae90090e446c83072314a6952192892b84fd3ff440cf2d7d87ee95f6",
+        "size": 1165,
+        "mtime": 1794993193.0
+      },
+      "after": {
+        "sha256": "4caed140ae90090e446c83072314a6952192892b84fd3ff440cf2d7d87ee95f6",
+        "size": 1165,
+        "mtime": 1794993193.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2024/old_6.pdf",
+      "before": {
+        "sha256": "5193044a2ec04e500493a385ee0f5dd128de54b3bc353ea0a4dd2c05611d5c01",
+        "size": 1165,
+        "mtime": 1794985188.0
+      },
+      "after": {
+        "sha256": "5193044a2ec04e500493a385ee0f5dd128de54b3bc353ea0a4dd2c05611d5c01",
+        "size": 1165,
+        "mtime": 1794985188.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2025/bp_short.pdf",
+      "before": {
+        "sha256": "5aaef025bd0a25a8e6dbb2ee2375f6b9f4b560f6cd2b2d9a0090ec6e781ac8a0",
+        "size": 1162,
+        "mtime": 1794990526.0
+      },
+      "after": {
+        "sha256": "5aaef025bd0a25a8e6dbb2ee2375f6b9f4b560f6cd2b2d9a0090ec6e781ac8a0",
+        "size": 1162,
+        "mtime": 1794990526.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2025/brightpath_lower.pdf",
+      "before": {
+        "sha256": "b47ddf86b703b31b20c5ab522051988172e91b4ea484cb752823ad22dba4ad74",
+        "size": 1154,
+        "mtime": 1795001909.0
+      },
+      "after": {
+        "sha256": "b47ddf86b703b31b20c5ab522051988172e91b4ea484cb752823ad22dba4ad74",
+        "size": 1154,
+        "mtime": 1795001909.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2025/brightpath_ltd.pdf",
+      "before": {
+        "sha256": "9728e8752b47d77bb1f1e05f8008e58e8425f5921f9b50961642ee2c1d9af739",
+        "size": 1155,
+        "mtime": 1795014716.0
+      },
+      "after": {
+        "sha256": "9728e8752b47d77bb1f1e05f8008e58e8425f5921f9b50961642ee2c1d9af739",
+        "size": 1155,
+        "mtime": 1795014716.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2025/mid_1.pdf",
+      "before": {
+        "sha256": "b24394de6ef2f6a8e2ec49ac88a41fefa7f43ab034436a90800c236bcf822a5f",
+        "size": 1140,
+        "mtime": 1795014386.0
+      },
+      "after": {
+        "sha256": "b24394de6ef2f6a8e2ec49ac88a41fefa7f43ab034436a90800c236bcf822a5f",
+        "size": 1140,
+        "mtime": 1795014386.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2025/mid_2.pdf",
+      "before": {
+        "sha256": "9a0708845ab79f824c167f02e9be4a0f2ddeb427e4a57fa58b01e41eae224c33",
+        "size": 1139,
+        "mtime": 1795005658.0
+      },
+      "after": {
+        "sha256": "9a0708845ab79f824c167f02e9be4a0f2ddeb427e4a57fa58b01e41eae224c33",
+        "size": 1139,
+        "mtime": 1795005658.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2025/mid_3.pdf",
+      "before": {
+        "sha256": "22755abbdeab063a6c036927d931ce94a7af1623fbdf480d46beed7fbc970d78",
+        "size": 1140,
+        "mtime": 1794985006.0
+      },
+      "after": {
+        "sha256": "22755abbdeab063a6c036927d931ce94a7af1623fbdf480d46beed7fbc970d78",
+        "size": 1140,
+        "mtime": 1794985006.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2025/mid_4.pdf",
+      "before": {
+        "sha256": "3fa7447b2159c10be70e1047e63dc5e21f726d260897d25ae282b5c28fc4b48c",
+        "size": 1140,
+        "mtime": 1795012688.0
+      },
+      "after": {
+        "sha256": "3fa7447b2159c10be70e1047e63dc5e21f726d260897d25ae282b5c28fc4b48c",
+        "size": 1140,
+        "mtime": 1795012688.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2025/mid_5.pdf",
+      "before": {
+        "sha256": "f7884ab1cef764edf82892161fe4512d04620e85dd3184faae84789e50803d4f",
+        "size": 1140,
+        "mtime": 1795014870.0
+      },
+      "after": {
+        "sha256": "f7884ab1cef764edf82892161fe4512d04620e85dd3184faae84789e50803d4f",
+        "size": 1140,
+        "mtime": 1795014870.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2026/2026-09-brightpath.pdf",
+      "before": {
+        "sha256": "8385927dbe7a080c21729c08214d8662692a974eda22fb09fd6f5d6111cc5c7f",
+        "size": 1240,
+        "mtime": 1794991557.0
+      },
+      "after": {
+        "sha256": "8385927dbe7a080c21729c08214d8662692a974eda22fb09fd6f5d6111cc5c7f",
+        "size": 1240,
+        "mtime": 1794991557.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2026/2026-11-nettle.pdf",
+      "before": {
+        "sha256": "c8ee1906d7b5744a78352dcb4ce4440d457e5865e6d33269436edfb3dedca35d",
+        "size": 1227,
+        "mtime": 1794984933.0
+      },
+      "after": {
+        "sha256": "c8ee1906d7b5744a78352dcb4ce4440d457e5865e6d33269436edfb3dedca35d",
+        "size": 1227,
+        "mtime": 1794984933.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2026/new_1.pdf",
+      "before": {
+        "sha256": "d9ef2b0755db3f9cafd8868ed1e79b370a2d27d11ac5cd4c2704f6511cb8f6f4",
+        "size": 1140,
+        "mtime": 1795009304.0
+      },
+      "after": {
+        "sha256": "d9ef2b0755db3f9cafd8868ed1e79b370a2d27d11ac5cd4c2704f6511cb8f6f4",
+        "size": 1140,
+        "mtime": 1795009304.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2026/new_2.pdf",
+      "before": {
+        "sha256": "11102db4b7701dab15171413f69bd1a12750d25d6e4604ead178fe4a04c6e69d",
+        "size": 1139,
+        "mtime": 1794995811.0
+      },
+      "after": {
+        "sha256": "11102db4b7701dab15171413f69bd1a12750d25d6e4604ead178fe4a04c6e69d",
+        "size": 1139,
+        "mtime": 1794995811.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/invoices/2026/new_3.pdf",
+      "before": {
+        "sha256": "8a3baa5f38ac808ab2c9ed85112bf00196e1ecbd64add32b28e9a9b34743d0ea",
+        "size": 1140,
+        "mtime": 1795012225.0
+      },
+      "after": {
+        "sha256": "8a3baa5f38ac808ab2c9ed85112bf00196e1ecbd64add32b28e9a9b34743d0ea",
+        "size": 1140,
+        "mtime": 1795012225.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/notes/rates_2025.md",
+      "before": {
+        "sha256": "7c49eee25ad24a94d60465ad7c6b70fd4f96de8e3636e7078a88f199d30259e5",
+        "size": 131,
+        "mtime": 1795006688.0
+      },
+      "after": {
+        "sha256": "7c49eee25ad24a94d60465ad7c6b70fd4f96de8e3636e7078a88f199d30259e5",
+        "size": 131,
+        "mtime": 1795006688.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/notes/sticky_export.txt",
+      "before": {
+        "sha256": "568d3325f27c072f6bafe863642c07747e3d05ae90a0681655e20232b5bd7cc4",
+        "size": 119,
+        "mtime": 1795015367.0
+      },
+      "after": {
+        "sha256": "568d3325f27c072f6bafe863642c07747e3d05ae90a0681655e20232b5bd7cc4",
+        "size": 119,
+        "mtime": 1795015367.0
+      },
+      "ok": true
+    },
+    {
+      "path": "clients/tmp/empty.tmp",
+      "before": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mtime": 1794998643.0
+      },
+      "after": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mtime": 1794998643.0
+      },
+      "ok": true
+    }
+  ],
+  "special": {
+    "zeroByteFiles": [
+      "clients/tmp/empty.tmp"
+    ],
+    "lockFiles": [],
+    "dsStores": [],
+    "zeroBytesPreserved": true,
+    "locksPreserved": true,
+    "dsStoresPreserved": true
+  },
+  "allOk": true
+}

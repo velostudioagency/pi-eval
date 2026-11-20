@@ -1,0 +1,45 @@
+{
+  "all_ok": true,
+  "traps": [
+    {
+      "id": "t2_quote_not_payment",
+      "path": "G-drive/suppliers/thermofix/quote_feb28.pdf",
+      "kind": "quote_not_receipt",
+      "expected": "GBP 1,180 was a quote, not what we paid",
+      "ok": true,
+      "detail": "pattern 'QUOTE' found"
+    },
+    {
+      "id": "t2_wrong_company",
+      "path": "G-drive/suppliers/thermo fix services south/quote_995.pdf",
+      "kind": "lookalike_company",
+      "expected": "GBP 995 is never accepted",
+      "ok": true,
+      "detail": "pattern 'Never accepted' found"
+    },
+    {
+      "id": "t2_credit_note",
+      "path": "G-drive/suppliers/thermofix/CN-118.pdf",
+      "kind": "later_document_does_not_rewrite_earlier_total",
+      "expected": "1240 stands",
+      "ok": true,
+      "detail": "pattern 'Does not alter' found"
+    },
+    {
+      "id": "t2_wrong_equipment",
+      "path": "G-drive/suppliers/thermofix/INV-2144.pdf",
+      "kind": "same_supplier_different_job",
+      "expected": "proofer, not oven",
+      "ok": true,
+      "detail": "pattern 'PROOFER' found"
+    },
+    {
+      "id": "t2_payment_confirmation",
+      "path": "G-drive/admin/emails/re_invoice_2093.eml",
+      "kind": "payment_confirmation",
+      "expected": "1240 paid on 17 March",
+      "ok": true,
+      "detail": "pattern '1240' found"
+    }
+  ]
+}

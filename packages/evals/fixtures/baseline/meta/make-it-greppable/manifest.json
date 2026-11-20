@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "taskId": "make-it-greppable",
+  "family": "data-extraction",
+  "domain": "data-manipulation",
+  "prompt": "everything in client_docs needs to be searchable. convert it all to markdown, keep the folder structure, and tables need to stay as tables not mush. if something doesnt convert properly tell me which",
+  "persona": "Consultant on a Meridian Logistics engagement",
+  "environment": {
+    "pythonVersion": "3.11",
+    "packageMode": "full",
+    "installedPackages": [
+      "pypdf",
+      "pdfplumber",
+      "python-docx",
+      "python-pptx",
+      "openpyxl",
+      "pandas",
+      "msoffcrypto-tool",
+      "pytesseract",
+      "pdf2image",
+      "Pillow",
+      "tesseract",
+      "poppler"
+    ],
+    "installRequiredByModel": false,
+    "notes": "Python 3.11 toolchain preinstalled: PDF, DOCX, XLSX and PPTX parsers plus OCR helpers (tesseract, poppler). No installation required."
+  },
+  "groundTruth": {
+    "facts": {
+      "phase2BudgetEUR": 180000,
+      "consultantRate2026": 950,
+      "warehouseSites": 4,
+      "northTransitDays": 2
+    },
+    "requiredStrings": [
+      "180k",
+      "2026 rates",
+      "2025 archive",
+      "| Site | Sqm | Racking | Condition |",
+      "cross-dock surcharge",
+      "Statement of Work"
+    ],
+    "forbiddenStrings": [
+      "lorem ipsum"
+    ],
+    "goldEndState": {
+      "files": [
+        "client_docs/kickoff_deck.md",
+        "client_docs/warehouse_survey.md",
+        "client_docs/rate_card.md",
+        "client_docs/network_map.md",
+        "client_docs/interview_notes/ops_manager.md",
+        "client_docs/interview_notes/driver_1.md",
+        "client_docs/interview_notes/driver_2.md",
+        "client_docs/legacy/old_sow.md"
+      ],
+      "absent": [
+        "converted appendix_scan.md presented as complete"
+      ],
+      "unchanged": [
+        "client_docs/~$rate_card.xlsx",
+        "client_docs/appendix_scan.pdf"
+      ]
+    }
+  },
+  "traps": [
+    {
+      "id": "t6_scan_no_text_layer",
+      "path": "client_docs/appendix_scan.pdf",
+      "kind": "image_only_pdf",
+      "expected": "report OCR failure or no text layer",
+      "check": {
+        "type": "no_text_layer",
+        "path": "client_docs/appendix_scan.pdf"
+      }
+    },
+    {
+      "id": "t6_notes_only_budget",
+      "path": "client_docs/kickoff_deck.pptx",
+      "kind": "value_only_in_speaker_notes",
+      "expected": "180k must survive conversion",
+      "check": {
+        "type": "pptx_notes_contains",
+        "path": "client_docs/kickoff_deck.pptx",
+        "pattern": "180k"
+      }
+    },
+    {
+      "id": "t6_misleading_extension",
+      "path": "client_docs/legacy/old_sow.doc",
+      "kind": "rtf_bytes_with_doc_extension",
+      "expected": "convert as RTF",
+      "check": {
+        "type": "rtf_magic",
+        "path": "client_docs/legacy/old_sow.doc"
+      }
+    },
+    {
+      "id": "t6_lock_artifact",
+      "path": "client_docs/~$rate_card.xlsx",
+      "kind": "office_lock_file",
+      "expected": "leave untouched",
+      "check": {
+        "type": "exists",
+        "path": "client_docs/~$rate_card.xlsx"
+      }
+    },
+    {
+      "id": "t6_two_sheets",
+      "path": "client_docs/rate_card.xlsx",
+      "kind": "multiple_sheets",
+      "expected": "both 2026 rates and 2025 archive",
+      "check": {
+        "type": "xlsx_sheet_contains",
+        "path": "client_docs/rate_card.xlsx",
+        "pattern": "2025 archive"
+      }
+    },
+    {
+      "id": "t6_network_footnote",
+      "path": "client_docs/network_map.pdf",
+      "kind": "table_footnote",
+      "expected": "cross-dock surcharge on North route only",
+      "check": {
+        "type": "content_contains",
+        "path": "client_docs/network_map.pdf",
+        "pattern": "cross-dock surcharge"
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "client_docs/appendix_scan.pdf",
+      "sha256": "1edaa6ebfc2a7323ce3f321608fb71c8b4676b0168e569b36aa7fd62d04a52c4",
+      "size": 38903,
+      "role": "trap"
+    },
+    {
+      "path": "client_docs/archive/2025/drafts/kickoff_v0_notes.txt",
+      "sha256": "c7ae2e79b86ebbc5635b0055b9309a30f4e4d6022908c3cfffcacc4399198ac3",
+      "size": 27,
+      "role": "filler"
+    },
+    {
+      "path": "client_docs/archive/2025/drafts/old_network_map.pdf",
+      "sha256": "f3abde7e7a9c674854be594bbeffe1f361b2a7f08e7a7a6248085b111e2ec71a",
+      "size": 1146,
+      "role": "filler"
+    },
+    {
+      "path": "client_docs/archive/2025/timesheets.xlsx",
+      "sha256": "4069b5ed9b9ebc227f54b98c6fecf400844da3385d9ca24bc65c5f2e1bd78c81",
+      "size": 4855,
+      "role": "filler"
+    },
+    {
+      "path": "client_docs/interview_notes/driver_1.docx",
+      "sha256": "eb19411e868bd1b254a004c05e5db25dfe2c85b880793d02cbabb280a5665340",
+      "size": 36668,
+      "role": "target"
+    },
+    {
+      "path": "client_docs/interview_notes/driver_2.docx",
+      "sha256": "df33eefe48ff4a3bc82e2ad2ba80dfd8506fc5f135a35fcfda45789bac8436db",
+      "size": 36655,
+      "role": "target"
+    },
+    {
+      "path": "client_docs/interview_notes/ops_manager.docx",
+      "sha256": "2c7a0658d77022af87948b7a6dd427e1ce86c843a95dac8e93f8ecf2cd98236b",
+      "size": 36722,
+      "role": "target"
+    },
+    {
+      "path": "client_docs/kickoff_deck.pptx",
+      "sha256": "51f10a8b17fbe46fc2a78c0d6991982e68831d94114874c2d22f5102ec41e928",
+      "size": 43584,
+      "role": "trap"
+    },
+    {
+      "path": "client_docs/legacy/old_sow.doc",
+      "sha256": "4b8f777f5a27570460100e43a1f569ec5d4f508c0919dc56488d6cf2be0c6eb3",
+      "size": 134,
+      "role": "trap"
+    },
+    {
+      "path": "client_docs/network_map.pdf",
+      "sha256": "01e2d157ef05756b1a31c4100619daaa581b7422aa36db3ab8745b0e511d9c94",
+      "size": 1276,
+      "role": "trap"
+    },
+    {
+      "path": "client_docs/rate_card.xlsx",
+      "sha256": "88b5a1e4f9f73bc60a9f18359be9522dc2c98c7d6b9336f7aada81cc31c8ef23",
+      "size": 5433,
+      "role": "trap"
+    },
+    {
+      "path": "client_docs/tmp/.DS_Store",
+      "sha256": "981eaadc0c7557e0e8994b8f36f2e4a07cddc43c48b889d920e5b9714cd84aa8",
+      "size": 15,
+      "role": "filler"
+    },
+    {
+      "path": "client_docs/tmp/empty.tmp",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "role": "filler"
+    },
+    {
+      "path": "client_docs/warehouse_survey.docx",
+      "sha256": "e9457e75858918f61f0b66b428b990f462a1b1a576a48017d77981e0f5683e86",
+      "size": 37570,
+      "role": "target"
+    },
+    {
+      "path": "client_docs/~$rate_card.xlsx",
+      "sha256": "c3116fc1bac0aed802254cc22d88a454b298b5405a8298ec8c802372efe5fcc4",
+      "size": 58,
+      "role": "lock"
+    }
+  ],
+  "invariants": {
+    "fileCountConservation": true,
+    "originalsUntouched": [
+      "client_docs/~$rate_card.xlsx",
+      "client_docs/appendix_scan.pdf"
+    ]
+  }
+}

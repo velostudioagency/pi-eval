@@ -1,0 +1,54 @@
+{
+  "fileCount": 311,
+  "generatorSeed": "velo-baseline-frozen-2026-v2",
+  "generatorVersion": "2.0.0",
+  "manifestSchemaVersion": 1,
+  "tasks": {
+    "downloads-disaster": {
+      "buildId": "5d8e315295604d5e8e1f534cc60de8b9",
+      "fileCount": 51,
+      "treeHash": "5848548b63a15825da17f87456f4833ab17789b3ef42ff2aa3b748fa4970b96c"
+    },
+    "hostile-batch": {
+      "buildId": "545b9ef1f2324262a24e1688f67f95d6",
+      "fileCount": 21,
+      "treeHash": "002f6ca820c1d0bd36d454b7fafe621283f5e86b4c35db7597b8f7d506f40620"
+    },
+    "make-it-greppable": {
+      "buildId": "347956ddffd34e58bea85faa9d02a71e",
+      "fileCount": 21,
+      "treeHash": "dc83564c30dc8639ce0957c191a6beaa19d91bd27668a24a351aa3c5ca3cd183"
+    },
+    "one-clients-doc": {
+      "buildId": "573e873347df464aac22d2e223b57b27",
+      "fileCount": 41,
+      "treeHash": "499cc3862c172295ed994bc62db31d82be140b229f1f53c624055b3811256d56"
+    },
+    "season-folder": {
+      "buildId": "58ae731b8c124898b337f62c9da7d1e1",
+      "fileCount": 48,
+      "treeHash": "1f9249bd12f0a16b935413749d77faedeeac88a060f7e0270f973d18823b6cde"
+    },
+    "stale-equipment-page": {
+      "buildId": "096d751c8e7047509a78c8898e3a43b8",
+      "fileCount": 19,
+      "treeHash": "5ac10489f3f010a3de154d70a0796a24ca58fa738c989fdd3167b5b129b239e8"
+    },
+    "the-handover": {
+      "buildId": "23ceb380e2994e18bd33460bfb7a3992",
+      "fileCount": 33,
+      "treeHash": "7b49de481f3f060486caa9b13757973b5af794b1c710641cecccf82efcdc5a37"
+    },
+    "the-tax-pack": {
+      "buildId": "54c9559e4f8a480a910b2397bda0127e",
+      "fileCount": 39,
+      "treeHash": "019d7cb5a09fa1c055d5928c53bec6c73b4c22e9c5828f6bf520d45153622550"
+    },
+    "what-did-we-actually-pay": {
+      "buildId": "a358a50ac0384858b81789c68fbd49ec",
+      "fileCount": 37,
+      "treeHash": "419c26e52444dde3eab184e5ee627df47501225d40796b09fd3690f12f834948"
+    }
+  },
+  "treeHash": "06a93fae64561d305534ac590ed7cd8ddb0b4c7f0118e9524c00760ad4cad59a"
+}

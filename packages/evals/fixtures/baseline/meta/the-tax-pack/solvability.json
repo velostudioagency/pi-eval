@@ -1,0 +1,69 @@
+{
+  "taskId": "the-tax-pack",
+  "facts": [
+    {
+      "key": "issuedTotal",
+      "expected": 21000,
+      "recovered": 21000,
+      "method": "sum of INV-2025 amounts parsed from manifest.txt",
+      "ok": true
+    },
+    {
+      "key": "issuedTotalFormatted",
+      "expected": "21,000",
+      "recovered": "21,000",
+      "method": "formatted sum of parsed invoice amounts",
+      "ok": true
+    },
+    {
+      "key": "partPayment",
+      "expected": 900,
+      "recovered": 900,
+      "method": "bank CSV PART-PAID row for 007",
+      "ok": true
+    },
+    {
+      "key": "invoice007Total",
+      "expected": 1800,
+      "recovered": 1800,
+      "method": "manifest.txt amount for INV-2025-007",
+      "ok": true
+    },
+    {
+      "key": "invoice011Status",
+      "expected": "UNPAID",
+      "recovered": "UNPAID",
+      "method": "bank CSV status for 011",
+      "ok": true
+    },
+    {
+      "key": "expenseTotal",
+      "expected": 2750,
+      "recovered": 2750,
+      "method": "sum of pypdf-parsed business expense receipts",
+      "ok": true
+    },
+    {
+      "key": "gymAmount",
+      "expected": 60,
+      "recovered": 60,
+      "method": "pypdf parse of gym receipt",
+      "ok": true
+    },
+    {
+      "key": "eurAmount",
+      "expected": 2400,
+      "recovered": 2400,
+      "method": "pypdf parse of EUR invoice",
+      "ok": true
+    },
+    {
+      "key": "issuedCount",
+      "expected": 16,
+      "recovered": 16,
+      "method": "count of INV-2025 amounts parsed from manifest.txt",
+      "ok": true
+    }
+  ],
+  "allOk": true
+}

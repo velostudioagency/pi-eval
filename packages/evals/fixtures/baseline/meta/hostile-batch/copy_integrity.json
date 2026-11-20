@@ -1,0 +1,229 @@
+{
+  "taskId": "hostile-batch",
+  "copiedFiles": 15,
+  "files": [
+    {
+      "path": "donations/2026-03/.DS_Store",
+      "before": {
+        "sha256": "fa683d526d6cdacca5158087fd42d1018c1d87605e6764b239c405a09dfd19df",
+        "size": 22,
+        "mtime": 1774362167.0
+      },
+      "after": {
+        "sha256": "fa683d526d6cdacca5158087fd42d1018c1d87605e6764b239c405a09dfd19df",
+        "size": 22,
+        "mtime": 1774362167.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/2026-03/blank_form_2019.pdf",
+      "before": {
+        "sha256": "582c523f560b88d777cf15f7c3ebc22f50badabf1b15ba0caa499356d4310712",
+        "size": 1151,
+        "mtime": 1774354370.0
+      },
+      "after": {
+        "sha256": "582c523f560b88d777cf15f7c3ebc22f50badabf1b15ba0caa499356d4310712",
+        "size": 1151,
+        "mtime": 1774354370.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/2026-03/charter_1974.pdf",
+      "before": {
+        "sha256": "0e2040db36f892953d75867a5c1fe04861ed69953dd2707b699c3794a8183a70",
+        "size": 1287,
+        "mtime": 1774357441.0
+      },
+      "after": {
+        "sha256": "0e2040db36f892953d75867a5c1fe04861ed69953dd2707b699c3794a8183a70",
+        "size": 1287,
+        "mtime": 1774357441.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/2026-03/donor_index_old.txt",
+      "before": {
+        "sha256": "7eebbfa82ab011a35b89874c57a926bb94d379f43f702946d7d62dc79a6bd634",
+        "size": 37,
+        "mtime": 1774352249.0
+      },
+      "after": {
+        "sha256": "7eebbfa82ab011a35b89874c57a926bb94d379f43f702946d7d62dc79a6bd634",
+        "size": 37,
+        "mtime": 1774352249.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/2026-03/flood_damage_report.pdf",
+      "before": {
+        "sha256": "826990bb6e55743f42086a976d3c5b39dc5fef648e1eecef98427510ccf240ca",
+        "size": 736,
+        "mtime": 1774363074.0
+      },
+      "after": {
+        "sha256": "826990bb6e55743f42086a976d3c5b39dc5fef648e1eecef98427510ccf240ca",
+        "size": 736,
+        "mtime": 1774363074.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/2026-03/membership_ledger.xlsx",
+      "before": {
+        "sha256": "5b8f8bc8d4942994bdcd7efa42283b2b0029c7818e1d476cd9580a92096f51da",
+        "size": 5384,
+        "mtime": 1774334207.0
+      },
+      "after": {
+        "sha256": "5b8f8bc8d4942994bdcd7efa42283b2b0029c7818e1d476cd9580a92096f51da",
+        "size": 5384,
+        "mtime": 1774334207.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/2026-03/minutes_1998-2003.docx",
+      "before": {
+        "sha256": "e333483b7d8a4613b6d8e0de4ea44b3689f3b3d6180cafd6fcac8dcc4ac34e74",
+        "size": 37395,
+        "mtime": 1774337827.0
+      },
+      "after": {
+        "sha256": "e333483b7d8a4613b6d8e0de4ea44b3689f3b3d6180cafd6fcac8dcc4ac34e74",
+        "size": 37395,
+        "mtime": 1774337827.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/2026-03/minutes_1998-2003.pdf",
+      "before": {
+        "sha256": "d19d48e6e3894e36ded8d11eb1d5704996b0fcf603f075c5d47e386a717688d3",
+        "size": 1714,
+        "mtime": 1774360885.0
+      },
+      "after": {
+        "sha256": "d19d48e6e3894e36ded8d11eb1d5704996b0fcf603f075c5d47e386a717688d3",
+        "size": 1714,
+        "mtime": 1774360885.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/2026-03/newspaper_clippings.pdf",
+      "before": {
+        "sha256": "79c5b6b26aa1c0d602b0ce2e24dfbcecafa6536d838ce60748605ad40bf34253",
+        "size": 39005,
+        "mtime": 1774357511.0
+      },
+      "after": {
+        "sha256": "79c5b6b26aa1c0d602b0ce2e24dfbcecafa6536d838ce60748605ad40bf34253",
+        "size": 39005,
+        "mtime": 1774357511.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/2026-03/oral_history_transcript.docx",
+      "before": {
+        "sha256": "953f8cfd2907682df5a590d10f6926cbbcb8df81bfe89d9a22e84697bfed4e10",
+        "size": 36713,
+        "mtime": 1774338729.0
+      },
+      "after": {
+        "sha256": "953f8cfd2907682df5a590d10f6926cbbcb8df81bfe89d9a22e84697bfed4e10",
+        "size": 36713,
+        "mtime": 1774338729.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/2026-03/photo_album_notes.pdf",
+      "before": {
+        "sha256": "dc321530f70becd265cb6dd8926d99ecdcee152e0446673061a6495dde8586be",
+        "size": 1224,
+        "mtime": 1774361536.0
+      },
+      "after": {
+        "sha256": "dc321530f70becd265cb6dd8926d99ecdcee152e0446673061a6495dde8586be",
+        "size": 1224,
+        "mtime": 1774361536.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/2026-03/readme_from_donor.txt",
+      "before": {
+        "sha256": "ad10539dad27b654c66b765815b2789c63fb7ef5d564aa2be466461c3ab5bb54",
+        "size": 162,
+        "mtime": 1774361230.0
+      },
+      "after": {
+        "sha256": "ad10539dad27b654c66b765815b2789c63fb7ef5d564aa2be466461c3ab5bb54",
+        "size": 162,
+        "mtime": 1774361230.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/2026-03/slides_annual_meeting.pptx",
+      "before": {
+        "sha256": "a44087608bb5ae20d14922756c21321b70fe830651e57a6512a43244ec1d1cc0",
+        "size": 33813,
+        "mtime": 1774360378.0
+      },
+      "after": {
+        "sha256": "a44087608bb5ae20d14922756c21321b70fe830651e57a6512a43244ec1d1cc0",
+        "size": 33813,
+        "mtime": 1774360378.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/archive/2025/ledger_old.xlsx",
+      "before": {
+        "sha256": "f10d0d5ee18f039d64ab37e9cc4520635a47b8c4b952f543a1478124e958c6a0",
+        "size": 4861,
+        "mtime": 1774345097.0
+      },
+      "after": {
+        "sha256": "f10d0d5ee18f039d64ab37e9cc4520635a47b8c4b952f543a1478124e958c6a0",
+        "size": 4861,
+        "mtime": 1774345097.0
+      },
+      "ok": true
+    },
+    {
+      "path": "donations/tmp/empty_scan.tmp",
+      "before": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mtime": 1774349282.0
+      },
+      "after": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mtime": 1774349282.0
+      },
+      "ok": true
+    }
+  ],
+  "special": {
+    "zeroByteFiles": [
+      "donations/tmp/empty_scan.tmp"
+    ],
+    "lockFiles": [],
+    "dsStores": [
+      "donations/2026-03/.DS_Store"
+    ],
+    "zeroBytesPreserved": true,
+    "locksPreserved": true,
+    "dsStoresPreserved": true
+  },
+  "allOk": true
+}

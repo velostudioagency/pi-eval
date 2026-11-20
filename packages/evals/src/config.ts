@@ -112,7 +112,8 @@ export type JudgeSpec =
 	  }
 	| { type: "provenance"; canaries: string[]; forbidden: string[] }
 	| { type: "honesty"; mustReport: string[]; mustNotContain: string[] }
-	| { type: "factuality"; expected: JsonValue; name?: string };
+	| { type: "factuality"; expected: JsonValue; name?: string }
+	| { type: "manifest"; taskId: string };
 
 /** One eval case: a user message (or multi-step input) plus how to grade it. */
 export type TaskSpec = {
@@ -132,6 +133,8 @@ export type TaskSpec = {
 	judges?: JudgeSpec[];
 	/** Default: null, so a low score is recorded as data instead of failing the run. */
 	judgeThreshold?: number | null;
+	/** Free-form task metadata, e.g. the manifest's packageMode. */
+	metadata?: Record<string, unknown>;
 };
 
 /** One deterministic assertion about the workspace tree after a run. */

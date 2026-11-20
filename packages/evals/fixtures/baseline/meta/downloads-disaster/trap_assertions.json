@@ -1,0 +1,45 @@
+{
+  "all_ok": true,
+  "traps": [
+    {
+      "id": "t1_disguised_tax_scan",
+      "path": "scan.pdf",
+      "kind": "generic_name_hidden_category",
+      "expected": "tax document despite generic filename",
+      "ok": true,
+      "detail": "pattern 'tax' found"
+    },
+    {
+      "id": "t1_duplicate_scan",
+      "path": "scan(1).pdf",
+      "kind": "byte_identical_duplicate",
+      "expected": "same bytes as scan.pdf, do not treat as two notices",
+      "ok": true,
+      "detail": "hashes identical"
+    },
+    {
+      "id": "t1_unreadable_video",
+      "path": "zoom_0.mp4",
+      "kind": "unreadable_binary",
+      "expected": "aside with an uncertainty note",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "id": "t1_current_semester",
+      "path": "NURS201_pharmacology_wk2.pptx",
+      "kind": "recency",
+      "expected": "belongs in uni/sem3",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "id": "t1_cv_leave_alone",
+      "path": "CV_2026_new.pdf",
+      "kind": "leave_alone",
+      "expected": "do not file or edit the CVs",
+      "ok": true,
+      "detail": "pattern '3rd semester' found"
+    }
+  ]
+}

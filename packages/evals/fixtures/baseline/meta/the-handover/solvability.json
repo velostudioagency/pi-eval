@@ -1,0 +1,41 @@
+{
+  "taskId": "the-handover",
+  "facts": [
+    {
+      "key": "credentialsLocation",
+      "expected": "Bitwarden vault 'Agency'",
+      "recovered": "Bitwarden vault 'Agency'",
+      "method": "regex on credentials header note",
+      "ok": true
+    },
+    {
+      "key": "northwindKickoff",
+      "expected": "3 November 2026",
+      "recovered": "3 November 2026",
+      "method": "regex on newest Northwind email",
+      "ok": true
+    },
+    {
+      "key": "staging",
+      "expected": "24 November 2026",
+      "recovered": "24 November 2026",
+      "method": "openpyxl authoritative timeline",
+      "ok": true
+    },
+    {
+      "key": "dnsCutover",
+      "expected": "1 December 2026",
+      "recovered": "1 December 2026",
+      "method": "openpyxl authoritative timeline",
+      "ok": true
+    },
+    {
+      "key": "personalFiles",
+      "expected": 2,
+      "recovered": 2,
+      "method": "filesystem count of personal folder",
+      "ok": true
+    }
+  ],
+  "allOk": true
+}

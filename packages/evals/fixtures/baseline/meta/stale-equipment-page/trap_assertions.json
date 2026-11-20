@@ -1,0 +1,37 @@
+{
+  "all_ok": true,
+  "traps": [
+    {
+      "id": "t4_draft_sop_conflict",
+      "path": "FoldStreet/safety/laser_SOP_draft_v3.docx",
+      "kind": "unsigned_conflicting_source",
+      "expected": "ignore and flag, do not copy into wiki",
+      "ok": true,
+      "detail": "pattern 'UNSIGNED DRAFT' found"
+    },
+    {
+      "id": "t4_chat_rumour_90w",
+      "path": "FoldStreet/admin/slack_export_jan2026/general.txt",
+      "kind": "chat_rumour",
+      "expected": "60W is correct, 90W was rejected quote",
+      "ok": true,
+      "detail": "pattern '90' found"
+    },
+    {
+      "id": "t4_old_invoice",
+      "path": "FoldStreet/admin/invoices/epilog_service_2024.pdf",
+      "kind": "superseded_equipment",
+      "expected": "do not restore Epilog",
+      "ok": true,
+      "detail": "pattern '2024' found"
+    },
+    {
+      "id": "t4_signed_minutes",
+      "path": "FoldStreet/admin/committee_minutes_2026-01-13.md",
+      "kind": "authoritative_source",
+      "expected": "Thunder Nova 24, 60W, \u00a310, online calendar",
+      "ok": true,
+      "detail": "pattern 'Thunder Nova 24' found"
+    }
+  ]
+}

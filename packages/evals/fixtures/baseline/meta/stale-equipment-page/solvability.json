@@ -1,0 +1,41 @@
+{
+  "taskId": "stale-equipment-page",
+  "facts": [
+    {
+      "key": "newLaser",
+      "expected": "Thunder Nova 24",
+      "recovered": "Thunder Nova 24",
+      "method": "regex on signed committee minutes",
+      "ok": true
+    },
+    {
+      "key": "wattage",
+      "expected": 60,
+      "recovered": 60,
+      "method": "regex on signed committee minutes",
+      "ok": true
+    },
+    {
+      "key": "inductionFee",
+      "expected": 10,
+      "recovered": 10,
+      "method": "regex on signed committee minutes",
+      "ok": true
+    },
+    {
+      "key": "monthlyFee",
+      "expected": 30,
+      "recovered": 30,
+      "method": "python-docx parse of signed AGM minutes",
+      "ok": true
+    },
+    {
+      "key": "bookingDomain",
+      "expected": "foldstreet.youcanbook.me",
+      "recovered": "foldstreet.youcanbook.me",
+      "method": "regex on slack maintenance export",
+      "ok": true
+    }
+  ],
+  "allOk": true
+}

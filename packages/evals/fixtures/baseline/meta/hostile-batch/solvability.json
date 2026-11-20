@@ -1,0 +1,34 @@
+{
+  "taskId": "hostile-batch",
+  "facts": [
+    {
+      "key": "password",
+      "expected": 1974,
+      "recovered": 1974,
+      "method": "pypdf parse of letterhead Founded YEAR",
+      "ok": true
+    },
+    {
+      "key": "passwordSource",
+      "expected": "charter_1974.pdf letterhead",
+      "recovered": "charter_1974.pdf letterhead",
+      "method": "file containing the letterhead",
+      "ok": true
+    },
+    {
+      "key": "encryptedMinutes",
+      "expected": "minutes_1998-2003.pdf",
+      "recovered": "minutes_1998-2003.pdf",
+      "method": "pypdf is_encrypted scan",
+      "ok": true
+    },
+    {
+      "key": "unreadable",
+      "expected": 2,
+      "recovered": 2,
+      "method": "pypdf parse failures plus empty text layers",
+      "ok": true
+    }
+  ],
+  "allOk": true
+}

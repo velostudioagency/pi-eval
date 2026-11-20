@@ -1,0 +1,607 @@
+{
+  "taskId": "season-folder",
+  "copiedFiles": 42,
+  "files": [
+    {
+      "path": "season/archive/2024/q1/old_fixture_sheet.pdf",
+      "before": {
+        "sha256": "6ea4c07bb47ffc22fae29ce6fb24d453df3079924af4127d8af379765ac53c37",
+        "size": 1148,
+        "mtime": 1778744243.0
+      },
+      "after": {
+        "sha256": "6ea4c07bb47ffc22fae29ce6fb24d453df3079924af4127d8af379765ac53c37",
+        "size": 1148,
+        "mtime": 1778744243.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/archive/2024/q1/team_list_old.txt",
+      "before": {
+        "sha256": "fb0ed1b7ed0be197d92bcfb8d3fdd46268897053ccd912fa853899745181d48a",
+        "size": 37,
+        "mtime": 1778743172.0
+      },
+      "after": {
+        "sha256": "fb0ed1b7ed0be197d92bcfb8d3fdd46268897053ccd912fa853899745181d48a",
+        "size": 37,
+        "mtime": 1778743172.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/archive/2024/q2/.DS_Store",
+      "before": {
+        "sha256": "60e847b785a47714f7a4608a2212a4d410d6d30796c122a2f08c62578928a982",
+        "size": 17,
+        "mtime": 1778744468.0
+      },
+      "after": {
+        "sha256": "60e847b785a47714f7a4608a2212a4d410d6d30796c122a2f08c62578928a982",
+        "size": 17,
+        "mtime": 1778744468.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/archive/2024/q2/away_trip.png",
+      "before": {
+        "sha256": "1c26a871c45e0dad6c56e040cf3c43799b3466edc9208a9a4e2529a0de418f39",
+        "size": 5645,
+        "mtime": 1778749026.0
+      },
+      "after": {
+        "sha256": "1c26a871c45e0dad6c56e040cf3c43799b3466edc9208a9a4e2529a0de418f39",
+        "size": 5645,
+        "mtime": 1778749026.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/committee/minutes.txt",
+      "before": {
+        "sha256": "1ebb03bf1e015d25d2953cb9f38e0ba88af3d89303ca607fb222d64b5f259afc",
+        "size": 82,
+        "mtime": 1778745507.0
+      },
+      "after": {
+        "sha256": "1ebb03bf1e015d25d2953cb9f38e0ba88af3d89303ca607fb222d64b5f259afc",
+        "size": 82,
+        "mtime": 1778745507.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/committee/subs_ledger.xlsx",
+      "before": {
+        "sha256": "ff3c1afd5bcd01de4c631048c3e1db0766cc560801b8b99a41d98e9ec03eabfa",
+        "size": 4879,
+        "mtime": 1778771172.0
+      },
+      "after": {
+        "sha256": "ff3c1afd5bcd01de4c631048c3e1db0766cc560801b8b99a41d98e9ec03eabfa",
+        "size": 4879,
+        "mtime": 1778771172.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/fixtures.xlsx",
+      "before": {
+        "sha256": "2140aee8e3dad6d2d291f23c7f012215d0325dc568260b45f8f70bdd9bbfc4e8",
+        "size": 5060,
+        "mtime": 1778748742.0
+      },
+      "after": {
+        "sha256": "2140aee8e3dad6d2d291f23c7f012215d0325dc568260b45f8f70bdd9bbfc4e8",
+        "size": 5060,
+        "mtime": 1778748742.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/match report vs riverside march.txt",
+      "before": {
+        "sha256": "a091da3d32b9bb5884f462e13d21288ced0268838fe4d1e395dcbbd4db0d334e",
+        "size": 133,
+        "mtime": 1778742879.0
+      },
+      "after": {
+        "sha256": "a091da3d32b9bb5884f462e13d21288ced0268838fe4d1e395dcbbd4db0d334e",
+        "size": 133,
+        "mtime": 1778742879.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4012.jpg",
+      "before": {
+        "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+        "size": 13776,
+        "mtime": 1778753194.0
+      },
+      "after": {
+        "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+        "size": 13776,
+        "mtime": 1778753194.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4013.jpg",
+      "before": {
+        "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+        "size": 13646,
+        "mtime": 1778759554.0
+      },
+      "after": {
+        "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+        "size": 13646,
+        "mtime": 1778759554.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4014.jpg",
+      "before": {
+        "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+        "size": 13993,
+        "mtime": 1778764537.0
+      },
+      "after": {
+        "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+        "size": 13993,
+        "mtime": 1778764537.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4015.jpg",
+      "before": {
+        "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+        "size": 14334,
+        "mtime": 1778767421.0
+      },
+      "after": {
+        "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+        "size": 14334,
+        "mtime": 1778767421.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4016.jpg",
+      "before": {
+        "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+        "size": 13776,
+        "mtime": 1778763891.0
+      },
+      "after": {
+        "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+        "size": 13776,
+        "mtime": 1778763891.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4017.jpg",
+      "before": {
+        "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+        "size": 13646,
+        "mtime": 1778769300.0
+      },
+      "after": {
+        "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+        "size": 13646,
+        "mtime": 1778769300.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4018.jpg",
+      "before": {
+        "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+        "size": 13993,
+        "mtime": 1778768713.0
+      },
+      "after": {
+        "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+        "size": 13993,
+        "mtime": 1778768713.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4019.jpg",
+      "before": {
+        "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+        "size": 14334,
+        "mtime": 1778761923.0
+      },
+      "after": {
+        "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+        "size": 14334,
+        "mtime": 1778761923.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4020.jpg",
+      "before": {
+        "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+        "size": 13776,
+        "mtime": 1778761300.0
+      },
+      "after": {
+        "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+        "size": 13776,
+        "mtime": 1778761300.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4021.jpg",
+      "before": {
+        "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+        "size": 13646,
+        "mtime": 1778753644.0
+      },
+      "after": {
+        "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+        "size": 13646,
+        "mtime": 1778753644.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4022.jpg",
+      "before": {
+        "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+        "size": 13993,
+        "mtime": 1778767746.0
+      },
+      "after": {
+        "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+        "size": 13993,
+        "mtime": 1778767746.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4023.jpg",
+      "before": {
+        "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+        "size": 14334,
+        "mtime": 1778752489.0
+      },
+      "after": {
+        "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+        "size": 14334,
+        "mtime": 1778752489.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4024.jpg",
+      "before": {
+        "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+        "size": 13776,
+        "mtime": 1778763126.0
+      },
+      "after": {
+        "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+        "size": 13776,
+        "mtime": 1778763126.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4025.jpg",
+      "before": {
+        "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+        "size": 13646,
+        "mtime": 1778755578.0
+      },
+      "after": {
+        "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+        "size": 13646,
+        "mtime": 1778755578.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4026.jpg",
+      "before": {
+        "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+        "size": 13993,
+        "mtime": 1778769156.0
+      },
+      "after": {
+        "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+        "size": 13993,
+        "mtime": 1778769156.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4027.jpg",
+      "before": {
+        "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+        "size": 14334,
+        "mtime": 1778769416.0
+      },
+      "after": {
+        "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+        "size": 14334,
+        "mtime": 1778769416.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4028.jpg",
+      "before": {
+        "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+        "size": 13776,
+        "mtime": 1778765865.0
+      },
+      "after": {
+        "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+        "size": 13776,
+        "mtime": 1778765865.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4029.jpg",
+      "before": {
+        "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+        "size": 13646,
+        "mtime": 1778764503.0
+      },
+      "after": {
+        "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+        "size": 13646,
+        "mtime": 1778764503.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4030.jpg",
+      "before": {
+        "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+        "size": 13993,
+        "mtime": 1778759115.0
+      },
+      "after": {
+        "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+        "size": 13993,
+        "mtime": 1778759115.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/IMG_4031.jpg",
+      "before": {
+        "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+        "size": 14334,
+        "mtime": 1778760635.0
+      },
+      "after": {
+        "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+        "size": 14334,
+        "mtime": 1778760635.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/notes.txt",
+      "before": {
+        "sha256": "95b68653dfbe3d3117ec72d5181cfa6e9c257dcf2f2a9799d4fce14c3c88e4f1",
+        "size": 131,
+        "mtime": 1778758288.0
+      },
+      "after": {
+        "sha256": "95b68653dfbe3d3117ec72d5181cfa6e9c257dcf2f2a9799d4fce14c3c88e4f1",
+        "size": 131,
+        "mtime": 1778758288.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.01.jpeg",
+      "before": {
+        "sha256": "61ca194eb75d083a8762d2df2ec447c8a3ffe73e8af9e7ee8a756d72f3563107",
+        "size": 15032,
+        "mtime": 1778746417.0
+      },
+      "after": {
+        "sha256": "61ca194eb75d083a8762d2df2ec447c8a3ffe73e8af9e7ee8a756d72f3563107",
+        "size": 15032,
+        "mtime": 1778746417.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.02.jpeg",
+      "before": {
+        "sha256": "9117d9981b913ecf67185aac058857474d480843a6622e3444bdbc8b8f61e413",
+        "size": 14825,
+        "mtime": 1778745129.0
+      },
+      "after": {
+        "sha256": "9117d9981b913ecf67185aac058857474d480843a6622e3444bdbc8b8f61e413",
+        "size": 14825,
+        "mtime": 1778745129.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.03.jpeg",
+      "before": {
+        "sha256": "ab42cc186eeaf23febe5efa1423020c0cc811963c5e68c01445dff494850a6b9",
+        "size": 15013,
+        "mtime": 1778753775.0
+      },
+      "after": {
+        "sha256": "ab42cc186eeaf23febe5efa1423020c0cc811963c5e68c01445dff494850a6b9",
+        "size": 15013,
+        "mtime": 1778753775.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.04.jpeg",
+      "before": {
+        "sha256": "35fc6f1392741bab9ead661bd5ef25a03e56fbcfecf3774e402b1069186854cd",
+        "size": 15021,
+        "mtime": 1778749117.0
+      },
+      "after": {
+        "sha256": "35fc6f1392741bab9ead661bd5ef25a03e56fbcfecf3774e402b1069186854cd",
+        "size": 15021,
+        "mtime": 1778749117.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.05.jpeg",
+      "before": {
+        "sha256": "5dab5a3359b0cf541110f3ae3877073e29cda2b1d507d12668b56a8d3efc165e",
+        "size": 15299,
+        "mtime": 1778765317.0
+      },
+      "after": {
+        "sha256": "5dab5a3359b0cf541110f3ae3877073e29cda2b1d507d12668b56a8d3efc165e",
+        "size": 15299,
+        "mtime": 1778765317.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.06.jpeg",
+      "before": {
+        "sha256": "13f3c9775afc390fc48a95c66bc50dadc243437c8debf5c71c5d1b03c209e025",
+        "size": 15382,
+        "mtime": 1778750664.0
+      },
+      "after": {
+        "sha256": "13f3c9775afc390fc48a95c66bc50dadc243437c8debf5c71c5d1b03c209e025",
+        "size": 15382,
+        "mtime": 1778750664.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/report millfield FINAL.docx",
+      "before": {
+        "sha256": "98e92b3eb5feec30ee84714c56b7b60d90e4a405ed9d18e851d4657a9f8d9f85",
+        "size": 37372,
+        "mtime": 1778763547.0
+      },
+      "after": {
+        "sha256": "98e92b3eb5feec30ee84714c56b7b60d90e4a405ed9d18e851d4657a9f8d9f85",
+        "size": 37372,
+        "mtime": 1778763547.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/riverside_aug/report.md",
+      "before": {
+        "sha256": "0a2a00b0cd1a63a2feea52eb0ef7abf157c15c36abe946a4dfa6cb6f363d4403",
+        "size": 148,
+        "mtime": 1778762336.0
+      },
+      "after": {
+        "sha256": "0a2a00b0cd1a63a2feea52eb0ef7abf157c15c36abe946a4dfa6cb6f363d4403",
+        "size": 148,
+        "mtime": 1778762336.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/sponsors/invoice.pdf",
+      "before": {
+        "sha256": "6760f38ff33a721706a05ccaa46872b26e386af18cea7671b1c9efc427e40fd8",
+        "size": 1168,
+        "mtime": 1778746360.0
+      },
+      "after": {
+        "sha256": "6760f38ff33a721706a05ccaa46872b26e386af18cea7671b1c9efc427e40fd8",
+        "size": 1168,
+        "mtime": 1778746360.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/sponsors/logo.png",
+      "before": {
+        "sha256": "3c72be3df80b42e6e51914827b75812c24077655baa34b927d5f78600e522677",
+        "size": 5775,
+        "mtime": 1778771014.0
+      },
+      "after": {
+        "sha256": "3c72be3df80b42e6e51914827b75812c24077655baa34b927d5f78600e522677",
+        "size": 5775,
+        "mtime": 1778771014.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/tmp/empty.tmp",
+      "before": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mtime": 1778763031.0
+      },
+      "after": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mtime": 1778763031.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/tmp/sticky.txt",
+      "before": {
+        "sha256": "b49d4f77b43f5f06e539341fbe03aa5d363a7e18517f4de2fc2967faca1ff702",
+        "size": 35,
+        "mtime": 1778760648.0
+      },
+      "after": {
+        "sha256": "b49d4f77b43f5f06e539341fbe03aa5d363a7e18517f4de2fc2967faca1ff702",
+        "size": 35,
+        "mtime": 1778760648.0
+      },
+      "ok": true
+    },
+    {
+      "path": "season/vs oakwood feb/report.txt",
+      "before": {
+        "sha256": "ea2535f76e95495e91dc1d70d683b291bba2f7d30c2a32190a445aff7dafb59c",
+        "size": 77,
+        "mtime": 1778754231.0
+      },
+      "after": {
+        "sha256": "ea2535f76e95495e91dc1d70d683b291bba2f7d30c2a32190a445aff7dafb59c",
+        "size": 77,
+        "mtime": 1778754231.0
+      },
+      "ok": true
+    }
+  ],
+  "special": {
+    "zeroByteFiles": [
+      "season/tmp/empty.tmp"
+    ],
+    "lockFiles": [],
+    "dsStores": [
+      "season/archive/2024/q2/.DS_Store"
+    ],
+    "zeroBytesPreserved": true,
+    "locksPreserved": true,
+    "dsStoresPreserved": true
+  },
+  "allOk": true
+}

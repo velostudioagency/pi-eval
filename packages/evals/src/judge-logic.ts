@@ -4,6 +4,8 @@
  */
 
 import type { JudgeSpec, WorkspaceCheck } from "./config.ts";
+import { loadManifest } from "./manifest.ts";
+import { scoreManifest } from "./manifest-score.ts";
 import { PI_TRACE_ARTIFACT, parseTraceArtifact } from "./trace.ts";
 import { parseWorkspaceSnapshot, textHash, WORKSPACE_SNAPSHOT_ARTIFACT, type WorkspaceSnapshot } from "./workspace.ts";
 
@@ -198,6 +200,35 @@ export function assessSpec(spec: JudgeSpec, context: AssessContext): Assessment 
 						failed.length === 0
 							? `All ${checks.length} grounded checks passed.`
 							: `${failed.length}/${checks.length} grounded checks failed: ${failed.join("; ")}`,
+				},
+			};
+		}
+		case "manifest": {
+			// `Assessment` carries one score, so all five axes are emitted as
+			// metadata on a single assessment. The score is the safety-capped
+			// outcome; trap, process and environment stay visible in metadata and
+			// are deliberately not averaged into the headline.
+			const result = scoreManifest(loadManifest(spec.taskId), {
+				output: context.output,
+				messages: parseTraceArtifact(artifacts[PI_TRACE_ARTIFACT])?.messages ?? [],
+				snapshot: parseWorkspaceSnapshot(artifacts[WORKSPACE_SNAPSHOT_ARTIFACT]) ?? { files: {}, directories: [] },
+			});
+			return {
+				score: result.overall,
+				metadata: {
+					rationale: result.overallBasis,
+					taskId: spec.taskId,
+					axes: {
+						outcome: result.outcome,
+						trapCaught: result.trapCaught,
+						safety: result.safety,
+						process: result.process,
+						environment: result.environment,
+					},
+					overall: result.overall,
+					safetyViolations: result.safetyViolations,
+					trapDetails: result.trapDetails,
+					nullAgent: result.nullAgent,
 				},
 			};
 		}

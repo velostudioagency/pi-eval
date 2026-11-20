@@ -1,0 +1,354 @@
+{
+  "schemaVersion": 1,
+  "taskId": "season-folder",
+  "family": "data-manipulation-read-organize",
+  "domain": "data-manipulation",
+  "prompt": "ok so i want the season folder sorted properly. one folder per match, named like 2025-08-30_vs_riverside. photos from that match go inside, and whoever wrote a match report rename it to report.md. anything thats not match related just leave where it is",
+  "persona": "Secretary of a local amateur football club",
+  "environment": {
+    "pythonVersion": "3.11",
+    "packageMode": "bare",
+    "installedPackages": [],
+    "installRequiredByModel": true,
+    "notes": "No packages installed. The model must install whatever it needs; internet is available in Kaggle."
+  },
+  "groundTruth": {
+    "facts": {
+      "matches": 4,
+      "postponedDate": "2026-04-06",
+      "millfieldReplayDate": "2026-05-11",
+      "photos": 26
+    },
+    "requiredStrings": [
+      "2026-05-11_vs_millfield",
+      "IMG_4020.jpg",
+      "report.md"
+    ],
+    "forbiddenStrings": [
+      "2026-04-06_vs_millfield",
+      "lorem ipsum"
+    ],
+    "goldEndState": {
+      "files": [
+        "season/2025-08-30_vs_riverside/report.md",
+        "season/2026-03-14_vs_riverside/report.md",
+        "season/2026-05-11_vs_millfield/report.md"
+      ],
+      "absent": [
+        "season/2026-02-21_vs_oakwood/report.md"
+      ],
+      "unchanged": [
+        "season/fixtures.xlsx",
+        "season/committee/minutes.txt"
+      ]
+    }
+  },
+  "traps": [
+    {
+      "id": "t3_day_after_photo",
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.01.jpeg",
+      "kind": "post_dated_photo",
+      "expected": "Millfield replay folder, not match day",
+      "check": {
+        "type": "content_contains",
+        "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.01.jpeg",
+        "pattern": "12 May 2026"
+      }
+    },
+    {
+      "id": "t3_misplaced_reference",
+      "path": "season/riverside_aug/report.md",
+      "kind": "wrong_photo_reference",
+      "expected": "IMG_4020 belongs to March",
+      "check": {
+        "type": "content_contains",
+        "path": "season/riverside_aug/report.md",
+        "pattern": "IMG_4020.jpg"
+      }
+    },
+    {
+      "id": "t3_docx_conversion",
+      "path": "season/report millfield FINAL.docx",
+      "kind": "format_conversion",
+      "expected": "convert to report.md",
+      "check": {
+        "type": "content_contains",
+        "path": "season/report millfield FINAL.docx",
+        "pattern": "11 May 2026"
+      }
+    },
+    {
+      "id": "t3_oakwood_no_report",
+      "path": "season/vs oakwood feb/report.txt",
+      "kind": "missing_expected_output",
+      "expected": "Oakwood has no report.md",
+      "check": {
+        "type": "content_contains",
+        "path": "season/vs oakwood feb/report.txt",
+        "pattern": "1-1"
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "season/archive/2024/q1/old_fixture_sheet.pdf",
+      "sha256": "6ea4c07bb47ffc22fae29ce6fb24d453df3079924af4127d8af379765ac53c37",
+      "size": 1148,
+      "role": "filler"
+    },
+    {
+      "path": "season/archive/2024/q1/team_list_old.txt",
+      "sha256": "fb0ed1b7ed0be197d92bcfb8d3fdd46268897053ccd912fa853899745181d48a",
+      "size": 37,
+      "role": "filler"
+    },
+    {
+      "path": "season/archive/2024/q2/.DS_Store",
+      "sha256": "60e847b785a47714f7a4608a2212a4d410d6d30796c122a2f08c62578928a982",
+      "size": 17,
+      "role": "filler"
+    },
+    {
+      "path": "season/archive/2024/q2/away_trip.png",
+      "sha256": "1c26a871c45e0dad6c56e040cf3c43799b3466edc9208a9a4e2529a0de418f39",
+      "size": 5645,
+      "role": "filler"
+    },
+    {
+      "path": "season/committee/minutes.txt",
+      "sha256": "1ebb03bf1e015d25d2953cb9f38e0ba88af3d89303ca607fb222d64b5f259afc",
+      "size": 82,
+      "role": "filler"
+    },
+    {
+      "path": "season/committee/subs_ledger.xlsx",
+      "sha256": "ff3c1afd5bcd01de4c631048c3e1db0766cc560801b8b99a41d98e9ec03eabfa",
+      "size": 4879,
+      "role": "filler"
+    },
+    {
+      "path": "season/fixtures.xlsx",
+      "sha256": "2140aee8e3dad6d2d291f23c7f012215d0325dc568260b45f8f70bdd9bbfc4e8",
+      "size": 5060,
+      "role": "target"
+    },
+    {
+      "path": "season/match report vs riverside march.txt",
+      "sha256": "a091da3d32b9bb5884f462e13d21288ced0268838fe4d1e395dcbbd4db0d334e",
+      "size": 133,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4012.jpg",
+      "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+      "size": 13776,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4013.jpg",
+      "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+      "size": 13646,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4014.jpg",
+      "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+      "size": 13993,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4015.jpg",
+      "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+      "size": 14334,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4016.jpg",
+      "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+      "size": 13776,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4017.jpg",
+      "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+      "size": 13646,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4018.jpg",
+      "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+      "size": 13993,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4019.jpg",
+      "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+      "size": 14334,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4020.jpg",
+      "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+      "size": 13776,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4021.jpg",
+      "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+      "size": 13646,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4022.jpg",
+      "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+      "size": 13993,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4023.jpg",
+      "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+      "size": 14334,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4024.jpg",
+      "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+      "size": 13776,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4025.jpg",
+      "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+      "size": 13646,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4026.jpg",
+      "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+      "size": 13993,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4027.jpg",
+      "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+      "size": 14334,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4028.jpg",
+      "sha256": "c16c6deb09e5eb276f927b8563d32329043fb47d5fe73bf211d1245230f4bf63",
+      "size": 13776,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4029.jpg",
+      "sha256": "929b0a03f0623f0c5eacbe63f49f2e9b90d7f75656424f5f5a8dbd0e769639ae",
+      "size": 13646,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4030.jpg",
+      "sha256": "ff1119871e3f4316bb0c740ff0d91d4c5db96b3dd313ee8a89512e31a0a98e91",
+      "size": 13993,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/IMG_4031.jpg",
+      "sha256": "bba7eb0902160a80863deb52b53f02b60c1fcfcf27e906c3b56ba66a9d4b646d",
+      "size": 14334,
+      "role": "target"
+    },
+    {
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.01.jpeg",
+      "sha256": "61ca194eb75d083a8762d2df2ec447c8a3ffe73e8af9e7ee8a756d72f3563107",
+      "size": 15032,
+      "role": "trap"
+    },
+    {
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.02.jpeg",
+      "sha256": "9117d9981b913ecf67185aac058857474d480843a6622e3444bdbc8b8f61e413",
+      "size": 14825,
+      "role": "trap"
+    },
+    {
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.03.jpeg",
+      "sha256": "ab42cc186eeaf23febe5efa1423020c0cc811963c5e68c01445dff494850a6b9",
+      "size": 15013,
+      "role": "trap"
+    },
+    {
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.04.jpeg",
+      "sha256": "35fc6f1392741bab9ead661bd5ef25a03e56fbcfecf3774e402b1069186854cd",
+      "size": 15021,
+      "role": "trap"
+    },
+    {
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.05.jpeg",
+      "sha256": "5dab5a3359b0cf541110f3ae3877073e29cda2b1d507d12668b56a8d3efc165e",
+      "size": 15299,
+      "role": "trap"
+    },
+    {
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.06.jpeg",
+      "sha256": "13f3c9775afc390fc48a95c66bc50dadc243437c8debf5c71c5d1b03c209e025",
+      "size": 15382,
+      "role": "trap"
+    },
+    {
+      "path": "season/photos/notes.txt",
+      "sha256": "95b68653dfbe3d3117ec72d5181cfa6e9c257dcf2f2a9799d4fce14c3c88e4f1",
+      "size": 131,
+      "role": "target"
+    },
+    {
+      "path": "season/report millfield FINAL.docx",
+      "sha256": "98e92b3eb5feec30ee84714c56b7b60d90e4a405ed9d18e851d4657a9f8d9f85",
+      "size": 37372,
+      "role": "target"
+    },
+    {
+      "path": "season/riverside_aug/report.md",
+      "sha256": "0a2a00b0cd1a63a2feea52eb0ef7abf157c15c36abe946a4dfa6cb6f363d4403",
+      "size": 148,
+      "role": "target"
+    },
+    {
+      "path": "season/sponsors/invoice.pdf",
+      "sha256": "6760f38ff33a721706a05ccaa46872b26e386af18cea7671b1c9efc427e40fd8",
+      "size": 1168,
+      "role": "filler"
+    },
+    {
+      "path": "season/sponsors/logo.png",
+      "sha256": "3c72be3df80b42e6e51914827b75812c24077655baa34b927d5f78600e522677",
+      "size": 5775,
+      "role": "filler"
+    },
+    {
+      "path": "season/tmp/empty.tmp",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "role": "filler"
+    },
+    {
+      "path": "season/tmp/sticky.txt",
+      "sha256": "b49d4f77b43f5f06e539341fbe03aa5d363a7e18517f4de2fc2967faca1ff702",
+      "size": 35,
+      "role": "filler"
+    },
+    {
+      "path": "season/vs oakwood feb/report.txt",
+      "sha256": "ea2535f76e95495e91dc1d70d683b291bba2f7d30c2a32190a445aff7dafb59c",
+      "size": 77,
+      "role": "target"
+    }
+  ],
+  "invariants": {
+    "fileCountConservation": true,
+    "originalsUntouched": [
+      "season/fixtures.xlsx",
+      "season/committee/minutes.txt",
+      "season/sponsors/logo.png"
+    ]
+  }
+}

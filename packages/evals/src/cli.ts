@@ -3,9 +3,11 @@
  * fresh container, writes observations and traces, then the report and datasets.
  */
 
+import { execFileSync } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { dirname, relative, resolve } from "node:path";
+import { delimiter, dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
 	describeSuite,
@@ -24,6 +26,30 @@ import { suiteById } from "./profile-env.ts";
 import { type EvalObservation, formatEvalComparisonReport, summarizeEvalObservations } from "./report.ts";
 import { assertRuntime, type RuntimeTarget, runTaskOnRuntime, selectRuntime } from "./runtime.ts";
 import type { TraceRecord } from "./trace.ts";
+
+type PackageMode = "full" | "bare";
+
+/** The notebook-supplied runtime freeze file. Extra keys are kept verbatim in protocol.json. */
+type ToolchainInfo = {
+	modelDigest?: string;
+	ollamaVersion?: string;
+	numCtx?: number;
+	kvCacheType?: string;
+	flashAttention?: boolean;
+	gpuSplit?: string;
+	gitCommit?: string;
+	pythonVersion?: string;
+	nodeVersion?: string;
+	[key: string]: unknown;
+};
+
+/** Optional per-run termination facts carried by an upstream vitest report. */
+type RuntimeOutcomeExtras = {
+	finishReason?: string;
+	finish_reason?: string;
+	truncated?: boolean;
+	isTruncated?: boolean;
+};
 
 type EvalCliOptions = {
 	suiteId: string;
@@ -44,6 +70,16 @@ type EvalCliOptions = {
 	apiKey?: string;
 	api?: string;
 	artifactDirectory?: string;
+	temperature?: number;
+	topP?: number;
+	presencePenalty?: number;
+	maxTokens?: number;
+	seed?: number;
+	ocrMode?: "vision" | "tesseract";
+	packageMap?: Map<string, PackageMode>;
+	toolchain?: ToolchainInfo;
+	modelDigest?: string;
+	pilot: boolean;
 };
 
 const VALUE_OPTIONS = new Set([
@@ -63,7 +99,17 @@ const VALUE_OPTIONS = new Set([
 	"--api-key",
 	"--api",
 	"--artifact-dir",
+	"--temperature",
+	"--top-p",
+	"--presence-penalty",
+	"--max-tokens",
+	"--seed",
+	"--ocr-mode",
+	"--package-map",
+	"--toolchain-file",
+	"--model-digest",
 ]);
+const FLAG_OPTIONS = new Set(["--pilot"]);
 const FILTER_OPTIONS = new Set(["-t", "--testNamePattern"]);
 const DATASET_FORMATS = new Set(["messages", "sharegpt", "alpaca", "rendered"]);
 
@@ -95,6 +141,52 @@ function parseOs(value: string): HostOs {
 	throw new TypeError(`Unknown os "${value}". Known: linux, windows, macos.`);
 }
 
+function parseOcrMode(value: string): "vision" | "tesseract" {
+	if (value === "vision" || value === "tesseract") return value;
+	throw new TypeError(`Unknown ocr mode "${value}". Known: vision, tesseract.`);
+}
+
+function parseNumberOption(name: string, value: string): number {
+	const parsed = Number(value.trim());
+	if (!Number.isFinite(parsed)) throw new Error(`${name} must be a finite number.`);
+	return parsed;
+}
+
+function parsePackageMap(value: string): Map<string, PackageMode> {
+	let parsed: unknown;
+	try {
+		parsed = JSON.parse(value);
+	} catch {
+		throw new Error("--package-map must be a JSON object.");
+	}
+	if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+		throw new Error("--package-map must be a JSON object.");
+	}
+	const map = new Map<string, PackageMode>();
+	for (const [taskId, mode] of Object.entries(parsed)) {
+		if (mode !== "full" && mode !== "bare") {
+			throw new Error(`--package-map value for "${taskId}" must be "full" or "bare".`);
+		}
+		map.set(taskId, mode);
+	}
+	return map;
+}
+
+function parseToolchainFile(path: string): ToolchainInfo {
+	let parsed: unknown;
+	try {
+		parsed = JSON.parse(readFileSync(resolve(path), "utf8"));
+	} catch (error) {
+		throw new Error(
+			`Cannot read --toolchain-file ${path}: ${error instanceof Error ? error.message : String(error)}`,
+		);
+	}
+	if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+		throw new Error("--toolchain-file must contain a JSON object.");
+	}
+	return parsed as ToolchainInfo;
+}
+
 function parseEvalCli(args: readonly string[], environment: NodeJS.ProcessEnv = process.env): EvalCliOptions {
 	let suiteId = environment.PI_EVAL_SUITE?.trim() || "docs";
 	let provider: string | undefined;
@@ -116,8 +208,22 @@ function parseEvalCli(args: readonly string[], environment: NodeJS.ProcessEnv = 
 	let apiBase: string | undefined;
 	let apiKey: string | undefined;
 	let api: string | undefined;
+	let temperature: number | undefined;
+	let topP: number | undefined;
+	let presencePenalty: number | undefined;
+	let maxTokens: number | undefined;
+	let seed: number | undefined;
+	let ocrMode: "vision" | "tesseract" | undefined;
+	let packageMap: Map<string, PackageMode> | undefined;
+	let toolchain: ToolchainInfo | undefined;
+	let modelDigest: string | undefined;
+	let pilot = false;
 	for (let index = 0; index < args.length; index += 1) {
 		const argument = args[index];
+		if (FLAG_OPTIONS.has(argument)) {
+			pilot = true;
+			continue;
+		}
 		if (argument.endsWith(".eval.ts")) {
 			requestedFiles.push(argument);
 			continue;
@@ -155,6 +261,15 @@ function parseEvalCli(args: readonly string[], environment: NodeJS.ProcessEnv = 
 			else if (name === "--api-key") apiKey = value.trim();
 			else if (name === "--api") api = value.trim();
 			else if (name === "--artifact-dir") artifactDirectory = resolve(value.trim());
+			else if (name === "--temperature") temperature = parseNumberOption(name, value);
+			else if (name === "--top-p") topP = parseNumberOption(name, value);
+			else if (name === "--presence-penalty") presencePenalty = parseNumberOption(name, value);
+			else if (name === "--max-tokens") maxTokens = parseNumberOption(name, value);
+			else if (name === "--seed") seed = parseNumberOption(name, value);
+			else if (name === "--ocr-mode") ocrMode = parseOcrMode(value.trim());
+			else if (name === "--package-map") packageMap = parsePackageMap(value);
+			else if (name === "--toolchain-file") toolchain = parseToolchainFile(value.trim());
+			else if (name === "--model-digest") modelDigest = value.trim();
 			else exports.push(parseExport(value.trim()));
 			if (name === "--provider" || name === "--model") cliSelectedModel = true;
 			if (equals === -1) index += 1;
@@ -180,6 +295,13 @@ function parseEvalCli(args: readonly string[], environment: NodeJS.ProcessEnv = 
 	if (runs !== undefined && (!Number.isSafeInteger(runs) || runs < 1)) {
 		throw new Error("Runs must be a positive integer.");
 	}
+	if (maxTokens !== undefined && (!Number.isSafeInteger(maxTokens) || maxTokens < 1)) {
+		throw new Error("--max-tokens must be a positive integer.");
+	}
+	if (seed !== undefined && !Number.isSafeInteger(seed)) {
+		throw new Error("--seed must be an integer.");
+	}
+	if (pilot) presencePenalty = 0;
 
 	return {
 		suiteId,
@@ -200,10 +322,37 @@ function parseEvalCli(args: readonly string[], environment: NodeJS.ProcessEnv = 
 		apiKey,
 		api,
 		artifactDirectory,
+		temperature,
+		topP,
+		presencePenalty,
+		maxTokens,
+		seed,
+		ocrMode,
+		packageMap,
+		toolchain,
+		modelDigest,
+		pilot,
 	};
 }
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const repositoryRoot = resolve(packageRoot, "../..");
+/** Kaggle creates the two venvs here; PI_EVAL_VENV_ROOT allows a different checkout. */
+const VENV_ROOT = process.env.PI_EVAL_VENV_ROOT?.trim() || "/kaggle/working/venvs";
+
+function readGitCommit(): string | null {
+	try {
+		return (
+			execFileSync("git", ["rev-parse", "HEAD"], {
+				cwd: repositoryRoot,
+				encoding: "utf8",
+				stdio: ["ignore", "pipe", "ignore"],
+			}).trim() || null
+		);
+	} catch {
+		return null;
+	}
+}
 
 function containerPath(path: string): string {
 	const absolute = resolve(packageRoot, path);
@@ -343,6 +492,34 @@ if (!declarative) {
 	if (cases.length === 0) throw new Error("No eval cases matched the selection.");
 }
 
+if (cli.pilot) cases = cases.slice(0, 1);
+
+const toolchain = cli.toolchain ?? {};
+const sampling = {
+	temperature: cli.temperature ?? null,
+	topP: cli.topP ?? null,
+	presencePenalty: cli.presencePenalty ?? null,
+	maxTokens: cli.maxTokens ?? null,
+	seed: cli.seed ?? null,
+};
+const runtimeMetadata = {
+	modelTag: cli.model,
+	modelDigest: cli.modelDigest ?? toolchain.modelDigest ?? null,
+	ollamaVersion: toolchain.ollamaVersion ?? null,
+	numCtx: toolchain.numCtx ?? null,
+	kvCacheType: toolchain.kvCacheType ?? null,
+	flashAttention: toolchain.flashAttention ?? null,
+	gpuSplit: toolchain.gpuSplit ?? null,
+	gitCommit: readGitCommit() ?? toolchain.gitCommit ?? null,
+};
+const selectedPackageMap = cli.packageMap;
+const packageModes = selectedPackageMap
+	? Object.fromEntries(cases.map(({ caseId }) => [caseId, selectedPackageMap.get(caseId) ?? null]))
+	: null;
+console.log(
+	`Protocol: ${modelIdentity} | pilot ${cli.pilot} | sampling ${JSON.stringify(sampling)} | ocr ${cli.ocrMode ?? "unset"}`,
+);
+
 const tasks = createTaskPlan(cases, selectedProfiles, modelIdentity, runs);
 const protocol = {
 	schemaVersion: 2,
@@ -367,22 +544,28 @@ const protocol = {
 	files,
 	cases: cases.map(({ evalSet, caseId, file }) => ({ evalSet, caseId, file })),
 	tasks,
+	sampling,
+	ocrMode: cli.ocrMode ?? null,
+	pilot: cli.pilot,
+	runtime: runtimeMetadata,
+	toolchain,
+	packageModes,
+	venvRoot: selectedPackageMap ? VENV_ROOT : null,
 };
-const protocolDigest = createHash("sha256").update(JSON.stringify(protocol)).digest("hex");
-await writeFile(
-	resolve(artifactDirectory, "protocol.json"),
-	`${JSON.stringify({ ...protocol, protocolDigest }, null, 2)}\n`,
-);
 await writeFile(resolve(artifactDirectory, "expected-runs.json"), `${JSON.stringify(tasks, null, 2)}\n`);
 
 const observations: EvalObservation[] = [];
 const traces: TraceRecord[] = [];
+const basePath = process.env.PATH ?? "";
 for (const [index, task] of tasks.entries()) {
 	console.log(
 		`\n[${index + 1}/${tasks.length}] ${task.evalSet} > ${task.caseId} | ${task.profile} | ${task.model} | run ${task.runNumber}`,
 	);
 	const target = targetsByProfile.get(task.profile);
 	if (!target) throw new Error(`No runtime target for profile "${task.profile}".`);
+	// Child processes copy process.env at spawn time, so this pins the venv for this arm only.
+	const packageMode = selectedPackageMap?.get(task.caseId);
+	process.env.PATH = packageMode ? `${resolve(VENV_ROOT, packageMode, "bin")}${delimiter}${basePath}` : basePath;
 	const result = await runTaskOnRuntime(
 		{
 			artifactDirectory,
@@ -410,6 +593,41 @@ for (const [index, task] of tasks.entries()) {
 	);
 }
 
+const runOutcomes = observations.map((observation) => {
+	const extras = observation as EvalObservation & RuntimeOutcomeExtras;
+	const error = observation.outcome === "errored" ? observation.error : undefined;
+	return {
+		evalSet: observation.evalSet,
+		caseId: observation.caseId,
+		profile: observation.profile,
+		model: observation.model,
+		runNumber: observation.runNumber,
+		outcome: observation.outcome,
+		score: observation.outcome === "scored" ? observation.score : null,
+		finishReason: extras.finishReason ?? extras.finish_reason ?? null,
+		truncated: extras.truncated ?? extras.isTruncated ?? null,
+		// hasValidReward distinguishes measured model failures from infra retries (src/error-policy.ts).
+		errorClass: error ? (error.policy.hasValidReward ? "model" : "infra") : null,
+		errorKind: error?.kind ?? null,
+	};
+});
+const finalProtocol = { ...protocol, runOutcomes };
+const protocolDigest = createHash("sha256").update(JSON.stringify(finalProtocol)).digest("hex");
+await writeFile(
+	resolve(artifactDirectory, "protocol.json"),
+	`${JSON.stringify({ ...finalProtocol, protocolDigest }, null, 2)}\n`,
+);
+const perRunScores = {
+	schemaVersion: 1,
+	suite: suite.id,
+	model: modelIdentity,
+	runs,
+	pilot: cli.pilot,
+	scoring: sampling,
+	scores: runOutcomes,
+};
+await writeFile(resolve(artifactDirectory, "per-run-scores.json"), `${JSON.stringify(perRunScores, null, 2)}\n`);
+
 const report = summarizeEvalObservations(
 	{
 		protocolDigest,
@@ -421,10 +639,27 @@ const report = summarizeEvalObservations(
 	observations,
 );
 const reportText = formatEvalComparisonReport(report);
-await writeFile(resolve(artifactDirectory, "report.json"), `${JSON.stringify(report, null, 2)}\n`);
-await writeFile(resolve(artifactDirectory, "report.txt"), `${reportText}\n`);
+const scoresHeader = "caseId | profile | run | outcome | score | errorClass | finishReason | truncated";
+const scoresRows = runOutcomes.map((item) =>
+	[
+		item.caseId,
+		item.profile,
+		item.runNumber,
+		item.outcome,
+		item.score ?? "-",
+		item.errorClass ?? "-",
+		item.finishReason ?? "-",
+		item.truncated ?? "-",
+	].join(" | "),
+);
+const scoresText = `\nPer-run scores (N=${runs}, pilot=${cli.pilot})\n${scoresHeader}\n${scoresRows.join("\n")}\n`;
+await writeFile(
+	resolve(artifactDirectory, "report.json"),
+	`${JSON.stringify({ ...report, perRunScores: runOutcomes }, null, 2)}\n`,
+);
+await writeFile(resolve(artifactDirectory, "report.txt"), `${reportText}\n${scoresText}`);
 await writeInspectLog(resolve(artifactDirectory, "inspect-log.json"), {
-	protocol: { ...protocol, protocolDigest },
+	protocol: { ...finalProtocol, protocolDigest },
 	observations,
 	traces,
 	report,
@@ -443,5 +678,6 @@ for (const spec of exportSpecs) {
 }
 
 console.log(`\n${reportText}`);
+console.log(scoresText);
 console.log(`\nArtifacts: ${artifactDirectory}`);
 if (report.blockedPairs.length > 0) process.exitCode = 1;

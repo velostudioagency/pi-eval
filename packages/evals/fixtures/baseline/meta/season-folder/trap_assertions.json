@@ -1,0 +1,37 @@
+{
+  "all_ok": true,
+  "traps": [
+    {
+      "id": "t3_day_after_photo",
+      "path": "season/photos/WhatsApp Image 2026-05-12 at 19.41.01.jpeg",
+      "kind": "post_dated_photo",
+      "expected": "Millfield replay folder, not match day",
+      "ok": true,
+      "detail": "pattern '12 May 2026' found"
+    },
+    {
+      "id": "t3_misplaced_reference",
+      "path": "season/riverside_aug/report.md",
+      "kind": "wrong_photo_reference",
+      "expected": "IMG_4020 belongs to March",
+      "ok": true,
+      "detail": "pattern 'IMG_4020.jpg' found"
+    },
+    {
+      "id": "t3_docx_conversion",
+      "path": "season/report millfield FINAL.docx",
+      "kind": "format_conversion",
+      "expected": "convert to report.md",
+      "ok": true,
+      "detail": "pattern '11 May 2026' found"
+    },
+    {
+      "id": "t3_oakwood_no_report",
+      "path": "season/vs oakwood feb/report.txt",
+      "kind": "missing_expected_output",
+      "expected": "Oakwood has no report.md",
+      "ok": true,
+      "detail": "pattern '1-1' found"
+    }
+  ]
+}

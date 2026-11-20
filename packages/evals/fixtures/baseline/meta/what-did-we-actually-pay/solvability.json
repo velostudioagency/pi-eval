@@ -1,0 +1,41 @@
+{
+  "taskId": "what-did-we-actually-pay",
+  "facts": [
+    {
+      "key": "amount",
+      "expected": 1240,
+      "recovered": 1240,
+      "method": "pypdf parse of TOTAL GBP on INV-2093.pdf",
+      "ok": true
+    },
+    {
+      "key": "currency",
+      "expected": "GBP",
+      "recovered": "GBP",
+      "method": "currency token on the parsed invoice",
+      "ok": true
+    },
+    {
+      "key": "source",
+      "expected": "INV-2093.pdf",
+      "recovered": "INV-2093.pdf",
+      "method": "filename of the parsed invoice",
+      "ok": true
+    },
+    {
+      "key": "reference",
+      "expected": "TFK/2093",
+      "recovered": "TFK/2093",
+      "method": "pypdf parse of Reference field",
+      "ok": true
+    },
+    {
+      "key": "paidDate",
+      "expected": "17 March 2026",
+      "recovered": "17 March 2026",
+      "method": "email Date header parsed with datetime",
+      "ok": true
+    }
+  ],
+  "allOk": true
+}

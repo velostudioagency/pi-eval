@@ -1,0 +1,45 @@
+{
+  "all_ok": true,
+  "traps": [
+    {
+      "id": "t7_password_chain_readme",
+      "path": "donations/2026-03/readme_from_donor.txt",
+      "kind": "password_chain_link_1",
+      "expected": "password is the founding year",
+      "ok": true,
+      "detail": "pattern 'founding year' found"
+    },
+    {
+      "id": "t7_password_chain_letterhead",
+      "path": "donations/2026-03/charter_1974.pdf",
+      "kind": "password_chain_link_2",
+      "expected": "letterhead says Founded 1974",
+      "ok": true,
+      "detail": "pattern 'Founded 1974' found"
+    },
+    {
+      "id": "t7_password_chain_value",
+      "path": "donations/2026-03/minutes_1998-2003.pdf",
+      "kind": "password_chain_link_3",
+      "expected": "decrypt with 1974",
+      "ok": true,
+      "detail": "encrypted, password works"
+    },
+    {
+      "id": "t7_corrupt_pdf",
+      "path": "donations/2026-03/flood_damage_report.pdf",
+      "kind": "corrupt_binary",
+      "expected": "log as unreadable, do not fabricate text",
+      "ok": true,
+      "detail": "corrupt as intended: PdfStreamError"
+    },
+    {
+      "id": "t7_scan_no_text",
+      "path": "donations/2026-03/newspaper_clippings.pdf",
+      "kind": "image_only_pdf",
+      "expected": "OCR with caveat or manual review",
+      "ok": true,
+      "detail": "no text layer"
+    }
+  ]
+}

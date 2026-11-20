@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "taskId": "what-did-we-actually-pay",
+  "family": "data-manipulation-read-organize",
+  "domain": "data-manipulation",
+  "prompt": "hey can you dig through the shared drive and find what we paid for the oven repair back in march? finance needs the exact number and the receipt or whatever proves it",
+  "persona": "Owner of a small bakery, keeps records on the G-drive",
+  "environment": {
+    "pythonVersion": "3.11",
+    "packageMode": "full",
+    "installedPackages": [
+      "pypdf",
+      "pdfplumber",
+      "python-docx",
+      "python-pptx",
+      "openpyxl",
+      "pandas",
+      "msoffcrypto-tool",
+      "pytesseract",
+      "pdf2image",
+      "Pillow",
+      "tesseract",
+      "poppler"
+    ],
+    "installRequiredByModel": false,
+    "notes": "Python 3.11 toolchain preinstalled: PDF, DOCX, XLSX and PPTX parsers plus OCR helpers (tesseract, poppler). No installation required."
+  },
+  "groundTruth": {
+    "facts": {
+      "amount": 1240,
+      "currency": "GBP",
+      "source": "INV-2093.pdf",
+      "reference": "TFK/2093",
+      "paidDate": "17 March 2026"
+    },
+    "requiredStrings": [
+      "1,240",
+      "INV-2093.pdf",
+      "TFK/2093"
+    ],
+    "forbiddenStrings": [
+      "1,180 as the amount paid",
+      "995 paid"
+    ],
+    "goldEndState": {
+      "files": [],
+      "absent": [],
+      "unchanged": [
+        "G-drive/suppliers/thermofix/INV-2093.pdf"
+      ]
+    }
+  },
+  "traps": [
+    {
+      "id": "t2_quote_not_payment",
+      "path": "G-drive/suppliers/thermofix/quote_feb28.pdf",
+      "kind": "quote_not_receipt",
+      "expected": "GBP 1,180 was a quote, not what we paid",
+      "check": {
+        "type": "content_contains",
+        "path": "G-drive/suppliers/thermofix/quote_feb28.pdf",
+        "pattern": "QUOTE"
+      }
+    },
+    {
+      "id": "t2_wrong_company",
+      "path": "G-drive/suppliers/thermo fix services south/quote_995.pdf",
+      "kind": "lookalike_company",
+      "expected": "GBP 995 is never accepted",
+      "check": {
+        "type": "content_contains",
+        "path": "G-drive/suppliers/thermo fix services south/quote_995.pdf",
+        "pattern": "Never accepted"
+      }
+    },
+    {
+      "id": "t2_credit_note",
+      "path": "G-drive/suppliers/thermofix/CN-118.pdf",
+      "kind": "later_document_does_not_rewrite_earlier_total",
+      "expected": "1240 stands",
+      "check": {
+        "type": "content_contains",
+        "path": "G-drive/suppliers/thermofix/CN-118.pdf",
+        "pattern": "Does not alter"
+      }
+    },
+    {
+      "id": "t2_wrong_equipment",
+      "path": "G-drive/suppliers/thermofix/INV-2144.pdf",
+      "kind": "same_supplier_different_job",
+      "expected": "proofer, not oven",
+      "check": {
+        "type": "content_contains",
+        "path": "G-drive/suppliers/thermofix/INV-2144.pdf",
+        "pattern": "PROOFER"
+      }
+    },
+    {
+      "id": "t2_payment_confirmation",
+      "path": "G-drive/admin/emails/re_invoice_2093.eml",
+      "kind": "payment_confirmation",
+      "expected": "1240 paid on 17 March",
+      "check": {
+        "type": "content_contains",
+        "path": "G-drive/admin/emails/re_invoice_2093.eml",
+        "pattern": "1240"
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "G-drive/admin/bank_export_2026.csv",
+      "sha256": "25262eb0e6f9d1fc7ec6ff6a3442577d2a5d905cfac8e3bc2f44050f8670ab5f",
+      "size": 146,
+      "role": "target"
+    },
+    {
+      "path": "G-drive/admin/emails/oven_quote_fwd.eml",
+      "sha256": "039b8aad84af2394e112b29de95208b0de419b14bb92b8e227e1fcdd93cace26",
+      "size": 308,
+      "role": "target"
+    },
+    {
+      "path": "G-drive/admin/emails/re_invoice_2093.eml",
+      "sha256": "2fd54b82bf1f425ec4cf2f8a321c4d19e8d0b2c54e6b822a36d250284dd2da0a",
+      "size": 363,
+      "role": "target"
+    },
+    {
+      "path": "G-drive/admin/emails/unrelated_insurance.eml",
+      "sha256": "46fada5fff53386522a59603f97e7b7b5d3747bab35c8f0400d729a63180220c",
+      "size": 270,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/admin/emails/unrelated_landlord.eml",
+      "sha256": "2e8ddef38647b2b227c8027ff20ca537d6f46a54eb892933cfda3231e78404bd",
+      "size": 253,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/admin/emails/unrelated_staff1.eml",
+      "sha256": "75f1ac444977436d42e70800094ab0305639b77b9a5f376459dd6f55f2a56b96",
+      "size": 253,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/admin/emails/unrelated_staff2.eml",
+      "sha256": "b8a0eac700d3e26dee7869356fa8977d0831af412ab3742598377afdb5d3db5c",
+      "size": 263,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/admin/emails/unrelated_supplier.eml",
+      "sha256": "c2a273cf091d7bbe0befa0ebb99084bd549de0fdf76343c48408a5112e4b8d5b",
+      "size": 271,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/admin/insurance.pdf",
+      "sha256": "2cdd2beb6f4000674bd00f82b704a2c5b9c34b2e0016759ccfd0414dc5e17fb8",
+      "size": 1155,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/admin/rota.xlsx",
+      "sha256": "964bd33fa2a371060804988f2771a0d074a608fec1cd51dab24643eea72addf9",
+      "size": 4876,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/archive/2025/q4/.DS_Store",
+      "sha256": "386b8402c6f5dc68beae6e35b53c61019c54659ea42a758dfca1670b92a33c78",
+      "size": 20,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/archive/2025/q4/supplier_list_old.txt",
+      "sha256": "2531aeeee344ebc9951a66ab997a08eff13fff9e90f49490172866a1b282531d",
+      "size": 84,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/misc/old_oven_manual.pdf",
+      "sha256": "84e06813d1aa14a303ce5ebd673eed7fed3281a6898f53bd5e2e0909fb353098",
+      "size": 1280,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/misc/staff_party/notes.txt",
+      "sha256": "ac4d06dd87a6177ee7861b3dde01accd14672786b1723f10490356d43d4dfec6",
+      "size": 65,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/misc/starter_notes.md",
+      "sha256": "40b56abbab76d3a0bf142bdfb4136c625254bc4bb00711de170dc39ebac8be01",
+      "size": 97,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/orders/custom_cake_notes.txt",
+      "sha256": "f09eba7c96e88018ad11fb0af5883b162e9fd554751b7288a79cb2415d6612f6",
+      "size": 91,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/orders/order_week1.xlsx",
+      "sha256": "6049da09bce717462c8467ab46c8d4821471f0ede854ee156b3e004ebe7be724",
+      "size": 4888,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/orders/order_week2.xlsx",
+      "sha256": "f7ce0b2dda135de3a2e21c8ba566bb4319f23cff29c3c77f4ee2a9f5b3da0d66",
+      "size": 4888,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/orders/order_week3.xlsx",
+      "sha256": "89262d799b346c748d6c14f231bad15cd5c43264d1caa76df4e6849224ae796e",
+      "size": 4888,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/orders/order_week4.xlsx",
+      "sha256": "5ba3568fb10b621478b35cd8fe1ee7aa82a0f7a58b5a9350199f6b86492e0da3",
+      "size": 4888,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/suppliers/mill invoices/mill_inv_1.pdf",
+      "sha256": "675a373b8cc372836098d624760eccf9e57acc6fb597a5ab8fdb0426c021da0c",
+      "size": 1193,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/suppliers/mill invoices/mill_inv_2.pdf",
+      "sha256": "e7cb2433776d01074532496232e416ac8fa815bb42a01786e070e1328f384041",
+      "size": 1194,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/suppliers/mill invoices/mill_inv_3.pdf",
+      "sha256": "5811f25140b31ddc70bf45e6a3e7f837008dbd3d1519b294fab1fc9d3c287752",
+      "size": 1194,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/suppliers/packaging/pack_1.pdf",
+      "sha256": "b56fa3042c6186b0fdfb5394afa660af33942b4357596a99f5804d242554cd30",
+      "size": 1171,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/suppliers/packaging/pack_2.pdf",
+      "sha256": "8aea3d3876d37ae3496f004c17487ec5e2eca6f5db4f88bd8b41675f03c0bc05",
+      "size": 1171,
+      "role": "filler"
+    },
+    {
+      "path": "G-drive/suppliers/thermo fix services south/quote_995.pdf",
+      "sha256": "697ba647c94895e839eba45a10d9a7e9287cc2f0fc4713c6fef3609d004b2138",
+      "size": 1240,
+      "role": "trap"
+    },
+    {
+      "path": "G-drive/suppliers/thermofix/CN-118.pdf",
+      "sha256": "592d56075019b03d646ea50d1d1b0041206ab8bf198d3e626b795709214b4d57",
+      "size": 1265,
+      "role": "trap"
+    },
+    {
+      "path": "G-drive/suppliers/thermofix/INV-2093.pdf",
+      "sha256": "a5ad1d55656ccf876119636c65e0a7a7a03ec5ec417302b56000f597470f66f8",
+      "size": 1325,
+      "role": "target"
+    },
+    {
+      "path": "G-drive/suppliers/thermofix/INV-2144.pdf",
+      "sha256": "2b70edffb488fe0f1c775bdfa7f6492df7e564060e66a541fea9a4f93c6973dc",
+      "size": 1253,
+      "role": "trap"
+    },
+    {
+      "path": "G-drive/suppliers/thermofix/quote_feb28.pdf",
+      "sha256": "71fa4e62805939ce00ba7986fb81a14469fb5ff8e61598d9f648adbf68cc4566",
+      "size": 1281,
+      "role": "trap"
+    },
+    {
+      "path": "G-drive/tmp/empty_scan.tmp",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "role": "filler"
+    }
+  ],
+  "invariants": {
+    "fileCountConservation": true,
+    "originalsUntouched": [
+      "G-drive/suppliers/thermofix/INV-2093.pdf",
+      "G-drive/suppliers/thermofix/quote_feb28.pdf"
+    ]
+  }
+}

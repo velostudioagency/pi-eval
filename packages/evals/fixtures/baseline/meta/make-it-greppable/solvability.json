@@ -1,0 +1,34 @@
+{
+  "taskId": "make-it-greppable",
+  "facts": [
+    {
+      "key": "phase2BudgetEUR",
+      "expected": 180000,
+      "recovered": 180000,
+      "method": "python-pptx speaker-notes regex €Nk",
+      "ok": true
+    },
+    {
+      "key": "consultantRate2026",
+      "expected": 950,
+      "recovered": 950,
+      "method": "openpyxl 2026 rates sheet",
+      "ok": true
+    },
+    {
+      "key": "warehouseSites",
+      "expected": 4,
+      "recovered": 4,
+      "method": "python-docx table row count",
+      "ok": true
+    },
+    {
+      "key": "northTransitDays",
+      "expected": 2,
+      "recovered": 2,
+      "method": "pypdf parse of network map table",
+      "ok": true
+    }
+  ],
+  "allOk": true
+}

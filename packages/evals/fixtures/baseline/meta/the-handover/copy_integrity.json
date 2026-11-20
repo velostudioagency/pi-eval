@@ -1,0 +1,397 @@
+{
+  "taskId": "the-handover",
+  "copiedFiles": 27,
+  "files": [
+    {
+      "path": "marta/archive/2024/q1/.DS_Store",
+      "before": {
+        "sha256": "cda9ab4c38f714a6cb37f4e03a50e1eaf963a4d2252ab643c6c219fab8099dc3",
+        "size": 19,
+        "mtime": 1794818988.0
+      },
+      "after": {
+        "sha256": "cda9ab4c38f714a6cb37f4e03a50e1eaf963a4d2252ab643c6c219fab8099dc3",
+        "size": 19,
+        "mtime": 1794818988.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/archive/2024/q1/old_timesheet.pdf",
+      "before": {
+        "sha256": "ad5ae0341106f334f1e438933fa58bb104259d996d2881c40dab4d74f492da60",
+        "size": 1269,
+        "mtime": 1794840858.0
+      },
+      "after": {
+        "sha256": "ad5ae0341106f334f1e438933fa58bb104259d996d2881c40dab4d74f492da60",
+        "size": 1269,
+        "mtime": 1794840858.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/Cafe Luna/brief.docx",
+      "before": {
+        "sha256": "7562a373379b0027ffe931a9359cdffefaeeec8c22be46b1b75e2150a55ae2f6",
+        "size": 36687,
+        "mtime": 1794827384.0
+      },
+      "after": {
+        "sha256": "7562a373379b0027ffe931a9359cdffefaeeec8c22be46b1b75e2150a55ae2f6",
+        "size": 36687,
+        "mtime": 1794827384.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/Cafe Luna/invoices/inv_01.pdf",
+      "before": {
+        "sha256": "d281d7367d27d308ba8f6d8e3921905c28ee1c50712ca46ec6f0eada8a8487f2",
+        "size": 1170,
+        "mtime": 1794839057.0
+      },
+      "after": {
+        "sha256": "d281d7367d27d308ba8f6d8e3921905c28ee1c50712ca46ec6f0eada8a8487f2",
+        "size": 1170,
+        "mtime": 1794839057.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/Cafe Luna/invoices/inv_02.pdf",
+      "before": {
+        "sha256": "67f38f62d67fc1ffbcdbaffb63f9e3bfb59435e086d76cd53dcbea4bc7d9d9d4",
+        "size": 1169,
+        "mtime": 1794842118.0
+      },
+      "after": {
+        "sha256": "67f38f62d67fc1ffbcdbaffb63f9e3bfb59435e086d76cd53dcbea4bc7d9d9d4",
+        "size": 1169,
+        "mtime": 1794842118.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/Cafe Luna/maintenance_notes.txt",
+      "before": {
+        "sha256": "947a6c6b6d85f451cebab1962fc199f9bd91e9c61f78eb8d6202b76f581a53eb",
+        "size": 97,
+        "mtime": 1794832545.0
+      },
+      "after": {
+        "sha256": "947a6c6b6d85f451cebab1962fc199f9bd91e9c61f78eb8d6202b76f581a53eb",
+        "size": 97,
+        "mtime": 1794832545.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/credentials/logins.txt",
+      "before": {
+        "sha256": "4185bd7184d9f81273c4bb0626242820c1a2c0a90706f46ac63336c9987a2310",
+        "size": 233,
+        "mtime": 1794825414.0
+      },
+      "after": {
+        "sha256": "4185bd7184d9f81273c4bb0626242820c1a2c0a90706f46ac63336c9987a2310",
+        "size": 233,
+        "mtime": 1794825414.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/greenleaf/proposal_draft.docx",
+      "before": {
+        "sha256": "0356f1f62d01e0fa38ed0dbbacaa4bd8c3f31e596c727d2ae7fc0246c2249fa8",
+        "size": 36672,
+        "mtime": 1794824447.0
+      },
+      "after": {
+        "sha256": "0356f1f62d01e0fa38ed0dbbacaa4bd8c3f31e596c727d2ae7fc0246c2249fa8",
+        "size": 36672,
+        "mtime": 1794824447.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/greenleaf/scoping_call_notes.md",
+      "before": {
+        "sha256": "50d44e7aa1edffe7cffb9dfa21131a9a75e055bfc8e7495b1adaa823aecfcacc",
+        "size": 122,
+        "mtime": 1794817556.0
+      },
+      "after": {
+        "sha256": "50d44e7aa1edffe7cffb9dfa21131a9a75e055bfc8e7495b1adaa823aecfcacc",
+        "size": 122,
+        "mtime": 1794817556.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/misc/lunch_order.txt",
+      "before": {
+        "sha256": "4f0c3e43533f7693a85e99155416fa11f790e8c86d4bfef464f80b0e6b25d6b5",
+        "size": 37,
+        "mtime": 1794832262.0
+      },
+      "after": {
+        "sha256": "4f0c3e43533f7693a85e99155416fa11f790e8c86d4bfef464f80b0e6b25d6b5",
+        "size": 37,
+        "mtime": 1794832262.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/misc/meme1.jpeg",
+      "before": {
+        "sha256": "350d9dd6a5121eb31184a3145b3366ef05e3a5ea0e74357d2b8120e797281cc8",
+        "size": 13227,
+        "mtime": 1794836670.0
+      },
+      "after": {
+        "sha256": "350d9dd6a5121eb31184a3145b3366ef05e3a5ea0e74357d2b8120e797281cc8",
+        "size": 13227,
+        "mtime": 1794836670.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/Northwind/brief_v3.docx",
+      "before": {
+        "sha256": "0da48ed360716d8577c1ce89c4338e9896fbfea4f3d172250ed5fa5b58cb6e3f",
+        "size": 36696,
+        "mtime": 1794836864.0
+      },
+      "after": {
+        "sha256": "0da48ed360716d8577c1ce89c4338e9896fbfea4f3d172250ed5fa5b58cb6e3f",
+        "size": 36696,
+        "mtime": 1794836864.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/Northwind/emails/re_kickoff_2026-10-28.eml",
+      "before": {
+        "sha256": "e211706a1dc6170160d689cf6365d356fca551116ecf9e96bc6599f87fd67153",
+        "size": 292,
+        "mtime": 1794829340.0
+      },
+      "after": {
+        "sha256": "e211706a1dc6170160d689cf6365d356fca551116ecf9e96bc6599f87fd67153",
+        "size": 292,
+        "mtime": 1794829340.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/Northwind/emails/thread_design.eml",
+      "before": {
+        "sha256": "ee4e22bad69ba0599eeff8228b4c2bc0c1ffa0e6739747babbcb3806f7df2e73",
+        "size": 233,
+        "mtime": 1794819406.0
+      },
+      "after": {
+        "sha256": "ee4e22bad69ba0599eeff8228b4c2bc0c1ffa0e6739747babbcb3806f7df2e73",
+        "size": 233,
+        "mtime": 1794819406.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/Northwind/emails/thread_invoice.eml",
+      "before": {
+        "sha256": "6fc8bb70937f063b78b2dcbe5417e55bf6e78e5cc4c5ee59c883675ed3740673",
+        "size": 236,
+        "mtime": 1794820349.0
+      },
+      "after": {
+        "sha256": "6fc8bb70937f063b78b2dcbe5417e55bf6e78e5cc4c5ee59c883675ed3740673",
+        "size": 236,
+        "mtime": 1794820349.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/Northwind/emails/thread_vendor.eml",
+      "before": {
+        "sha256": "b222be33cd5f9aafc9dad0c1a5dfe000d73d998259dc17dd84ae45cae613490f",
+        "size": 233,
+        "mtime": 1794827147.0
+      },
+      "after": {
+        "sha256": "b222be33cd5f9aafc9dad0c1a5dfe000d73d998259dc17dd84ae45cae613490f",
+        "size": 233,
+        "mtime": 1794827147.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/Northwind/status_deck_oct.pptx",
+      "before": {
+        "sha256": "ac2264b91e0986655c7e64ece79044905e7a932c48fbc77736b20d1195d68233",
+        "size": 33819,
+        "mtime": 1794810724.0
+      },
+      "after": {
+        "sha256": "ac2264b91e0986655c7e64ece79044905e7a932c48fbc77736b20d1195d68233",
+        "size": 33819,
+        "mtime": 1794810724.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/northwind_old/brief_2025.docx",
+      "before": {
+        "sha256": "109e512a7a504169897ed168d56374056b8b2635ed44ec20274657d3e6d65928",
+        "size": 36667,
+        "mtime": 1794832411.0
+      },
+      "after": {
+        "sha256": "109e512a7a504169897ed168d56374056b8b2635ed44ec20274657d3e6d65928",
+        "size": 36667,
+        "mtime": 1794832411.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/northwind_old/notes_2025.txt",
+      "before": {
+        "sha256": "79b12860245c4de6d1b368654c77f0bb2f58b3f2f0461731236b79b928254dce",
+        "size": 84,
+        "mtime": 1794825489.0
+      },
+      "after": {
+        "sha256": "79b12860245c4de6d1b368654c77f0bb2f58b3f2f0461731236b79b928254dce",
+        "size": 84,
+        "mtime": 1794825489.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/personal/CV_marta.pdf",
+      "before": {
+        "sha256": "e32b9cd23a5f90b2fedce7b1d546c7e94780dda0b23515fb6e3f1bcb08eb58be",
+        "size": 1186,
+        "mtime": 1794818995.0
+      },
+      "after": {
+        "sha256": "e32b9cd23a5f90b2fedce7b1d546c7e94780dda0b23515fb6e3f1bcb08eb58be",
+        "size": 1186,
+        "mtime": 1794818995.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/personal/family_photo.jpeg",
+      "before": {
+        "sha256": "e49886e4d330811156cc1da8b6a8e7ce0c74403bd91bdd137a882babceb95dcb",
+        "size": 13961,
+        "mtime": 1794839688.0
+      },
+      "after": {
+        "sha256": "e49886e4d330811156cc1da8b6a8e7ce0c74403bd91bdd137a882babceb95dcb",
+        "size": 13961,
+        "mtime": 1794839688.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/relaunch/gantt_screenshot.png",
+      "before": {
+        "sha256": "2cace2195ae92096f1eb37ff10d3a41ebb71b3cc91eba318d345f9425c3ecf93",
+        "size": 6210,
+        "mtime": 1794831052.0
+      },
+      "after": {
+        "sha256": "2cace2195ae92096f1eb37ff10d3a41ebb71b3cc91eba318d345f9425c3ecf93",
+        "size": 6210,
+        "mtime": 1794831052.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/relaunch/staging_notes.txt",
+      "before": {
+        "sha256": "650806e4b679d7e2df3ac4c4c9941bb38e122ca8601a3defe61c7a6888d745d2",
+        "size": 75,
+        "mtime": 1794835034.0
+      },
+      "after": {
+        "sha256": "650806e4b679d7e2df3ac4c4c9941bb38e122ca8601a3defe61c7a6888d745d2",
+        "size": 75,
+        "mtime": 1794835034.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/relaunch/timeline.xlsx",
+      "before": {
+        "sha256": "32e4e10020ea43f49df6be1f960cebf34e49e1a8523f7ade7c4dc4a4f28a7b25",
+        "size": 4898,
+        "mtime": 1794835152.0
+      },
+      "after": {
+        "sha256": "32e4e10020ea43f49df6be1f960cebf34e49e1a8523f7ade7c4dc4a4f28a7b25",
+        "size": 4898,
+        "mtime": 1794835152.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/status overview feb.docx",
+      "before": {
+        "sha256": "b943f2ac6eb0da01101b55317db3b0c79f48b53a594dab6fb98e6955e8b926e2",
+        "size": 37334,
+        "mtime": 1794835684.0
+      },
+      "after": {
+        "sha256": "b943f2ac6eb0da01101b55317db3b0c79f48b53a594dab6fb98e6955e8b926e2",
+        "size": 37334,
+        "mtime": 1794835684.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/tmp/empty.tmp",
+      "before": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mtime": 1794822735.0
+      },
+      "after": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mtime": 1794822735.0
+      },
+      "ok": true
+    },
+    {
+      "path": "marta/TODO.md",
+      "before": {
+        "sha256": "81f265d97dfaa4faae6204c58b9f6c73c4464776d9a3876a1df52d66add3bb51",
+        "size": 152,
+        "mtime": 1794824206.0
+      },
+      "after": {
+        "sha256": "81f265d97dfaa4faae6204c58b9f6c73c4464776d9a3876a1df52d66add3bb51",
+        "size": 152,
+        "mtime": 1794824206.0
+      },
+      "ok": true
+    }
+  ],
+  "special": {
+    "zeroByteFiles": [
+      "marta/tmp/empty.tmp"
+    ],
+    "lockFiles": [],
+    "dsStores": [
+      "marta/archive/2024/q1/.DS_Store"
+    ],
+    "zeroBytesPreserved": true,
+    "locksPreserved": true,
+    "dsStoresPreserved": true
+  },
+  "allOk": true
+}
