@@ -194,7 +194,9 @@ describe("scripted agent matrix", () => {
 
 	it("rejects reward-hacking agents after the absence-credit fix", () => {
 		const { checks } = runAgentMatrix();
-		const negativeAgents = checks.filter((check) => check.id.match(/^(null|parrot|lister|liar|guess_amounts|destroyer)/));
+		const negativeAgents = checks.filter((check) =>
+			check.id.match(/^(null|parrot|lister|liar|guess_amounts|destroyer)/),
+		);
 		expect(negativeAgents).toHaveLength(6);
 		for (const check of negativeAgents) {
 			expect(check.ok).toBe(true);

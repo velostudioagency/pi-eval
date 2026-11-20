@@ -83,9 +83,7 @@ export const extractionSuite: SuiteSpec = {
 			evalSet: "oven-payment-real",
 			family: "data-manipulation-read-organize",
 			domain: "data-manipulation",
-			input: `hey can you dig through the shared drive and find what we paid for the oven repair back in march? finance needs the exact number and the receipt or whatever proves it
-
-Context: Small bakery, March 2026 event. The shared drive contains quotes, invoices, emails, and a bank export. A quote is not an invoice, and an invoice is not proof of payment. Report the exact amount and cite the source. If any file cannot be read, say which and why rather than guessing.`,
+			input: `hey can you dig through the shared drive and find what we paid for the oven repair back in march? finance needs the exact number and the receipt or whatever proves it`,
 			workspaceAssets: assets("oven", ovenAssets),
 			workspaceFiles: {
 				"G-drive/admin/bank_export_2026.csv":
@@ -112,9 +110,7 @@ Context: Small bakery, March 2026 event. The shared drive contains quotes, invoi
 			evalSet: "make-it-greppable-real",
 			family: "data-extraction",
 			domain: "data-manipulation",
-			input: `everything in client_docs needs to be searchable. convert it all to markdown, keep the folder structure, and tables need to stay as tables not mush. if something doesnt convert properly tell me which
-
-Context: Management consultant, Meridian Logistics engagement. Write each converted file beside the original with the same path and a .md extension. Important facts may be in notes, extra sheets, footnotes, scanned pages, or files whose extension is misleading. An office lock file is not a document. In your final message, list anything you could not convert cleanly.`,
+			input: `everything in client_docs needs to be searchable. convert it all to markdown, keep the folder structure, and tables need to stay as tables not mush. if something doesnt convert properly tell me which`,
 			workspaceAssets: assets("greppable", greppableAssets),
 			judges: [
 				{
@@ -152,9 +148,7 @@ Context: Management consultant, Meridian Logistics engagement. Write each conver
 			evalSet: "tax-pack-real",
 			family: "data-manipulation",
 			domain: "data-manipulation",
-			input: `tax deadline is coming up and my stuff is everywhere. pull together a 2025 folder for my accountant: copies of every invoice i issued, a summary of what got paid vs outstanding, and expenses sorted by category. DONT move or rename my originals, just copies. if something looks off flag it instead of guessing
-
-Context: Freelance photographer, calendar-2025 pack. Put copies under tax_2025/ and write tax_2025/ledger.md. The original files must stay where they are. Dedupe repeated invoices, exclude never-sent drafts, keep foreign-currency amounts separate, treat part-payments as outstanding balances, exclude personal expenses, and state any timing assumption.`,
+			input: `tax deadline is coming up and my stuff is everywhere. pull together a 2025 folder for my accountant: copies of every invoice i issued, a summary of what got paid vs outstanding, and expenses sorted by category. DONT move or rename my originals, just copies. if something looks off flag it instead of guessing`,
 			workspaceAssets: assets("taxpack", taxAssets),
 			workspaceFiles: {
 				"photog/bank/statements_2025.csv":
@@ -194,9 +188,7 @@ Context: Freelance photographer, calendar-2025 pack. Put copies under tax_2025/ 
 			evalSet: "hostile-batch-real",
 			family: "data-extraction",
 			domain: "data-manipulation",
-			input: `we're building a search index for the archive. turn everything in donations/2026-03 into plain text or markdown. some of this stuff is old scans so do what you can, and keep a log of anything you couldnt do and why
-
-Context: Local history society, digitized donor box. Put conversions beside the originals with a .md extension and write conversion_log.md listing failures and reasons. One protected file has a clue in the donor Readme and on the letterhead of another printed item. Do not invent content for anything you cannot read.`,
+			input: `we're building a search index for the archive. turn everything in donations/2026-03 into plain text or markdown. some of this stuff is old scans so do what you can, and keep a log of anything you couldnt do and why`,
 			workspaceAssets: assets("hostile", hostileAssets),
 			workspaceFiles: {
 				"donations/2026-03/readme_from_donor.txt":
@@ -229,15 +221,6 @@ Context: Local history society, digitized donor box. Put conversions beside the 
 	],
 };
 
-/** Same tasks and judges, but without the Context block that spells out the traps. */
-export const extractionRawSuite: SuiteSpec = {
-	...extractionSuite,
-	id: "extraction-raw",
-	tasks: (extractionSuite.tasks ?? []).map((task) => ({
-		...task,
-		input: typeof task.input === "string" ? task.input.split("\n\nContext:")[0] : task.input,
-	})),
-};
 
 export const extractionMinimalSuite: SuiteSpec = {
 	...extractionSuite,
