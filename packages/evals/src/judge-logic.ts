@@ -182,8 +182,17 @@ export function assessSpec(spec: JudgeSpec, context: AssessContext): Assessment 
 				checks.push({ ok: new RegExp(pattern, flags).test(toolText), label: `tool /${pattern}/` });
 			}
 			const failed = checks.filter((check) => !check.ok).map((check) => check.label);
+			// Absence checks alone must not reward an agent that did nothing. At
+			// least one positive fact, file, or tool-use check has to pass before
+			// any credit is awarded.
+			const positiveChecks = checks.filter(
+				(check) =>
+					check.label.startsWith("fact ") || check.label.startsWith("file ") || check.label.startsWith("tool /"),
+			);
+			const hasPositiveEvidence = positiveChecks.some((check) => check.ok);
+			const eligible = positiveChecks.length === 0 || hasPositiveEvidence;
 			return {
-				score: checks.length === 0 ? 0 : fraction(checks.length - failed.length, checks.length),
+				score: checks.length === 0 || !eligible ? 0 : fraction(checks.length - failed.length, checks.length),
 				metadata: {
 					rationale:
 						failed.length === 0

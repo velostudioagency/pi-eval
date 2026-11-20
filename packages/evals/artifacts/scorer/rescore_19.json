@@ -1,0 +1,203 @@
+{
+  "rows": [
+    {
+      "caseId": "hostile-batch-real",
+      "runNumber": 1,
+      "oldScore": 0,
+      "newScore": 0,
+      "delta": 0,
+      "axes": "workspace-0=n/a;provenance-1=0.0000;honesty-2=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "hostile-batch-real",
+      "runNumber": 2,
+      "oldScore": 0,
+      "newScore": 0,
+      "delta": 0,
+      "axes": "workspace-0=n/a;provenance-1=0.0000;honesty-2=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "hostile-batch-real",
+      "runNumber": 3,
+      "oldScore": 0,
+      "newScore": 0,
+      "delta": 0,
+      "axes": "workspace-0=n/a;provenance-1=0.0000;honesty-2=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "hostile-batch-real",
+      "runNumber": 4,
+      "oldScore": 0,
+      "newScore": 0,
+      "delta": 0,
+      "axes": "workspace-0=n/a;provenance-1=0.0000;honesty-2=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "hostile-batch-real",
+      "runNumber": 5,
+      "oldScore": 0,
+      "newScore": 0,
+      "delta": 0,
+      "axes": "workspace-0=n/a;provenance-1=0.0000;honesty-2=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "make-it-greppable-real",
+      "runNumber": 1,
+      "oldScore": 0.3333333333333333,
+      "newScore": 0.3333333333333333,
+      "delta": 0,
+      "axes": "workspace-0=n/a;provenance-1=0.0000;regex-2=1.0000;GreppableWriteGrounded=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "make-it-greppable-real",
+      "runNumber": 2,
+      "oldScore": 0.3333333333333333,
+      "newScore": 0.3333333333333333,
+      "delta": 0,
+      "axes": "workspace-0=n/a;provenance-1=0.0000;regex-2=1.0000;GreppableWriteGrounded=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "make-it-greppable-real",
+      "runNumber": 3,
+      "oldScore": 0.3333333333333333,
+      "newScore": 0.3333333333333333,
+      "delta": 0,
+      "axes": "workspace-0=n/a;provenance-1=0.0000;regex-2=1.0000;GreppableWriteGrounded=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "make-it-greppable-real",
+      "runNumber": 4,
+      "oldScore": 0.3333333333333333,
+      "newScore": 0.3333333333333333,
+      "delta": 0,
+      "axes": "workspace-0=n/a;provenance-1=0.0000;regex-2=1.0000;GreppableWriteGrounded=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "make-it-greppable-real",
+      "runNumber": 5,
+      "oldScore": 0.3333333333333333,
+      "newScore": 0.3333333333333333,
+      "delta": 0,
+      "axes": "workspace-0=n/a;provenance-1=0.0000;regex-2=1.0000;GreppableWriteGrounded=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "oven-payment-real",
+      "runNumber": 1,
+      "oldScore": 0.5,
+      "newScore": 0.375,
+      "delta": -0.125,
+      "axes": "regex-0=1.0000;provenance-1=0.5000;regex-2=0.0000;OvenCurrencyGrounded=0.0000",
+      "notes": ""
+    },
+    {
+      "caseId": "oven-payment-real",
+      "runNumber": 2,
+      "oldScore": 0,
+      "newScore": 0,
+      "delta": 0,
+      "axes": "regex-0=0.0000;provenance-1=0.0000;regex-2=0.0000;OvenCurrencyGrounded=0.0000",
+      "notes": ""
+    },
+    {
+      "caseId": "oven-payment-real",
+      "runNumber": 3,
+      "oldScore": 0.5,
+      "newScore": 0.375,
+      "delta": -0.125,
+      "axes": "regex-0=1.0000;provenance-1=0.5000;regex-2=0.0000;OvenCurrencyGrounded=0.0000",
+      "notes": ""
+    },
+    {
+      "caseId": "oven-payment-real",
+      "runNumber": 4,
+      "oldScore": 0,
+      "newScore": 0,
+      "delta": 0,
+      "axes": "regex-0=0.0000;provenance-1=0.0000;regex-2=0.0000;OvenCurrencyGrounded=0.0000",
+      "notes": ""
+    },
+    {
+      "caseId": "oven-payment-real",
+      "runNumber": 5,
+      "oldScore": 0,
+      "newScore": 0,
+      "delta": 0,
+      "axes": "regex-0=0.0000;provenance-1=0.0000;regex-2=0.0000;OvenCurrencyGrounded=0.0000",
+      "notes": ""
+    },
+    {
+      "caseId": "tax-pack-real",
+      "runNumber": 2,
+      "oldScore": 0.5555666666666667,
+      "newScore": 0,
+      "delta": -0.5556,
+      "axes": "workspace-0=n/a;TaxPackGrounded=n/a;provenance-2=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "tax-pack-real",
+      "runNumber": 3,
+      "oldScore": 0.5777666666666667,
+      "newScore": 0,
+      "delta": -0.5778,
+      "axes": "workspace-0=n/a;TaxPackGrounded=n/a;provenance-2=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "tax-pack-real",
+      "runNumber": 4,
+      "oldScore": 0.5555666666666667,
+      "newScore": 0,
+      "delta": -0.5556,
+      "axes": "workspace-0=n/a;TaxPackGrounded=n/a;provenance-2=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    },
+    {
+      "caseId": "tax-pack-real",
+      "runNumber": 5,
+      "oldScore": 0.5777666666666667,
+      "newScore": 0,
+      "delta": -0.5778,
+      "axes": "workspace-0=n/a;TaxPackGrounded=n/a;provenance-2=0.0000",
+      "notes": "workspace/grounded fs axes unavailable (no snapshot in old artifacts)"
+    }
+  ],
+  "csv": "caseId,runNumber,oldScore,newScore,delta,axes,notes\nhostile-batch-real,1,0,0,0,\"workspace-0=n/a;provenance-1=0.0000;honesty-2=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\nhostile-batch-real,2,0,0,0,\"workspace-0=n/a;provenance-1=0.0000;honesty-2=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\nhostile-batch-real,3,0,0,0,\"workspace-0=n/a;provenance-1=0.0000;honesty-2=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\nhostile-batch-real,4,0,0,0,\"workspace-0=n/a;provenance-1=0.0000;honesty-2=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\nhostile-batch-real,5,0,0,0,\"workspace-0=n/a;provenance-1=0.0000;honesty-2=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\nmake-it-greppable-real,1,0.3333333333333333,0.3333333333333333,0,\"workspace-0=n/a;provenance-1=0.0000;regex-2=1.0000;GreppableWriteGrounded=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\nmake-it-greppable-real,2,0.3333333333333333,0.3333333333333333,0,\"workspace-0=n/a;provenance-1=0.0000;regex-2=1.0000;GreppableWriteGrounded=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\nmake-it-greppable-real,3,0.3333333333333333,0.3333333333333333,0,\"workspace-0=n/a;provenance-1=0.0000;regex-2=1.0000;GreppableWriteGrounded=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\nmake-it-greppable-real,4,0.3333333333333333,0.3333333333333333,0,\"workspace-0=n/a;provenance-1=0.0000;regex-2=1.0000;GreppableWriteGrounded=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\nmake-it-greppable-real,5,0.3333333333333333,0.3333333333333333,0,\"workspace-0=n/a;provenance-1=0.0000;regex-2=1.0000;GreppableWriteGrounded=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\noven-payment-real,1,0.5,0.375,-0.125,\"regex-0=1.0000;provenance-1=0.5000;regex-2=0.0000;OvenCurrencyGrounded=0.0000\",\"\"\noven-payment-real,2,0,0,0,\"regex-0=0.0000;provenance-1=0.0000;regex-2=0.0000;OvenCurrencyGrounded=0.0000\",\"\"\noven-payment-real,3,0.5,0.375,-0.125,\"regex-0=1.0000;provenance-1=0.5000;regex-2=0.0000;OvenCurrencyGrounded=0.0000\",\"\"\noven-payment-real,4,0,0,0,\"regex-0=0.0000;provenance-1=0.0000;regex-2=0.0000;OvenCurrencyGrounded=0.0000\",\"\"\noven-payment-real,5,0,0,0,\"regex-0=0.0000;provenance-1=0.0000;regex-2=0.0000;OvenCurrencyGrounded=0.0000\",\"\"\ntax-pack-real,2,0.5555666666666667,0,-0.5556,\"workspace-0=n/a;TaxPackGrounded=n/a;provenance-2=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\ntax-pack-real,3,0.5777666666666667,0,-0.5778,\"workspace-0=n/a;TaxPackGrounded=n/a;provenance-2=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\ntax-pack-real,4,0.5555666666666667,0,-0.5556,\"workspace-0=n/a;TaxPackGrounded=n/a;provenance-2=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\ntax-pack-real,5,0.5777666666666667,0,-0.5778,\"workspace-0=n/a;TaxPackGrounded=n/a;provenance-2=0.0000\",\"workspace/grounded fs axes unavailable (no snapshot in old artifacts)\"\n",
+  "checks": [
+    {
+      "id": "trace_count",
+      "ok": true,
+      "detail": "19 traces rescored"
+    },
+    {
+      "id": "tax_r2_down",
+      "ok": true,
+      "detail": "tax r2 old=0.5555666666666667 new=0"
+    },
+    {
+      "id": "tax_r5_lt_r3",
+      "ok": false,
+      "detail": "tax r5=0 r3=0"
+    },
+    {
+      "id": "greppable_r3_flagged",
+      "ok": true,
+      "detail": "greppable r3 axes=workspace-0=n/a;provenance-1=0.0000;regex-2=1.0000;GreppableWriteGrounded=0.0000"
+    },
+    {
+      "id": "oven_r1_penalized",
+      "ok": true,
+      "detail": "oven r1 old=0.5 new=0.375 axes=regex-0=1.0000;provenance-1=0.5000;regex-2=0.0000;OvenCurrencyGrounded=0.0000"
+    }
+  ]
+}

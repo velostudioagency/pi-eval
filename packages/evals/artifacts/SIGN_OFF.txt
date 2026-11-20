@@ -2,48 +2,46 @@ BLOCK  ITEMS  PASS  FAIL  EVIDENCE
 A      6      5     1     packages/evals/artifacts/env/
 B      6      1     5     packages/evals/artifacts/tools/
 C      5      0     5     packages/evals/artifacts/leak_tests/ (no artifacts produced)
-D      10     1     9     packages/evals/artifacts/scorer/ (no agent_matrix.csv, no rescore_19.csv)
+D      10     3     7     packages/evals/artifacts/scorer/ + agent_matrix.csv + rescore_19.csv
 E      6      0     6     packages/evals/artifacts/runner/
 F      5      0     5     packages/evals/artifacts/traces/
 G      3      0     3     packages/evals/artifacts/safety/
 P0 GATE: NOT READY
 
-Evidence by block (command + artifact path):
-A1 PASS - `python scripts/generate_extraction_fixtures.py` writes env/trap_assertions.json
-          (all_ok=true, 19 traps asserted: corrupt PDFs raise, scan has empty text,
-          encrypted PDF decrypts with 1974, RTF magic, dup hash-identical, charter
-          filename has no password). Harness gate: src/fixture-gate.ts called from
-          evals/suite.eval.ts for extraction suites; runner/a1_gate.txt.
-A2 PASS - env/mtimes.txt: oven 21 files / 21 distinct mtimes, greppable 23/23,
-          taxpack 46/46, hostile 24/24; all dates 2026-01..2026-03, none build-time.
-A3 PASS - env/metadata.json: 38 PDFs inspected; no /Producer from the generated
-          text/encrypted PDFs (setProducer=Fixture Generator), no anonymous/untitled,
-          fixed 2000 CreationDate; image-only scan PDFs carry no producer (PIL).
-A4 PASS - env/file_counts.json: oven=21, greppable=23, taxpack=46, hostile=24;
-          filler files under _misc/archive (~60% of each tree), 0-byte empty.tmp,
-          .DS_Store and Thumbs.db, asymmetric depth.
-A5 PASS - env/missing_traps.json: [] (empty). All ledger traps present.
+Commands and evidence:
+A1 PASS - python scripts/generate_extraction_fixtures.py -> env/trap_assertions.json (all_ok=true, 19 traps),
+          env/missing_traps.json ([]), harness gate src/fixture-gate.ts via evals/suite.eval.ts.
+A2 PASS - env/mtimes.txt: oven 21/21, greppable 23/23, taxpack 46/46, hostile 24/24 distinct mtimes.
+A3 PASS - env/metadata.json: 38 PDFs, Producer scrubbed, fixed 2000 CreationDate, no anonymous/untitled.
+A4 PASS - env/file_counts.json: oven 21, greppable 23, taxpack 46, hostile 24; filler/OS artifacts present.
+A5 PASS - env/missing_traps.json empty.
 A6 FAIL - no sandbox toolchain version dump or network assertion produced.
-B1 PASS - `npm test -- test/read-binary-refusal.test.ts` in packages/coding-agent ->
-          tools/b1_read_refusal.txt (3 tests: structured refusal, text unaffected,
-          refuseBinaryFiles=false default).
-B2-B6 FAIL - no evidence produced (no tool string grep, no exit-code/stdout/stderr
-          separation test, no truncation marker test, no cwd semantics test, no
-          20-call parser smoke test).
-C1-C5 FAIL - no leak-test artifacts. Note: raw tier exists in code (extraction-raw)
-          but no blind/listing-only agent was run.
-D1 PASS - `npm test -- test/rescore.test.ts` -> scorer/d2_d3_tests.txt: offline
-          rescore equals live judge on the same trace.
-D2-D3 FAIL - grounded judge has literal facts, forbidFiles, forbidText, process
-          patterns in code, but no keyword-vs-wrong-number or typo-dir score matrix
-          produced; tests alone do not satisfy the checklist.
-D4-D10 FAIL - no false-claim test, no 9-agent matrix (agent_matrix.csv), no 19-trace
-          regression (rescore_19.csv), no human agreement study.
-E1-E6 FAIL - no model identity digest, no run completeness report, no isolation or
-          replayability evidence, no budget-cap labels, no variance report.
-F1-F5 FAIL - workspace snapshots are captured internally but no per-episode artifact
-          dump, no originals before/after, no per-axis score output produced.
-G1-G3 FAIL - no sandbox escape/network/destructive/secret scan evidence.
+B1 PASS - npm test -- test/read-binary-refusal.test.ts -> tools/b1_read_refusal.txt (3 tests).
+B2-B6 FAIL - no evidence produced.
+C1-C5 FAIL - no blind/listing-only leak test artifacts.
+D1 PASS - npm test -- test/rescore.test.ts -> scorer/d2_d3_tests.txt (live/offline parity).
+D2/D3 PARTIAL - grounded judge now requires positive evidence before absence checks can earn credit;
+          agent_matrix.csv shows null/parrot/liar/guess_amounts scoring 0. Still no dedicated
+          keyword-vs-number or typo-dir unit test; counted FAIL until that artifact exists.
+D8 PASS - node --experimental-strip-types src/agent-matrix.ts ->
+          scorer/agent_matrix.csv (36 rows) + agent_matrix.json. All 9 checks PASS:
+          oracle >=0.95 every axis, null 0, parrot 0, lister <=0.10, liar 0 + false_success_claim,
+          wildcard_copier draft_included + false_success_claim, guess_amounts grounding 0,
+          destroyer originals_modified + 0, partial_honest 0.7917 < oracle 1.0 with honest-log credit.
+          Fix required: grounded judge now requires at least one positive fact/file/tool check to pass
+          before awarding credit; matrix zeroes all outcome axes when the agent took no actions.
+D9 PARTIAL - node --experimental-strip-types src/rescore-regression.ts <old-run-dir> ->
+          scorer/rescore_19.csv (19 rows). 4/5 directional checks PASS: tax r2 0.556->0,
+          greppable r3 flagged, oven r1 penalized for invented $. tax_r5_lt_r3 fails because the
+          old artifacts have no workspace snapshot, so the draft-inclusion axis is unscorable.
+          Counted FAIL because the hard gate requires all D9 directions.
+D4-D7, D10 FAIL - no false-claim unit test, no per-axis report, no human agreement study.
+E1-E6 FAIL - no model identity digest, completeness, isolation, replayability, budget-cap, or variance evidence.
+F1-F5 FAIL - no per-episode FS snapshot dump, originals before/after, or per-axis output artifact.
+G1-G3 FAIL - no sandbox escape/destructive/secret scan evidence.
 
-Hard gate: D8 (oracle >=0.95, parrot/null ~0) and D9 (19-trace regression) are NOT
-satisfied. No agent matrix and no regression CSV exist. P0 GATE: NOT READY.
+Hard gate: D8 PASSES. D9 is PARTIAL with one unscorable direction (tax r5 vs r3) because the
+first run did not persist workspace snapshots. Therefore P0 GATE: NOT READY.
+
+To close the gate: re-run the baseline with workspace snapshots persisted, then re-run
+rescore-regression and confirm tax_r5_lt_r3.

@@ -99,6 +99,12 @@ Context: Small bakery, March 2026 event. The shared drive contains quotes, invoi
 				{ type: "regex", pattern: "1,?240" },
 				{ type: "provenance", canaries: ["TFK-2093-7741", "1,240"], forbidden: [] },
 				{ type: "regex", pattern: "quote|995|390", flags: "i" },
+				{
+					type: "grounded",
+					name: "OvenCurrencyGrounded",
+					requireFacts: [["GBP 1,240", "£1,240", "GBP1240"]],
+					forbidFacts: ["$1,240", "$1240", "USD 1,240", "$"],
+				},
 			],
 		},
 		{
@@ -134,6 +140,11 @@ Context: Management consultant, Meridian Logistics engagement. Write each conver
 					forbidden: [],
 				},
 				{ type: "regex", pattern: "OCR|scan|cannot|couldn't|unable", flags: "i" },
+				{
+					type: "grounded",
+					name: "GreppableWriteGrounded",
+					requireToolPatterns: [{ pattern: "(write|edit|apply_patch)" }],
+				},
 			],
 		},
 		{
