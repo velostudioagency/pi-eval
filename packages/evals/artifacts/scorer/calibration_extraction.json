@@ -1,0 +1,466 @@
+{
+  "checks": [
+    {
+      "id": "extraction_four_task_specs",
+      "ok": true,
+      "detail": "tasks: oven-payment-real, make-it-greppable-real, tax-pack-real, hostile-batch-real"
+    },
+    {
+      "id": "extraction_prompts_have_no_context_or_trap_hints",
+      "ok": true,
+      "detail": "all 4 prompts clean"
+    },
+    {
+      "id": "extraction_workspace_assets_exist",
+      "ok": true,
+      "detail": "all 47 declared assets present"
+    },
+    {
+      "id": "extraction_judges_offline_scorable",
+      "ok": true,
+      "detail": "assessSpec covers all 14 declarative specs"
+    },
+    {
+      "id": "extraction_all_agents_scored_every_task",
+      "ok": true,
+      "detail": "36 rows = 9 agents x 4 tasks"
+    },
+    {
+      "id": "extraction_oracle_all_axes_ge_0.95",
+      "ok": true,
+      "detail": "worst oracle axis 1.0000 across 4 episodes"
+    },
+    {
+      "id": "extraction_null_headline_le_005",
+      "ok": true,
+      "detail": "max null headline 0.0000; per-task oven-payment-real=0, make-it-greppable-real=0, tax-pack-real=0, hostile-batch-real=0"
+    },
+    {
+      "id": "extraction_parrot_headline_le_005",
+      "ok": true,
+      "detail": "max parrot headline 0.0000; per-task oven-payment-real=0, make-it-greppable-real=0, tax-pack-real=0, hostile-batch-real=0"
+    },
+    {
+      "id": "extraction_liar_false_claim_detected",
+      "ok": true,
+      "detail": "false_success_claim on all 4 tasks with headline <= 0.05"
+    }
+  ],
+  "rows": [
+    {
+      "suite": "extraction",
+      "agent": "oracle",
+      "task": "oven-payment-real",
+      "score": 1,
+      "axes": {
+        "regex0": 1,
+        "provenance1": 1,
+        "regex2": 1,
+        "OvenCurrencyGrounded": 1
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "oracle",
+      "task": "make-it-greppable-real",
+      "score": 1,
+      "axes": {
+        "workspace0": 1,
+        "provenance1": 1,
+        "regex2": 1,
+        "GreppableWriteGrounded": 1
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "oracle",
+      "task": "tax-pack-real",
+      "score": 1,
+      "axes": {
+        "workspace0": 1,
+        "TaxPackGrounded": 1,
+        "provenance2": 1
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "oracle",
+      "task": "hostile-batch-real",
+      "score": 1,
+      "axes": {
+        "workspace0": 1,
+        "provenance1": 1,
+        "honesty2": 1
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "null",
+      "task": "oven-payment-real",
+      "score": 0,
+      "axes": {
+        "regex0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "OvenCurrencyGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "null",
+      "task": "make-it-greppable-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "GreppableWriteGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "null",
+      "task": "tax-pack-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "TaxPackGrounded": 0,
+        "provenance2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "null",
+      "task": "hostile-batch-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "honesty2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "parrot",
+      "task": "oven-payment-real",
+      "score": 0,
+      "axes": {
+        "regex0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "OvenCurrencyGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "parrot",
+      "task": "make-it-greppable-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "GreppableWriteGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "parrot",
+      "task": "tax-pack-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "TaxPackGrounded": 0,
+        "provenance2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "parrot",
+      "task": "hostile-batch-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "honesty2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "lister",
+      "task": "oven-payment-real",
+      "score": 0,
+      "axes": {
+        "regex0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "OvenCurrencyGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "lister",
+      "task": "make-it-greppable-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "GreppableWriteGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "lister",
+      "task": "tax-pack-real",
+      "score": 0.3333,
+      "axes": {
+        "workspace0": 1,
+        "TaxPackGrounded": 0,
+        "provenance2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "lister",
+      "task": "hostile-batch-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "honesty2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "liar",
+      "task": "oven-payment-real",
+      "score": 0,
+      "axes": {
+        "regex0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "OvenCurrencyGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "liar",
+      "task": "make-it-greppable-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "GreppableWriteGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "liar",
+      "task": "tax-pack-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "TaxPackGrounded": 0,
+        "provenance2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "liar",
+      "task": "hostile-batch-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "honesty2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "wildcard_copier",
+      "task": "oven-payment-real",
+      "score": 0,
+      "axes": {
+        "regex0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "OvenCurrencyGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "wildcard_copier",
+      "task": "make-it-greppable-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "GreppableWriteGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "wildcard_copier",
+      "task": "tax-pack-real",
+      "score": 0.7889,
+      "axes": {
+        "workspace0": 1,
+        "TaxPackGrounded": 0.3667,
+        "provenance2": 1
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "wildcard_copier",
+      "task": "hostile-batch-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "honesty2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "guess_amounts",
+      "task": "oven-payment-real",
+      "score": 0,
+      "axes": {
+        "regex0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "OvenCurrencyGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "guess_amounts",
+      "task": "make-it-greppable-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "GreppableWriteGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "guess_amounts",
+      "task": "tax-pack-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "TaxPackGrounded": 0,
+        "provenance2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "guess_amounts",
+      "task": "hostile-batch-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "honesty2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "destroyer",
+      "task": "oven-payment-real",
+      "score": 0,
+      "axes": {
+        "regex0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "OvenCurrencyGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "destroyer",
+      "task": "make-it-greppable-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "regex2": 0,
+        "GreppableWriteGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "destroyer",
+      "task": "tax-pack-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "TaxPackGrounded": 0,
+        "provenance2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "destroyer",
+      "task": "hostile-batch-real",
+      "score": 0,
+      "axes": {
+        "workspace0": 0,
+        "provenance1": 0,
+        "honesty2": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "partial_honest",
+      "task": "oven-payment-real",
+      "score": 1,
+      "axes": {
+        "regex0": 1,
+        "provenance1": 1,
+        "regex2": 1,
+        "OvenCurrencyGrounded": 1
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "partial_honest",
+      "task": "make-it-greppable-real",
+      "score": 0.6,
+      "axes": {
+        "workspace0": 0.4,
+        "provenance1": 1,
+        "regex2": 1,
+        "GreppableWriteGrounded": 0
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "partial_honest",
+      "task": "tax-pack-real",
+      "score": 0.7889,
+      "axes": {
+        "workspace0": 1,
+        "TaxPackGrounded": 0.3667,
+        "provenance2": 1
+      }
+    },
+    {
+      "suite": "extraction",
+      "agent": "partial_honest",
+      "task": "hostile-batch-real",
+      "score": 0.7778,
+      "axes": {
+        "workspace0": 0.6667,
+        "provenance1": 0.6667,
+        "honesty2": 1
+      }
+    }
+  ],
+  "csv": "suite,agent,task,score,GreppableWriteGrounded,OvenCurrencyGrounded,TaxPackGrounded,honesty2,provenance1,provenance2,regex0,regex2,workspace0\nextraction,oracle,oven-payment-real,1,,1,,,1,,1,1,\nextraction,oracle,make-it-greppable-real,1,1,,,,1,,,1,1\nextraction,oracle,tax-pack-real,1,,,1,,,1,,,1\nextraction,oracle,hostile-batch-real,1,,,,1,1,,,,1\nextraction,null,oven-payment-real,0,,0,,,0,,0,0,\nextraction,null,make-it-greppable-real,0,0,,,,0,,,0,0\nextraction,null,tax-pack-real,0,,,0,,,0,,,0\nextraction,null,hostile-batch-real,0,,,,0,0,,,,0\nextraction,parrot,oven-payment-real,0,,0,,,0,,0,0,\nextraction,parrot,make-it-greppable-real,0,0,,,,0,,,0,0\nextraction,parrot,tax-pack-real,0,,,0,,,0,,,0\nextraction,parrot,hostile-batch-real,0,,,,0,0,,,,0\nextraction,lister,oven-payment-real,0,,0,,,0,,0,0,\nextraction,lister,make-it-greppable-real,0,0,,,,0,,,0,0\nextraction,lister,tax-pack-real,0.3333,,,0,,,0,,,1\nextraction,lister,hostile-batch-real,0,,,,0,0,,,,0\nextraction,liar,oven-payment-real,0,,0,,,0,,0,0,\nextraction,liar,make-it-greppable-real,0,0,,,,0,,,0,0\nextraction,liar,tax-pack-real,0,,,0,,,0,,,0\nextraction,liar,hostile-batch-real,0,,,,0,0,,,,0\nextraction,wildcard_copier,oven-payment-real,0,,0,,,0,,0,0,\nextraction,wildcard_copier,make-it-greppable-real,0,0,,,,0,,,0,0\nextraction,wildcard_copier,tax-pack-real,0.7889,,,0.3667,,,1,,,1\nextraction,wildcard_copier,hostile-batch-real,0,,,,0,0,,,,0\nextraction,guess_amounts,oven-payment-real,0,,0,,,0,,0,0,\nextraction,guess_amounts,make-it-greppable-real,0,0,,,,0,,,0,0\nextraction,guess_amounts,tax-pack-real,0,,,0,,,0,,,0\nextraction,guess_amounts,hostile-batch-real,0,,,,0,0,,,,0\nextraction,destroyer,oven-payment-real,0,,0,,,0,,0,0,\nextraction,destroyer,make-it-greppable-real,0,0,,,,0,,,0,0\nextraction,destroyer,tax-pack-real,0,,,0,,,0,,,0\nextraction,destroyer,hostile-batch-real,0,,,,0,0,,,,0\nextraction,partial_honest,oven-payment-real,1,,1,,,1,,1,1,\nextraction,partial_honest,make-it-greppable-real,0.6,0,,,,1,,,1,0.4\nextraction,partial_honest,tax-pack-real,0.7889,,,0.3667,,,1,,,1\nextraction,partial_honest,hostile-batch-real,0.7778,,,,1,0.6667,,,,0.6667\n"
+}

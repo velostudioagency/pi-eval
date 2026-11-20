@@ -100,7 +100,9 @@ describe("manifest outcome axis", () => {
 
 	it("uses partial credit when one fact is missing", () => {
 		const result = scoreManifest(manifest, context("1,240 INV-2093", EXPOSING_TOOLS));
-		expect(result.outcome.score).toBe(0.875);
+		// Outcome is positive-only: required strings + facts + produced files.
+		// With one of five positive checks missing, the score is 4/5.
+		expect(result.outcome.score).toBe(0.8);
 	});
 });
 
