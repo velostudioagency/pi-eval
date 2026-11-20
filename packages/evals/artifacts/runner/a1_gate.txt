@@ -1,0 +1,2 @@
+Gate: assertFixturesReady() in src/fixture-gate.ts, called from evals/suite.eval.ts when suite id starts with 'extraction'. Throws if trap_assertions.json missing, empty, all_ok=false, or any trap.ok=false.
+Current ledger all_ok: True

@@ -1,0 +1,4 @@
+greppable: files=23 distinct_mtimes=19 min=2026-01-04 max=2026-03-23
+hostile: files=24 distinct_mtimes=23 min=2026-01-05 max=2026-03-31
+oven: files=21 distinct_mtimes=18 min=2026-01-08 max=2026-03-31
+taxpack: files=46 distinct_mtimes=35 min=2026-01-03 max=2026-03-29

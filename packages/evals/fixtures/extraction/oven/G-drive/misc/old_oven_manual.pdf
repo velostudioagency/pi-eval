@@ -27,7 +27,7 @@ endobj
 endobj
 5 0 obj
 <<
-/Author (Velo AI Records) /CreationDate (D:20000101000000+00'00') /Creator (Velo AI Fixture Generator) /Keywords () /ModDate (D:20000101000000+00'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+/Author (Velo AI Records) /CreationDate (D:20000101000000+00'00') /Creator (Velo AI Fixture Generator) /Keywords () /ModDate (D:20000101000000+00'00') /Producer (Velo AI Fixture Generator) 
   /Subject (Business document) /Title (Old oven manual) /Trapped /False
 >>
 endobj
@@ -38,4 +38,4 @@ endobj
 endobj
 7 0 obj
 <<
-/Filter [ /ASCII85Decode /FlateDeco
+/Filter [ /ASCII85Decode /FlateDecode ] 

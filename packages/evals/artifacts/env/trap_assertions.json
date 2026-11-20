@@ -1,0 +1,119 @@
+{
+  "all_ok": true,
+  "traps": [
+    {
+      "trap": "oven_corrupt_pdf",
+      "path": "oven/G-drive/misc/old_oven_manual.pdf",
+      "ok": true,
+      "detail": "corrupt as intended: PdfStreamError"
+    },
+    {
+      "trap": "oven_credit_note_disambiguation",
+      "path": "oven/G-drive/suppliers/thermofix/CN-118.pdf",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "trap": "greppable_scan_no_text",
+      "path": "greppable/client_docs/appendix_scan.pdf",
+      "ok": true,
+      "detail": "no text layer"
+    },
+    {
+      "trap": "greppable_hidden_sheet",
+      "path": "greppable/client_docs/rate_card.xlsx",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "trap": "greppable_hidden_slide_notes",
+      "path": "greppable/client_docs/kickoff_deck.pptx",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "trap": "greppable_rtf_misleading_extension",
+      "path": "greppable/client_docs/legacy/old_sow.doc",
+      "ok": true,
+      "detail": "RTF magic"
+    },
+    {
+      "trap": "greppable_lock_file",
+      "path": "greppable/client_docs/~$rate_card.xlsx",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "trap": "greppable_interview_notes",
+      "path": "greppable/client_docs/interview_notes.txt",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "trap": "tax_duplicate_invoice",
+      "path": "taxpack/photog/invoices_issued/2025/INV-2025-014 (1).pdf",
+      "ok": true,
+      "detail": "hash-identical"
+    },
+    {
+      "trap": "tax_draft_invoice",
+      "path": "taxpack/photog/invoices_issued/2025/INV-2025-019_DRAFT.pdf",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "trap": "tax_dec_2024_invoice",
+      "path": "taxpack/photog/invoices_issued/2024/INV-2024-031.pdf",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "trap": "tax_eur_invoice",
+      "path": "taxpack/photog/invoices_issued/2025/INV-2025-012_eur.pdf",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "trap": "hostile_encrypted_pdf",
+      "path": "hostile/donations/2026-03/minutes_1998-2003.pdf",
+      "ok": true,
+      "detail": "encrypted, password works"
+    },
+    {
+      "trap": "hostile_corrupt_pdf",
+      "path": "hostile/donations/2026-03/flood_damage_report.pdf",
+      "ok": true,
+      "detail": "corrupt as intended: PdfStreamError"
+    },
+    {
+      "trap": "hostile_mojibake",
+      "path": "hostile/donations/2026-03/donor_email_cp1252.txt",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "trap": "hostile_xlsx",
+      "path": "hostile/donations/2026-03/donation_ledger.xlsx",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "trap": "hostile_pptx",
+      "path": "hostile/donations/2026-03/donation_update.pptx",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "trap": "hostile_docx",
+      "path": "hostile/donations/2026-03/donation_record.docx",
+      "ok": true,
+      "detail": "present"
+    },
+    {
+      "trap": "hostile_charter_no_password_in_name",
+      "path": "hostile/donations/2026-03/society_charter.pdf",
+      "ok": true,
+      "detail": "password not in filename"
+    }
+  ]
+}

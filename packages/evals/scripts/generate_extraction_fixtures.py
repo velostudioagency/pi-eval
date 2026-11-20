@@ -7,6 +7,7 @@ agent must discover its own way to extract them with its default tools.
 """
 
 import hashlib
+import json
 import os
 import shutil
 import zipfile
@@ -28,6 +29,7 @@ ROOT = Path(__file__).resolve().parent.parent / "fixtures" / "extraction"
 PDF_AUTHOR = "Velo AI Records"
 PDF_SUBJECT = "Business document"
 PDF_CREATOR = "Velo AI Fixture Generator"
+PDF_PRODUCER = "Velo AI Fixture Generator"
 INVARIANT_CREATION_DATE = "D:20000101000000Z"
 
 
@@ -43,6 +45,7 @@ def text_pdf(path: Path, lines: list[str], columns: bool = False) -> None:
     pdf.setAuthor(PDF_AUTHOR)
     pdf.setSubject(PDF_SUBJECT)
     pdf.setCreator(PDF_CREATOR)
+    pdf.setProducer(PDF_PRODUCER)
     y = 800
     for line in lines:
         if columns and "|" in line:
@@ -77,6 +80,7 @@ def encrypted_pdf(path: Path, lines: list[str], password: str) -> None:
     pdf.setAuthor(PDF_AUTHOR)
     pdf.setSubject(PDF_SUBJECT)
     pdf.setCreator(PDF_CREATOR)
+    pdf.setProducer(PDF_PRODUCER)
     y = 800
     for line in lines:
         pdf.drawString(70, y, line)
@@ -92,6 +96,7 @@ def encrypted_pdf(path: Path, lines: list[str], password: str) -> None:
             "/Author": PDF_AUTHOR,
             "/Subject": PDF_SUBJECT,
             "/Creator": PDF_CREATOR,
+            "/Producer": PDF_PRODUCER,
             "/CreationDate": INVARIANT_CREATION_DATE,
             "/ModDate": INVARIANT_CREATION_DATE,
         }
@@ -321,7 +326,7 @@ def make_taxpack() -> None:
 def make_hostile() -> None:
     base = ROOT / "hostile" / "donations" / "2026-03"
     text_pdf(
-        base / "charter_1974.pdf",
+        base / "society_charter.pdf",
         ["LETTERHEAD: Founded 1974", "Objects: preserve local records", "Ref CHARTER-1974"],
     )
     encrypted_pdf(
@@ -363,6 +368,104 @@ def make_hostile() -> None:
     document.save(str(base / "donation_record.docx"))
 
 
+
+FILLER_TEXT = [
+    "Meeting notes - routine administrative business.",
+    "Draft agenda, subject to change.",
+    "Copier maintenance log, 2025.",
+    "Staff rota, archived copy.",
+    "Stationery inventory, reviewed quarterly.",
+    "Minutes of the monthly planning call.",
+    "Courier receipts, filed by month.",
+    "Internal circulation list, old version.",
+    "Printer configuration notes.",
+    "Holiday cover arrangements, superseded.",
+    "Lunch order, not for action.",
+    "Photocopy of a policy document, unreadable.",
+]
+
+
+def add_filler(group: str, count: int) -> None:
+    """Add task-irrelevant files so the repos look like real shared drives."""
+    base = ROOT / group / "_misc" / "archive"
+    base.mkdir(parents=True, exist_ok=True)
+    for index in range(count):
+        put(base / f"note-{index + 1:02d}.txt", FILLER_TEXT[index % len(FILLER_TEXT)].encode("utf-8"))
+    # OS/office artifacts and a zero-byte file
+    put(base / ".DS_Store", b"\x00\x00\x00\x01")
+    put(base / "Thumbs.db", b"\x00\x00\x00\x01")
+    put(base / "empty.tmp", b"")
+
+
+# A1/A5: trap ledger and programmatic assertions at build time
+TRAP_LEDGER = [
+    ("oven_corrupt_pdf", "oven/G-drive/misc/old_oven_manual.pdf"),
+    ("oven_credit_note_disambiguation", "oven/G-drive/suppliers/thermofix/CN-118.pdf"),
+    ("greppable_scan_no_text", "greppable/client_docs/appendix_scan.pdf"),
+    ("greppable_hidden_sheet", "greppable/client_docs/rate_card.xlsx"),
+    ("greppable_hidden_slide_notes", "greppable/client_docs/kickoff_deck.pptx"),
+    ("greppable_rtf_misleading_extension", "greppable/client_docs/legacy/old_sow.doc"),
+    ("greppable_lock_file", "greppable/client_docs/~$rate_card.xlsx"),
+    ("greppable_interview_notes", "greppable/client_docs/interview_notes.txt"),
+    ("tax_duplicate_invoice", "taxpack/photog/invoices_issued/2025/INV-2025-014 (1).pdf"),
+    ("tax_draft_invoice", "taxpack/photog/invoices_issued/2025/INV-2025-019_DRAFT.pdf"),
+    ("tax_dec_2024_invoice", "taxpack/photog/invoices_issued/2024/INV-2024-031.pdf"),
+    ("tax_eur_invoice", "taxpack/photog/invoices_issued/2025/INV-2025-012_eur.pdf"),
+    ("hostile_encrypted_pdf", "hostile/donations/2026-03/minutes_1998-2003.pdf"),
+    ("hostile_corrupt_pdf", "hostile/donations/2026-03/flood_damage_report.pdf"),
+    ("hostile_mojibake", "hostile/donations/2026-03/donor_email_cp1252.txt"),
+    ("hostile_xlsx", "hostile/donations/2026-03/donation_ledger.xlsx"),
+    ("hostile_pptx", "hostile/donations/2026-03/donation_update.pptx"),
+    ("hostile_docx", "hostile/donations/2026-03/donation_record.docx"),
+    ("hostile_charter_no_password_in_name", "hostile/donations/2026-03/society_charter.pdf"),
+]
+
+
+def run_trap_assertions() -> dict:
+    """Assert every planted trap exists; refuse to finish build when one is missing."""
+    results = []
+    for name, relative in TRAP_LEDGER:
+        path = ROOT / relative
+        ok = path.is_file()
+        detail = "present" if ok else "missing"
+        if ok and name in {"oven_corrupt_pdf", "hostile_corrupt_pdf"}:
+            try:
+                PdfReader(str(path)).pages[0].extract_text()
+                ok, detail = False, "corrupt PDF parsed without error"
+            except Exception as exc:
+                detail = f"corrupt as intended: {type(exc).__name__}"
+        if ok and name == "greppable_scan_no_text":
+            text = PdfReader(str(path)).pages[0].extract_text() or ""
+            ok = text.strip() == ""
+            detail = "no text layer" if ok else f"unexpected text: {text[:40]!r}"
+        if ok and name == "hostile_encrypted_pdf":
+            reader = PdfReader(str(path))
+            ok = reader.is_encrypted and reader.decrypt("1974") != 0
+            detail = "encrypted, password works" if ok else "encryption broken"
+        if ok and name == "greppable_rtf_misleading_extension":
+            ok = path.read_bytes().startswith(b"{\\rtf")
+            detail = "RTF magic" if ok else "wrong magic"
+        if ok and name == "tax_duplicate_invoice":
+            original = ROOT / "taxpack/photog/invoices_issued/2025/INV-2025-014.pdf"
+            ok = hashlib.sha256(path.read_bytes()).digest() == hashlib.sha256(original.read_bytes()).digest()
+            detail = "hash-identical" if ok else "not identical"
+        if ok and name == "hostile_charter_no_password_in_name":
+            ok = "1974" not in path.name
+            detail = "password not in filename" if ok else "password leaked in filename"
+        results.append({"trap": name, "path": relative, "ok": ok, "detail": detail})
+    bundle = {"all_ok": all(r["ok"] for r in results), "traps": results}
+    (ROOT / "trap_assertions.json").write_text(
+        json.dumps(bundle, indent=2) + "\n", encoding="utf-8"
+    )
+    missing = [r for r in results if not r["ok"]]
+    (ROOT / "missing_traps.json").write_text(
+        json.dumps(missing, indent=2) + "\n", encoding="utf-8"
+    )
+    if missing:
+        raise RuntimeError("fixture trap assertions failed: " + ", ".join(r["trap"] for r in missing))
+    return bundle
+
+
 def backdate_fixtures() -> int:
     """Set a stable, reproducible mtime in early 2026 on every generated file."""
     epoch = datetime(2026, 1, 1, tzinfo=timezone.utc).timestamp()
@@ -376,9 +479,17 @@ def backdate_fixtures() -> int:
 
 
 if __name__ == "__main__":
+    if ROOT.exists():
+        shutil.rmtree(ROOT)
+    ROOT.mkdir(parents=True, exist_ok=True)
     make_oven()
     make_greppable()
     make_taxpack()
     make_hostile()
+    put(ROOT / 'greppable/client_docs/interview_notes.txt',
+        b'Interview notes: candidate asked about phase-2 budget; follow up next week.')
+    for group, n in (('oven', 12), ('greppable', 12), ('taxpack', 18), ('hostile', 12)):
+        add_filler(group, n)
+    assertions = run_trap_assertions()
     count = backdate_fixtures()
     print(f"Generated and backdated {count} extraction fixtures under {ROOT}")

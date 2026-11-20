@@ -1,0 +1,15 @@
+exit=0
+
+> @earendil-works/pi-evals@1.5.2 test
+> vitest run --config vitest.test.config.ts test/judges.test.ts test/agent-task.test.ts test/rescore.test.ts
+
+
+ RUN  v4.1.12 C:/Users/charr/Downloads/veloai/pi-eval/packages/evals
+
+
+ Test Files  3 passed (3)
+      Tests  21 passed (21)
+   Start at  09:03:41
+   Duration  14.51s (transform 16.00s, setup 0ms, import 27.74s, tests 700ms, environment 0ms)
+
+npm warn Unknown project config "min-release-age-exclude". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.

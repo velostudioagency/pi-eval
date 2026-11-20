@@ -1,0 +1,16 @@
+exit=0
+
+> @earendil-works/pi-coding-agent@1.5.2 test
+> vitest --run test/read-binary-refusal.test.ts
+
+
+ RUN  v4.1.12 C:/Users/charr/Downloads/veloai/pi-eval/packages/coding-agent
+
+Â·Â·Â·
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  09:03:37
+   Duration  2.45s (transform 1.05s, setup 0ms, import 2.14s, tests 31ms, environment 0ms)
+
+npm warn Unknown project config "min-release-age-exclude". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
