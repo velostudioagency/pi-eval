@@ -171,7 +171,7 @@ class PiEval:
         result = subprocess.run(command, cwd=self.repo_path, capture_output=True, text=True, timeout=self.timeout)
         return RunResult(
             {
-                "ok": result.returncode in (0, 1),
+                "ok": result.returncode == 0,
                 "exitCode": result.returncode,
                 "report": json.loads((artifact_dir / "report.json").read_text(encoding="utf-8"))
                 if (artifact_dir / "report.json").exists()

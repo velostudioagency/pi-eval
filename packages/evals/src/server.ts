@@ -124,7 +124,7 @@ function runSuite(body: RunRequest, artifactDirectory: string) {
 		}
 	}
 	return {
-		ok: result.error === undefined && report !== null,
+		ok: result.error === undefined && result.status === 0 && report !== null,
 		exitCode: result.status,
 		artifactDirectory,
 		report,
